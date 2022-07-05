@@ -20,26 +20,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="记录生活的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ANKIIMA">
-<meta property="og:url" content="http://example.com/index.html">
+    <meta name="description" content="前言更新中~  这篇文章记录通过使用YOLOv5深度学习框架，对口罩佩戴数据集进行训练，并实现实时检测口罩佩戴情况的过程。  不需要您对深度学习有基础，可以直接快速上手。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="yolov5">
+<meta property="og:url" content="http://example.com/2022/07/04/yolov5/index.html">
 <meta property="og:site_name" content="ANKIIMA">
-<meta property="og:description" content="记录生活的博客">
+<meta property="og:description" content="前言更新中~  这篇文章记录通过使用YOLOv5深度学习框架，对口罩佩戴数据集进行训练，并实现实时检测口罩佩戴情况的过程。  不需要您对深度学习有基础，可以直接快速上手。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-04T13:57:43.000Z">
+<meta property="article:modified_time" content="2022-07-05T02:43:48.139Z">
 <meta property="article:author" content="ANKIIMA">
-<meta property="article:tag" content="OpenGL CV">
+<meta property="article:tag" content="YOLOv5">
+<meta property="article:tag" content="Computer Vision">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2022/07/04/yolov5/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/07/04/yolov5/","path":"2022/07/04/yolov5/","title":"yolov5"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>ANKIIMA</title>
+<title>yolov5 | ANKIIMA</title>
   
 
 
@@ -69,7 +72,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">ANKIIMA</h1>
+      <p class="site-title">ANKIIMA</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">Blog</p>
@@ -102,7 +105,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -115,6 +118,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text">工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Python"><span class="nav-number">3.1.</span> <span class="nav-text">Python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7"><span class="nav-number">3.2.</span> <span class="nav-text">Python包管理工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YOLOv5%E9%A1%B9%E7%9B%AE%E4%B8%8B%E8%BD%BD"><span class="nav-number">3.3.</span> <span class="nav-text">YOLOv5项目下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pycharm%E5%AE%89%E8%A3%85"><span class="nav-number">3.4.</span> <span class="nav-text">pycharm安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CUDA%E5%92%8Cpytorch-gpu"><span class="nav-number">3.5.</span> <span class="nav-text">CUDA和pytorch(gpu)</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -174,16 +178,17 @@
 </noscript>
 
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/04/yolov5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -197,13 +202,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | ANKIIMA">
+      <meta itemprop="name" content="yolov5 | ANKIIMA">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/07/04/yolov5/" class="post-title-link" itemprop="url">yolov5</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          yolov5
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -250,18 +255,28 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>更新中~</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>更新中~</p>
 <hr>
 <p>这篇文章记录通过使用YOLOv5深度学习框架，对口罩佩戴数据集进行训练，并实现实时检测口罩佩戴情况的过程。  不需要您对深度学习有基础，可以直接快速上手。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/07/04/yolov5/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+<span id="more"></span>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>由于竞赛任务，我需要短时间内实现口罩检测算法，最好能够在电脑摄像头中实时检测口罩佩戴情况。  </p>
+<p>在没有人工智能基础的情况下，最好的方式就是使用框架。这里有必要大概介绍一下，如果你完全不了解人工智能，那么可以记住机器学习是人工智能的一个子集，而深度学习就是机器学习中最前沿的方法。其中深度指的就是构建神经网络的深度。  </p>
+<p>但是不必担心，我们将直接使用经过改进的YOLO算法，作者将这一算法整理成完整的框架，并提供了合适的接口，只要修改配置文件就可以完成基本任务了。  </p>
+<p>当然如果你想对这部分理论进行更深层次的研究，也许这篇文章只能让你大致了解使用框架的过程，而非详尽的数学理论。</p>
+<p>本文使用的方法为参考另外两篇博客博客总结出来的，如果过程中有疑问可以移步查看。<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/kushe123/article/details/113702225">利用yolov5实现口罩佩戴检测算法(非常详细)</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/didiaopao/article/details/120022845?spm=1001.2014.3001.5502">目标检测—数据集格式转化及训练集和验证集划分</a>  </p>
+<h1 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h1><p>现在，我们先安装YOLOv5框架必要的组件，包括pyhton环境，python包管理工具，YOLOv5项目下载，pyhotn IDE(推荐pycharm)，用于训练数据集的CUDA计算支持和pytorch安装(有必要的话)。<br>这里将以我自己安装的版本为例，如有不同需要确认安装版本是否支持。当然也可以完全根据我的版本来，不容易出错。</p>
+<h2 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h2><p>如果已经安装了Python环境，可以忽略。在Windows中打开控制台，查看Python版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\16677&gt;python -V</span><br><span class="line">Python 3.7.8</span><br></pre></td></tr></table></figure>
+<p>如果显示错误，就应该要重新正确安装python。这部分网上有很多教程了，一般不会导致严重的问题。甚至使用后面介绍的包管理工具也一样能完成python安装。  </p>
+<h2 id="Python包管理工具"><a href="#Python包管理工具" class="headerlink" title="Python包管理工具"></a>Python包管理工具</h2><p>Python有很多功能强大的包提供算法或计算支持，庞杂的包管理通常需要安装包管理工具来解决，一般有两个工具要安装，一个是pip，提供轻量级包管理；另一个是Anaconda，除了包管理以外还提供许多必要的强大功能。  </p>
+<p>而这两个工具其实不冲突，网上有关于这部分的介绍，感兴趣可以搜索看看。总而言之，pip和conda都可以安装python包，但是最好使用其中一个进行配置，避免重复安装。(实际上我自己安装的时候感觉会同步)  </p>
+<p>之所以安装两个是因为有时候某个工具安装会出错，因此还是有必要的。</p>
+<p>安装都比较简单，按照网上教程就行，使用命令查看是否正确安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\16677&gt;pip -V</span><br><span class="line">pip 22.1.2 from d:\program files (x86)\microsoft visual studio\shared\python37_64\lib\site-packages\pip (python 3.7)</span><br><span class="line"></span><br><span class="line">C:\Users\16677&gt;conda -V</span><br><span class="line">conda 4.12.0</span><br></pre></td></tr></table></figure>
+<h2 id="YOLOv5项目下载"><a href="#YOLOv5项目下载" class="headerlink" title="YOLOv5项目下载"></a>YOLOv5项目下载</h2><p><a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5">YOLOv5</a>在GitHub上进行了开源，可以通过git克隆或者直接下载的方式得到整个项目文件包，解压后放到自己选的目录。<br>也许目录和我的会有所不同，因为YOLO也一直在更新，但是不用担心会出错，正确配置文件路径即可。</p>
+<h2 id="pycharm安装"><a href="#pycharm安装" class="headerlink" title="pycharm安装"></a>pycharm安装</h2><p>类似VS，pycharm专用于python的开发环境管理，对工程文件不推荐小型编辑器如VSCode。跟着网上教程就可以安装了。</p>
+<h2 id="CUDA和pytorch-gpu"><a href="#CUDA和pytorch-gpu" class="headerlink" title="CUDA和pytorch(gpu)"></a>CUDA和pytorch(gpu)</h2><p>这两个之所以放在一起是因为gpu版本的pytorch包需要CUDA协助才能工作。</p>
+
     </div>
 
     
@@ -269,187 +284,43 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="https://github.com/ANKIIMA">
+          <span class="icon">
+            <i class="fa-brands fa-github"></i>
+          </span>
+
+          <span class="label">GitHub</span>
+        </a>
+      </div>
+  </div>
 </div>
 
+          <div class="post-tags">
+              <a href="/tags/YOLOv5/" rel="tag"><i class="fa fa-tag"></i> YOLOv5</a>
+              <a href="/tags/Computer-Vision/" rel="tag"><i class="fa fa-tag"></i> Computer Vision</a>
+          </div>
 
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/03/test/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/1.gif">
-      <meta itemprop="name" content="ANKIIMA">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ANKIIMA">
-      <meta itemprop="description" content="记录生活的博客">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | ANKIIMA">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/07/03/test/" class="post-title-link" itemprop="url">hexo+next主题配置</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-07-03 11:48:55" itemprop="dateCreated datePublished" datetime="2022-07-03T11:48:55+08:00">2022-07-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-07-04 13:28:00" itemprop="dateModified" datetime="2022-07-04T13:28:00+08:00">2022-07-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Blog/" itemprop="url" rel="index"><span itemprop="name">Blog</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>记录博客网站的美化操作，用的是hexo和next主题。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/07/03/test/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/03/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/1.gif">
-      <meta itemprop="name" content="ANKIIMA">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ANKIIMA">
-      <meta itemprop="description" content="记录生活的博客">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | ANKIIMA">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/07/03/hello-world/" class="post-title-link" itemprop="url">你好！</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-07-03 11:24:46" itemprop="dateCreated datePublished" datetime="2022-07-03T11:24:46+08:00">2022-07-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-07-04 11:12:00" itemprop="dateModified" datetime="2022-07-04T11:12:00+08:00">2022-07-04</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>这里是ANKIIMA的博客，出于兴趣分享一些学习过程和其他见闻！</p>
-<hr>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/07/03/hello-world/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/03/test/" rel="prev" title="hexo+next主题配置">
+                  <i class="fa fa-chevron-left"></i> hexo+next主题配置
+                </a>
             </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
+
 
 
 
