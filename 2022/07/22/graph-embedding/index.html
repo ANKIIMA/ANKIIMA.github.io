@@ -20,26 +20,33 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="记录生活的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ANKIIMA">
-<meta property="og:url" content="http://example.com/categories/%E6%97%A5%E5%B8%B8/index.html">
+    <meta name="description" content="前言图作为重要的数据结构，可以表示物体与物体之间的关系，这里总结一下图的深度学习中经常提到的图嵌入(Graph Embedding, 或者图表示学习)和图神经网络。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图嵌入和图神经网络">
+<meta property="og:url" content="http://example.com/2022/07/22/graph-embedding/index.html">
 <meta property="og:site_name" content="ANKIIMA">
-<meta property="og:description" content="记录生活的博客">
+<meta property="og:description" content="前言图作为重要的数据结构，可以表示物体与物体之间的关系，这里总结一下图的深度学习中经常提到的图嵌入(Graph Embedding, 或者图表示学习)和图神经网络。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-22T12:50:07.000Z">
+<meta property="article:modified_time" content="2022-07-22T13:09:25.569Z">
 <meta property="article:author" content="ANKIIMA">
-<meta property="article:tag" content="OpenGL CV">
+<meta property="article:tag" content="Graph Embedding">
+<meta property="article:tag" content="Graph Neural Network">
+<meta property="article:tag" content="[object Object]">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="Graph">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/categories/%E6%97%A5%E5%B8%B8/">
+<link rel="canonical" href="http://example.com/2022/07/22/graph-embedding/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"categories/日常/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/07/22/graph-embedding/","path":"2022/07/22/graph-embedding/","title":"图嵌入和图神经网络"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>分类: 日常 | ANKIIMA</title>
+<title>图嵌入和图神经网络 | ANKIIMA</title>
   
 
 
@@ -102,7 +109,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -115,6 +122,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -174,50 +182,115 @@
 </noscript>
 
 
-    <div class="main-inner category posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">日常
-          <small>分类</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/22/graph-embedding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.gif">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="图嵌入和图神经网络 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          图嵌入和图神经网络
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
+
+      <time title="创建时间：2022-07-22 20:50:07 / 修改时间：21:09:25" itemprop="dateCreated datePublished" datetime="2022-07-22T20:50:07+08:00">2022-07-22</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>图作为重要的数据结构，可以表示物体与物体之间的关系，这里总结一下图的深度学习中经常提到的图嵌入(Graph Embedding, 或者图表示学习)和图神经网络。</p>
+<span id="more"></span>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2022-07-06T11:37:55+08:00"
-              content="2022-07-06">
-          07-06
-        </time>
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="https://github.com/ANKIIMA">
+          <span class="icon">
+            <i class="fa-brands fa-github"></i>
+          </span>
+
+          <span class="label">GitHub</span>
+        </a>
       </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/07/06/food-in-ChengDu/" itemprop="url">
-            <span itemprop="name">记录成都所有吃过的店</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-    </div>
   </div>
-  
-  
-  
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Graph-Embedding/" rel="tag"><i class="fa fa-tag"></i> Graph Embedding</a>
+              <a href="/tags/Graph-Neural-Network/" rel="tag"><i class="fa fa-tag"></i> Graph Neural Network</a>
+              <a href="/tags/object-Object/" rel="tag"><i class="fa fa-tag"></i> [object Object]</a>
+              <a href="/tags/Machine-Learning/" rel="tag"><i class="fa fa-tag"></i> Machine Learning</a>
+              <a href="/tags/Deep-Learning/" rel="tag"><i class="fa fa-tag"></i> Deep Learning</a>
+              <a href="/tags/Graph/" rel="tag"><i class="fa fa-tag"></i> Graph</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/06/food-in-ChengDu/" rel="prev" title="记录成都所有吃过的店">
+                  <i class="fa fa-chevron-left"></i> 记录成都所有吃过的店
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>
