@@ -20,26 +20,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"flat"},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="记录生活的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ANKIIMA">
-<meta property="og:url" content="http://example.com/tags/Unity/page/2/index.html">
+    <meta name="description" content="s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="五百行C++理解OpenGL机制(四)">
+<meta property="og:url" content="http://example.com/2023/08/02/tinyRenderer3/index.html">
 <meta property="og:site_name" content="ANKIIMA">
-<meta property="og:description" content="记录生活的博客">
+<meta property="og:description" content="s">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-02T05:47:00.000Z">
+<meta property="article:modified_time" content="2023-08-02T06:03:01.184Z">
 <meta property="article:author" content="ANKIIMA">
-<meta property="article:tag" content="OpenGL CV">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="OpenGL">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/tags/Unity/page/2/">
+<link rel="canonical" href="http://example.com/2023/08/02/tinyRenderer3/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"tags/Unity/page/2/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2023/08/02/tinyRenderer3/","path":"2023/08/02/tinyRenderer3/","title":"五百行C++理解OpenGL机制(四)"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>标签: Unity | ANKIIMA</title>
+<title>五百行C++理解OpenGL机制(四) | ANKIIMA</title>
   
 
 
@@ -174,233 +177,134 @@
 </noscript>
 
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">Unity
-          <small>标签</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/02/tinyRenderer3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.gif">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="五百行C++理解OpenGL机制(四) | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          五百行C++理解OpenGL机制(四)
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2023</span>
+
+      <time title="创建时间：2023-08-02 13:47:00 / 修改时间：14:03:01" itemprop="dateCreated datePublished" datetime="2023-08-02T13:47:00+08:00">2023-08-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/" itemprop="url" rel="index"><span itemprop="name">Graphics API</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/OpenGL/" itemprop="url" rel="index"><span itemprop="name">OpenGL</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa-solid fa-street-view"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>s</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-04-26T18:10:00+08:00"
-              content="2023-04-26">
-          04-26
-        </time>
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="https://github.com/ANKIIMA">
+          <span class="icon">
+            <i class="fa-brands fa-github"></i>
+          </span>
+
+          <span class="label">GitHub</span>
+        </a>
       </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/04/26/unity11/" itemprop="url">
-            <span itemprop="name">unity入门(十一)-动画系统(二)</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-04-25T17:03:22+08:00"
-              content="2023-04-25">
-          04-25
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/04/25/unity10/" itemprop="url">
-            <span itemprop="name">unity入门(十)-动画系统(一)</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-04-23T20:15:24+08:00"
-              content="2023-04-23">
-          04-23
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/04/23/unity9/" itemprop="url">
-            <span itemprop="name">unity入门(九)-地形系统</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-04-20T19:19:51+08:00"
-              content="2023-04-20">
-          04-20
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/04/20/unity8/" itemprop="url">
-            <span itemprop="name">unity入门(八)-导入人物模型和绑定骨骼动画</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-04-18T20:30:22+08:00"
-              content="2023-04-18">
-          04-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/04/18/unity7/" itemprop="url">
-            <span itemprop="name">unity入门(七)-制作一个2D游戏</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-04-17T19:55:25+08:00"
-              content="2023-04-17">
-          04-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/04/17/unity6/" itemprop="url">
-            <span itemprop="name">unity入门(六)-制作一个2D游戏</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-04-15T20:09:14+08:00"
-              content="2023-04-15">
-          04-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/04/15/unity5/" itemprop="url">
-            <span itemprop="name">unity入门(五)-制作一个2D游戏</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-04-11T21:00:09+08:00"
-              content="2023-04-11">
-          04-11
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/04/11/uni-shader1/" itemprop="url">
-            <span itemprop="name">Unity和Shader入门（一）</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-04-10T22:38:14+08:00"
-              content="2023-04-10">
-          04-10
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/04/10/unity4/" itemprop="url">
-            <span itemprop="name">unity入门(四)-制作一个2D游戏</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2023-03-12T18:29:47+08:00"
-              content="2023-03-12">
-          03-12
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2023/03/12/unity3/" itemprop="url">
-            <span itemprop="name">unity入门(三)-制作一个2D游戏</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-    </div>
   </div>
-  
-  
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/tags/Unity/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/tags/Unity/">1</a><span class="page-number current">2</span><a class="page-number" href="/tags/Unity/page/3/">3</a><a class="extend next" rel="next" href="/tags/Unity/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"><i class="fa fa-tag"></i> CG</a>
+              <a href="/tags/OpenGL/" rel="tag"><i class="fa fa-tag"></i> OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/08/01/tinyRenderer2/" rel="prev" title="五百行C++理解OpenGL机制(三)">
+                  <i class="fa fa-chevron-left"></i> 五百行C++理解OpenGL机制(三)
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>

@@ -145,7 +145,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -427,8 +427,8 @@
 <ul>
 <li>找到一个$t$和$u$使得$n- 1 = 2^t * u$；</li>
 <li>找到一个$x_0$和$a$使得$x_0^2 = a^u \% n$；</li>
-<li>递推$x<em>t = x</em>{t-1}^2 \% n$;</li>
-<li>对最后的$x<em>t$判断，如果$x_t \not = 1$，且$x_t^{n-1} \not \equiv 1 \pmod n$，那么证明$n$是合数；对每个$x_t$判断，如果$x_t = 1$，而且$x</em>{t-1} \not = 1或n-1$，也证明n是合数。</li>
+<li>递推$x_t = x_{t-1}^2 \% n$;</li>
+<li>对最后的$x_t$判断，如果$x_t \not = 1$，且$x_t^{n-1} \not \equiv 1 \pmod n$，那么证明$n$是合数；对每个$x_t$判断，如果$x_t = 1$，而且$x_{t-1} \not = 1或n-1$，也证明n是合数。</li>
 <li>注意，要对所有选择过的$x_t$都进行判断后才能输出，因为费马小定理对合数不一定正确，只要求两个数互质，因此即便满足了$x_t^{n-1} \equiv 1 \pmod n$也不能说n就是质数，除非确定此时的$x_t$是质数。但是，只要不符合这个条件，$n$就一定不是质数，所以费马小定理的逆定理仅作为判断合数的充分条件。</li>
 </ul>
 <p>如果遍历完选择的$t$个$x_t$后，条件都满足合数，那么就判断是合数，一般这样测试五十次就够了。</p>
@@ -456,8 +456,8 @@
 <ul>
 <li>Pollard_rho启发式方法；</li>
 </ul>
-<p>该方法采用随机数的方式选择试除对象，根据生日悖论提供一个以两个数绝对值作为除数的方法，不同的组合可以增加这个数是因数的概率，从而在判断中快速找到因数。而构造的序列$x<em>i=(x</em>{i-1}^2+C)%N$会构成一个$\rho$形状的数环，即不论从什么地方开始，这个序列总会进入循环，因此这也是一个伪随机的序列。</p>
-<p>而为了判断环的存在，可以使用简单的Floyd判环算法，设经过时间$i$后，$t=i，r=2i$，表示后者速度是前者的一倍。因此当后者遇上前者时，有$x<em>t=x_r$，也就是$x_i=x</em>{2i}=x_{i+kC}$，其中k是整数，C是环的长度。</p>
+<p>该方法采用随机数的方式选择试除对象，根据生日悖论提供一个以两个数绝对值作为除数的方法，不同的组合可以增加这个数是因数的概率，从而在判断中快速找到因数。而构造的序列$x_i=(x_{i-1}^2+C)%N$会构成一个$\rho$形状的数环，即不论从什么地方开始，这个序列总会进入循环，因此这也是一个伪随机的序列。</p>
+<p>而为了判断环的存在，可以使用简单的Floyd判环算法，设经过时间$i$后，$t=i，r=2i$，表示后者速度是前者的一倍。因此当后者遇上前者时，有$x_t=x_r$，也就是$x_i=x_{2i}=x_{i+kC}$，其中k是整数，C是环的长度。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//启发式方法pollard_rho</span></span><br><span class="line"><span class="comment">//返回一个因数，不一定是质因数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//序列函数x=(x^2+c)%n</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">f</span><span class="params">(<span class="type">int</span> x,<span class="type">int</span> c,<span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (x*x+c)%n;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//返回N的一个因数，不一定是质因数</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pollard_rho</span><span class="params">(<span class="type">int</span> N)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//生成常数C</span></span><br><span class="line">    <span class="type">int</span> c=<span class="built_in">rand</span>()%(N<span class="number">-1</span>)+<span class="number">1</span>;</span><br><span class="line">    <span class="comment">//floyd优化环判断，t是龟，r是兔子</span></span><br><span class="line">    <span class="comment">//设t=x1=f(0)，r=x2=f(x1)</span></span><br><span class="line">    <span class="type">int</span> t=<span class="built_in">f</span>(<span class="number">0</span>,c,N),r=<span class="built_in">f</span>(<span class="built_in">f</span>(<span class="number">0</span>,c,N),c,N);</span><br><span class="line">    <span class="keyword">while</span>(t!=r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> d=<span class="built_in">gcd</span>(<span class="built_in">abs</span>(t-r),N);</span><br><span class="line">        <span class="keyword">if</span>(d&gt;<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">return</span> d;</span><br><span class="line">        <span class="comment">//更新时保证t=f(t)=x_i，那么r=f(r)=x_2i</span></span><br><span class="line">        t=<span class="built_in">f</span>(t,c,N),r=<span class="built_in">f</span>(<span class="built_in">f</span>(r,c,N),c,N);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> N;<span class="comment">//没有找到,重新调整参数c</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="同余"><a href="#同余" class="headerlink" title="同余"></a>同余</h2><p>定义：$a \equiv b \pmod m$</p>
 <p>性质：</p>
