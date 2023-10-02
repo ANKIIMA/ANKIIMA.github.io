@@ -53,7 +53,7 @@
 <meta property="og:image" content="http://example.com/2022/08/07/DA-5/24.jpg">
 <meta property="og:image" content="http://example.com/2022/08/07/DA-5/25.jpg">
 <meta property="article:published_time" content="2022-08-07T05:46:55.000Z">
-<meta property="article:modified_time" content="2023-08-16T07:43:32.491Z">
+<meta property="article:modified_time" content="2023-09-15T09:12:29.202Z">
 <meta property="article:author" content="ANKIIMA">
 <meta property="article:tag" content="Data Structure and Algorithm">
 <meta name="twitter:card" content="summary">
@@ -158,7 +158,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">57</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -250,7 +250,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-08-16 15:43:32" itemprop="dateModified" datetime="2023-08-16T15:43:32+08:00">2023-08-16</time>
+      <time title="修改时间：2023-09-15 17:12:29" itemprop="dateModified" datetime="2023-09-15T17:12:29+08:00">2023-09-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -381,8 +381,8 @@
 </ul>
 <p>最小生成树的算法一般都利用这个性质：<em>U</em>是<em>V</em>的一个非空顶点子集，如果有<em>U</em>中顶点u，<em>V-U</em>中顶点v，且(u,v)是一条具有最小边权的边，那么一定存在一棵包含(u,v)的最小生成树。</p>
 <p>首先介绍一个通用的算法：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GENERIC_MST(G)</span><br><span class="line">&#123;</span><br><span class="line">    T = NULL;</span><br><span class="line">    while(not_Tree(T))</span><br><span class="line">    &#123;</span><br><span class="line">        find(最小代价边且加入T后不产生回路);</span><br><span class="line">        T = add(T,(u,v));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="Prim算法"><a href="#Prim算法" class="headerlink" title="Prim算法"></a>Prim算法</h3><p>初始从图中任取顶点加入树T，然后找到距离顶点集合最近的邻居，将边和点都加入T；直到图中所有顶点都加入了T。此时T中必然有n-1条边。<br><img src="/2022/08/07/DA-5/14.jpg" alt="场景"><br>时间复杂度O(V^2)，与边数无关，所以适合求稠密图的最小生成树。</p>
-<h3 id="Kruskal算法"><a href="#Kruskal算法" class="headerlink" title="Kruskal算法"></a>Kruskal算法</h3><p>该算法通过并查集完成，初始时T中只有顶点集没有边集，每个顶点都是单独的连通分量，也就是初始化的并查集；然后按照边权的大小排序所有边，依次权值最小的边，如果这条边连接的顶点在不同连通分量中（加入后不构成回路），也就是并查集find找到root不一致，则将这条边加入T，直到T中所有顶点在一个连通分量中，或者边集有n-1条边。<br><img src="/2022/08/07/DA-5/15.jpg" alt="场景"><br>算法中存放边权通常使用堆，所以找到最小边权的边时间只需要O(log(E))；其它排序方法也可以。此外，生成树T中的所有边可以视为一个等价类，采用并查集描述T，构造T需要O(E*log(E))。时间复杂度与顶点数无关，所以适合处理边稀疏多顶点的图。</p>
+<h3 id="Prim算法"><a href="#Prim算法" class="headerlink" title="Prim算法"></a>Prim算法</h3><p>初始从图中任取顶点加入树T，然后找到距离顶点集合最近(边权最小)的邻居，将边和点都加入T；直到图中所有顶点都加入了T。此时T中必然有n-1条边。<br><img src="/2022/08/07/DA-5/14.jpg" alt="场景"><br>时间复杂度O(V^2)，与边数无关，所以适合求稠密图的最小生成树。</p>
+<h3 id="Kruskal算法"><a href="#Kruskal算法" class="headerlink" title="Kruskal算法"></a>Kruskal算法</h3><p>该算法通过并查集检查环完成，初始时T中只有顶点集没有边集，每个顶点都是单独的连通分量，也就是初始化的并查集；然后按照边权的大小排序所有边，依次权值最小的边，如果这条边连接的顶点在不同连通分量中（加入后不构成回路），也就是并查集find找到root不一致，则将这条边加入T，直到T中所有顶点在一个连通分量中，或者边集有n-1条边。<br><img src="/2022/08/07/DA-5/15.jpg" alt="场景"><br>算法中存放边权通常使用堆，所以找到最小边权的边时间只需要O(log(E))；其它排序方法也可以。此外，生成树T中的所有边可以视为一个等价类，采用并查集描述T，构造T需要O(E*log(E))。时间复杂度与顶点数无关，所以适合处理边稀疏多顶点的图。</p>
 <h2 id="最短路径"><a href="#最短路径" class="headerlink" title="最短路径"></a>最短路径</h2><p>无向图路径长度视为路径上的边数；有向图路径长度视为路径上的边权和。从顶点<em>v1</em>到顶点<em>v2</em>的具有最短路径长度的路径就是两点之间的最短路径。</p>
 <p>最短路径算法一般使用这个性质：两点之间的最短路径由其他点之间的最短路径构成。Dijkstra算法用来求单源最短路径；Floyd算法用来求每对顶点之间的最短路径。</p>
 <h3 id="Dijkstra"><a href="#Dijkstra" class="headerlink" title="Dijkstra"></a>Dijkstra</h3><p>设置一个集合S记录求得最短路径的顶点，初始时将起始顶点<em>v</em>加入S，然后在<em>v</em>的所以邻居中，选择距离最近的顶点加入S，并修改记录从<em>v</em>到其他顶点<em>i</em>最短路径长度的数组dist[i]，如果加入的顶点j使得dist[j]+arcs[j][k]&lt;dist[k]，就更新dist[k]；以及记录从<em>v</em>到其他顶点<em>i</em>最短路径的前驱数组path[i]。重复以上操作，直到S中包含了所有顶点。<br><img src="/2022/08/07/DA-5/16.jpg" alt="场景"></p>
