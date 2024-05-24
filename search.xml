@@ -5479,4 +5479,108 @@
         <tag>Game</tag>
       </tags>
   </entry>
+  <entry>
+    <title>C#的语言集成查询LINQ</title>
+    <url>/2024/05/24/LINQ/</url>
+    <content><![CDATA[<p>LINQ是一种很方便的查询工具，是一系列直接将查询功能集成到C#语言的技术统称。开发中常用的查询如果使用LINQ编写，能够大幅度节省代码，但性能上会略有影响，本编博客记录LINQ在开发场景下的主要应用。</p>
+<span id="more"></span>
+<h2 id="扩展方法"><a href="#扩展方法" class="headerlink" title="扩展方法"></a>扩展方法</h2><p>了解LINQ语句之前首先解释如何实现，C#通过扩展方法在不新建派生类型的情况下为现有类型添加方法。LINQ是最常见的扩展方法，将查询功能添加到<a href="https://learn.microsoft.com/zh-cn/dotnet/api/system.collections.ienumerable">System.Collections.IEnumerable</a>和<a href="https://learn.microsoft.com/zh-cn/dotnet/api/system.collections.generic.ienumerable-1">System.Collections.Generic.IEnumerable\<T\></T\></a>中，这些查询方法通常使用Lamda表达式作为参数。</p>
+<p>扩展方法形式上通过非嵌套、非泛型的静态类内静态方法实现，例如下面是对string类型定义的扩展方法:</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">ExtensionMethods</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">MyExtensions</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">WordCount</span>(<span class="params"><span class="keyword">this</span> <span class="built_in">string</span> str</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> str.Split(<span class="keyword">new</span> <span class="built_in">char</span>[] &#123; <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;?&#x27;</span> &#125;,</span><br><span class="line">                             StringSplitOptions.RemoveEmptyEntries).Length;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一个参数需要用this修饰，后面是需要扩展的类型和名称，虽然是静态方法，但是可以通过实例进行调用，编译器的中间语言会将代码转换为对该静态方法的调用。</p>
+<h2 id="LINQ的查询操作"><a href="#LINQ的查询操作" class="headerlink" title="LINQ的查询操作"></a>LINQ的查询操作</h2><p>LINQ的查询操作可以通过三个步骤完成：</p>
+<ul>
+<li>获取数据源</li>
+<li>创建查询</li>
+<li>执行查询</li>
+</ul>
+<p>其中，数据源是支持IEnumrable\<T\>接口的数据类型如数组、列表等，foreach语句同样需要类型支持该接口才能遍历，被称为可查询类型。使用C#查询关键字可以方便地进行查询，语法类似数据库查询操作：</T\></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">子句</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/from-clause">from</a></td>
+<td style="text-align:left">指定数据源和范围变量（类似于迭代变量）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/where-clause">where</a></td>
+<td style="text-align:left">基于由逻辑 AND 和 OR 运算符（<code>&amp;&amp;</code> 或 `</td>
+<td></td>
+<td>`）分隔的一个或多个布尔表达式筛选源元素。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/select-clause">select</a></td>
+<td style="text-align:left">指定执行查询时，所返回序列中元素的类型和形状。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/group-clause">group</a></td>
+<td style="text-align:left">根据指定的密钥值对查询结果分组。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/into">into</a></td>
+<td style="text-align:left">提供可作为对 join、group 或 select 子句结果引用的标识符。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/orderby-clause">orderby</a></td>
+<td style="text-align:left">根据元素类型的默认比较器对查询结果进行升序或降序排序。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/join-clause">join</a></td>
+<td style="text-align:left">基于两个指定匹配条件间的相等比较而联接两个数据源。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/let-clause">let</a></td>
+<td style="text-align:left">引入范围变量，在查询表达式中存储子表达式结果。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/in">in</a></td>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/join-clause">join</a> 子句中的上下文关键字。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/on">on</a></td>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/join-clause">join</a> 子句中的上下文关键字。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/equals">equals</a></td>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/join-clause">join</a> 子句中的上下文关键字。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/by">by</a></td>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/group-clause">group</a> 子句中的上下文关键字。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/ascending">ascending</a></td>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/orderby-clause">orderby</a> 子句中的上下文关键字。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/descending">descending</a></td>
+<td style="text-align:left"><a href="https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/orderby-clause">orderby</a> 子句中的上下文关键字。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>最主要的是from、where、select三个子句，from指定数据源，where指定筛选器，select指定返回的元素类型，举例如下：</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Program.cs</span></span><br><span class="line"><span class="comment">// The Main() method</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">Suits</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;clubs&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;diamonds&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;hearts&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;spades&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">Ranks</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;two&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;three&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;four&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;five&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;six&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;seven&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;eight&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;nine&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;ten&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;jack&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;queen&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;king&quot;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;ace&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Program.cs</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> startingDeck = <span class="function"><span class="keyword">from</span> s <span class="keyword">in</span> <span class="title">Suits</span>()</span></span><br><span class="line"><span class="function">                       <span class="keyword">from</span> r <span class="keyword">in</span> <span class="title">Ranks</span>()</span></span><br><span class="line"><span class="function">                       <span class="keyword">select</span> <span class="keyword">new</span></span> &#123; Suit = s, Rank = r &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> c <span class="keyword">in</span> startingDeck)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(c);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码将suits中的s和ranks中的r一一配对，生成含有52个元素的IEnumerable类型。查询本身不会做任何数据操作，而是延迟执行在foreach对查询变量枚举时，因此每次对延迟执行的数据源查询都可能会得到不同结果，如果需要强制执行可以使用ToList或者ToArray方法。因此和普通的语法查询相比，使用LINQ需要注意对查询变量及时保存，除非确有延迟查询的需要。</p>
+<h2 id="自定义查询扩展方法"><a href="#自定义查询扩展方法" class="headerlink" title="自定义查询扩展方法"></a>自定义查询扩展方法</h2><p>LINQ的查询不满足对自定义类型的查询要求，需要重新定义扩展方法。继续上面代码的例子，现在我们对这副扑克牌进行洗牌操作，也就是52张牌分成上下两半，然后交替重叠到一起。</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="title">IEnumerable</span>&lt;<span class="title">T</span>&gt; <span class="title">InterleaveSequenceWith</span>&lt;<span class="title">T</span>&gt;</span></span><br><span class="line"><span class="function">    (<span class="params"><span class="keyword">this</span> IEnumerable&lt;T&gt; first, IEnumerable&lt;T&gt; second</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> firstIter = first.GetEnumerator();</span><br><span class="line">    <span class="keyword">var</span> secondIter = second.GetEnumerator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (firstIter.MoveNext() &amp;&amp; secondIter.MoveNext())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> firstIter.Current;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> secondIter.Current;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于是迭代器方法，所以可以使用yield return来返回单个元素。最后在Main方法中调用这个洗牌方法：</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Program.cs</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> startingDeck = <span class="function"><span class="keyword">from</span> s <span class="keyword">in</span> <span class="title">Suits</span>()</span></span><br><span class="line"><span class="function">                       <span class="keyword">from</span> r <span class="keyword">in</span> <span class="title">Ranks</span>()</span></span><br><span class="line"><span class="function">                       <span class="keyword">select</span> <span class="keyword">new</span></span> &#123; Suit = s, Rank = r &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> c <span class="keyword">in</span> startingDeck)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> top = startingDeck.Take(<span class="number">26</span>);</span><br><span class="line">    <span class="keyword">var</span> bottom = startingDeck.Skip(<span class="number">26</span>);</span><br><span class="line">    <span class="keyword">var</span> shuffle = top.InterleaveSequenceWith(bottom);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> c <span class="keyword">in</span> shuffle)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(c);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果多次执行洗牌操作，会发现LINQ性能上的问题，我们看下面的代码：</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Program.cs</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Query for building the deck</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Shuffling using InterleaveSequenceWith&lt;T&gt;();</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> times = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// We can re-use the shuffle variable from earlier, or you can make a new one</span></span><br><span class="line">    shuffle = startingDeck;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">        shuffle = shuffle.Take(<span class="number">26</span>).InterleaveSequenceWith(shuffle.Skip(<span class="number">26</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> card <span class="keyword">in</span> shuffle)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(card);</span><br><span class="line">        &#125;</span><br><span class="line">        Console.WriteLine();</span><br><span class="line">        times++;</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">while</span> (!startingDeck.SequenceEquals(shuffle));</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(times);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>由于延迟查询，每次洗牌过程中首先Take方法和Skip方法各对纸牌进行了查询，然后foreach处又需要查询一次，那么一次洗牌实际上花费三次LINQ查询。上面的代码统计几次洗牌后牌序会和原本一致，那么每执行一次洗牌，都会因为LINQ语句在shuffle被引用的时候进行多余查询，导致性能严重下降。</p>
+]]></content>
+      <categories>
+        <category>C#</category>
+      </categories>
+      <tags>
+        <tag>C#</tag>
+      </tags>
+  </entry>
 </search>

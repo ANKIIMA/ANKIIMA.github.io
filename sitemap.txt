@@ -1,3 +1,4 @@
+https://ankiima.github.io/2024/05/24/LINQ/
 https://ankiima.github.io/categories/index.html
 https://ankiima.github.io/tags/index.html
 https://ankiima.github.io/about/index.html
@@ -88,6 +89,7 @@ https://ankiima.github.io/tags/next/
 https://ankiima.github.io/tags/OpenGL/
 https://ankiima.github.io/tags/Game/
 https://ankiima.github.io/tags/Interview/
+https://ankiima.github.io/tags/C/
 https://ankiima.github.io/categories/Algorithm/
 https://ankiima.github.io/categories/Computer-Graphics/
 https://ankiima.github.io/categories/Algorithm/408/
@@ -103,3 +105,4 @@ https://ankiima.github.io/categories/Machine-Learning/Deep-Learning/Graph/
 https://ankiima.github.io/categories/Computer-Graphics/Engine/Unity/
 https://ankiima.github.io/categories/Computer-Graphics/Graphics-API/OpenGL/
 https://ankiima.github.io/categories/Computer-Graphics/Engine/Unity/GameFramework/
+https://ankiima.github.io/categories/C/
