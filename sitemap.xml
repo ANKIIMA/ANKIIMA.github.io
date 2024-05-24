@@ -11,7 +11,7 @@
   </url>
   
   <url>
-    <loc>https://ankiima.github.io/about/index.html</loc>
+    <loc>https://ankiima.github.io/tags/index.html</loc>
     
     <lastmod>2024-03-18</lastmod>
     
@@ -20,7 +20,7 @@
   </url>
   
   <url>
-    <loc>https://ankiima.github.io/tags/index.html</loc>
+    <loc>https://ankiima.github.io/about/index.html</loc>
     
     <lastmod>2024-03-18</lastmod>
     
@@ -308,15 +308,6 @@
   </url>
   
   <url>
-    <loc>https://ankiima.github.io/2023/07/28/tinyRenderer0/</loc>
-    
-    <lastmod>2024-03-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://ankiima.github.io/2023/10/02/profile/</loc>
     
     <lastmod>2024-03-18</lastmod>
@@ -327,6 +318,15 @@
   
   <url>
     <loc>https://ankiima.github.io/2022/07/03/test/</loc>
+    
+    <lastmod>2024-03-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://ankiima.github.io/2023/07/28/tinyRenderer0/</loc>
     
     <lastmod>2024-03-18</lastmod>
     
@@ -701,20 +701,6 @@
   </url>
   
   <url>
-    <loc>https://ankiima.github.io/tags/Shader/</loc>
-    <lastmod>2024-05-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://ankiima.github.io/tags/Unity/</loc>
-    <lastmod>2024-05-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://ankiima.github.io/tags/YOLOv5/</loc>
     <lastmod>2024-05-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -729,14 +715,14 @@
   </url>
   
   <url>
-    <loc>https://ankiima.github.io/tags/OpenGL/</loc>
+    <loc>https://ankiima.github.io/tags/Shader/</loc>
     <lastmod>2024-05-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://ankiima.github.io/tags/Game/</loc>
+    <loc>https://ankiima.github.io/tags/Unity/</loc>
     <lastmod>2024-05-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -751,6 +737,20 @@
   
   <url>
     <loc>https://ankiima.github.io/tags/next/</loc>
+    <lastmod>2024-05-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://ankiima.github.io/tags/OpenGL/</loc>
+    <lastmod>2024-05-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://ankiima.github.io/tags/Game/</loc>
     <lastmod>2024-05-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -822,7 +822,21 @@
   </url>
   
   <url>
+    <loc>https://ankiima.github.io/categories/Blog/</loc>
+    <lastmod>2024-05-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://ankiima.github.io/categories/Computer-Graphics/Graphics-API/</loc>
+    <lastmod>2024-05-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://ankiima.github.io/categories/Machine-Learning/Deep-Learning/Computer-Vision/</loc>
     <lastmod>2024-05-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -836,21 +850,7 @@
   </url>
   
   <url>
-    <loc>https://ankiima.github.io/categories/Blog/</loc>
-    <lastmod>2024-05-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://ankiima.github.io/categories/Computer-Graphics/Engine/Unity/</loc>
-    <lastmod>2024-05-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://ankiima.github.io/categories/Machine-Learning/Deep-Learning/Computer-Vision/</loc>
     <lastmod>2024-05-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
