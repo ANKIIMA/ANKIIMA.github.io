@@ -5584,4 +5584,151 @@
         <tag>C#</tag>
       </tags>
   </entry>
+  <entry>
+    <title>TextMeshPro</title>
+    <url>/2024/05/27/TextMeshPro/</url>
+    <content><![CDATA[<p>最近项目使用Unity的TextMeshPro插件实现图文混排，借这个机会记录一下该插件的使用。TextMesh是原本Unity使用的文本配置组件，但是该组件功能有限，使用位图呈现文字导致放大后字体模糊，性能消耗也大。于是有人制作了该插件弥补这些缺点，并在2017年被收录进Unity引擎。</p>
+<span id="more"></span>
+<h1 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h1><p>TextMeshPro的核心是使用纹理来表现文本，插件根据Font文件（字体）生成一个Texture Atlas，通过有符号距离场进行渲染，这里不在展开说明渲染方法。并且注意，该插件有两种，<em>TextMeshPro</em>配合<em>MeshRenderer</em>进行渲染，适用于世界坐标系中的物体；<em>TextMeshProUGUI</em>配合<em>CanvasRenderer</em>进行渲染，适用于屏幕空间的物体。除了配合的插件不同，两种类型的使用方法完全相同。</p>
+<p><img src="/2024/05/27/TextMeshPro/gzq\blog\ANKIIMA.github.io\source\_posts\TextMeshPro\1.png" alt></p>
+<p>新建一个物体添加该组件，这里组件名称中的UI代表的就是UGUI配合Canvas进行渲染的类型。下面表格说明了各个属性的使用：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Text Input</td>
+<td>文本编辑</td>
+</tr>
+<tr>
+<td>Text Style</td>
+<td>字体风格（一些预设形式）</td>
+</tr>
+<tr>
+<td>Font Asset</td>
+<td>字体资产</td>
+</tr>
+<tr>
+<td>Material Preset</td>
+<td>材质预设</td>
+</tr>
+<tr>
+<td>Font Style</td>
+<td>字体风格（斜体、粗体、大小写等）</td>
+</tr>
+<tr>
+<td>FontSize</td>
+<td>字体大小</td>
+</tr>
+<tr>
+<td>Auto Size</td>
+<td>自动设置字体大小（不超过边界）</td>
+</tr>
+<tr>
+<td>Vertex Color</td>
+<td>字体颜色</td>
+</tr>
+<tr>
+<td>Color Gradient</td>
+<td>颜色过渡</td>
+</tr>
+<tr>
+<td>Override Tags</td>
+<td>颜色设置是否重载</td>
+</tr>
+<tr>
+<td>Spacing Options</td>
+<td>行距、间距设置</td>
+</tr>
+<tr>
+<td>Alignment</td>
+<td>对齐方式</td>
+</tr>
+<tr>
+<td>Wrapping</td>
+<td>平铺模式，Enable表示水平超过文本区域时自动换行</td>
+</tr>
+<tr>
+<td>Overflow</td>
+<td>溢出模式</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="Rich-Text"><a href="#Rich-Text" class="headerlink" title="Rich Text"></a>Rich Text</h1><p>有时我们希望文本中部分字词表现不同，可以使用富文本标记来实现。和HTML语言一样，需要特殊显示的文本采用<>和</>进行标记，例如在文本中单独标记一段斜体，或设置不同颜色：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">This is a &lt;i&gt;good&lt;/i&gt; game.</span><br><span class="line">Have a &lt;color=red&gt;nice&lt;/color&gt; day.</span><br><span class="line">Have a &lt;color=#ff0000ff&gt;nice&lt;/color&gt; day.</span><br></pre></td></tr></table></figure>
+<p><img src="/2024/05/27/TextMeshPro/gzq\blog\ANKIIMA.github.io\source\_posts\TextMeshPro\2.png" alt></p>
+<p><line-indent=15%>表示行首缩进15%的文本区域。此外还有很多文本标记，最有用的功能是实现超链接和配合Sprite Asset实现图文混排，<a href="http://digitalnativestudios.com/textmeshpro/docs/rich-text/">文档</a>列出了常用标记语言。</line-indent=15%></p>
+<h1 id="Overflow"><a href="#Overflow" class="headerlink" title="Overflow"></a>Overflow</h1><p>当文字溢出容器边界时，组件提供了几种可控的方式。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Overflow模式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Overflow</td>
+<td>直接向下连续溢出垂直边界</td>
+</tr>
+<tr>
+<td>Elipsis</td>
+<td></td>
+</tr>
+<tr>
+<td>Masking</td>
+<td></td>
+</tr>
+<tr>
+<td>Truncate</td>
+<td></td>
+</tr>
+<tr>
+<td>ScrollRect</td>
+<td></td>
+</tr>
+<tr>
+<td>Page</td>
+<td></td>
+</tr>
+<tr>
+<td>Linked</td>
+<td>溢出到另一个Text容器中</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="实现图文混排"><a href="#实现图文混排" class="headerlink" title="实现图文混排"></a>实现图文混排</h1><p>可以通过右键切好的图集创建一个SpriteAsset，并使用富文本标记来将图片混排在文本中。步骤如下：</p>
+<ul>
+<li>创建图集对应的SpriteAsset；</li>
+</ul>
+<p><img src="/2024/05/27/TextMeshPro/gzq\blog\ANKIIMA.github.io\source\_posts\TextMeshPro\3.png" alt></p>
+<ul>
+<li>设置引用关系，有三种方式，可以全局设置Default Sprite Asset，或者组件中自行绑定，还可以在TMP Settings中根据设置的Sprite Assets路径通过富文本标记访问。</li>
+</ul>
+<p><img src="/2024/05/27/TextMeshPro/gzq\blog\ANKIIMA.github.io\source\_posts\TextMeshPro\4.png" alt></p>
+<p><img src="/2024/05/27/TextMeshPro/gzq\blog\ANKIIMA.github.io\source\_posts\TextMeshPro\5.png" alt></p>
+<p>如果组件的SpriteAsset为空，那么将默认使用Default Sprite Asset，在文本中添加标记：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;sprite=0&gt;</span><br></pre></td></tr></table></figure>
+<p>可以对图集中inde为0的图片进行引用。如果想单独指定使用的图集，在文本中添加标记：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;sprite=&quot;图集对应SpriteAsset名称&quot; index=0&gt;</span><br><span class="line">&lt;sprite=&quot;图集对应SpriteAsset名称&quot; name=&quot;图片在图集中名称&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p>组件会自动将这类标记转换为图片。图集的各项属性和其中图片的设置可以在Sprite Asset的Inspector中进行编辑，主要是设置偏移量和缩放以符合需要。</p>
+]]></content>
+      <categories>
+        <category>Engine</category>
+        <category>Unity</category>
+        <category>Plugins</category>
+      </categories>
+      <tags>
+        <tag>Unity</tag>
+        <tag>Unity Plugins</tag>
+      </tags>
+  </entry>
 </search>
