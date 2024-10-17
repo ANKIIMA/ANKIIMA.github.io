@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="用冯乐乐大神的《Unity Shader入门精要》入门，记录个人整理的知识点和代码。Unity的Shader并不是真正意义上的Shader，实际上更像一种Shader的高级语言，因此常说是shader of Unity。而这个系列的博客主要是Shader的学习笔记，Unity的使用在Unity初始和入门系列博客中。本篇博客介绍渲染流水线和Unity Shader的概念。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity和Shader入门（一）">
+<meta property="og:url" content="https://ankiima.github.io/2023/04/11/uni-shader1/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="用冯乐乐大神的《Unity Shader入门精要》入门，记录个人整理的知识点和代码。Unity的Shader并不是真正意义上的Shader，实际上更像一种Shader的高级语言，因此常说是shader of Unity。而这个系列的博客主要是Shader的学习笔记，Unity的使用在Unity初始和入门系列博客中。本篇博客介绍渲染流水线和Unity Shader的概念。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/11/uni-shader1/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/11/uni-shader1/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/11/uni-shader1/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/11/uni-shader1/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/11/uni-shader1/5.png">
+<meta property="article:published_time" content="2023-04-11T13:00:09.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.429Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Shader">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/04/11/uni-shader1/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/04/11/uni-shader1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/04/11/uni-shader1/","path":"2023/04/11/uni-shader1/","title":"Unity和Shader入门（一）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unity和Shader入门（一） | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="nav-number">1.</span> <span class="nav-text">渲染流水线</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="nav-number">1.1.</span> <span class="nav-text">概念流水线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU%E6%89%A7%E8%A1%8C%EF%BC%88%E5%BA%94%E7%94%A8%E9%98%B6%E6%AE%B5%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">CPU执行（应用阶段）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPU%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="nav-number">1.3.</span> <span class="nav-text">GPU流水线</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E9%98%B6%E6%AE%B5"><span class="nav-number">1.3.1.</span> <span class="nav-text">几何阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%89%E6%A0%85%E5%8C%96%E9%98%B6%E6%AE%B5"><span class="nav-number">1.3.2.</span> <span class="nav-text">光栅化阶段</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFShader%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">什么是Shader？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Unity-Shader%E5%9F%BA%E7%A1%80"><span class="nav-number">3.</span> <span class="nav-text">Unity Shader基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%90%E8%B4%A8%E5%92%8CUnity-Shader"><span class="nav-number">3.1.1.</span> <span class="nav-text">材质和Unity Shader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ShaderLab%E5%92%8CUnity-Shader"><span class="nav-number">3.1.2.</span> <span class="nav-text">ShaderLab和Unity Shader</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/04/11/uni-shader1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unity和Shader入门（一） | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity和Shader入门（一）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-04-11 21:00:09" itemprop="dateCreated datePublished" datetime="2023-04-11T21:00:09+08:00">2023-04-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>用冯乐乐大神的《Unity Shader入门精要》入门，记录个人整理的知识点和代码。Unity的Shader并不是真正意义上的Shader，实际上更像一种Shader的高级语言，因此常说是shader of Unity。而这个系列的博客主要是Shader的学习笔记，Unity的使用在Unity初始和入门系列博客中。本篇博客介绍渲染流水线和Unity Shader的概念。</p>
+<span id="more"></span>
+<h1 id="渲染流水线"><a href="#渲染流水线" class="headerlink" title="渲染流水线"></a>渲染流水线</h1><h2 id="概念流水线"><a href="#概念流水线" class="headerlink" title="概念流水线"></a>概念流水线</h2><p>学过图形学的同学肯定知道一般来说图形从定义顶点、颜色等信息开始到显示在屏幕上会经过渲染管线这个东西，其实也叫做渲染流水线，在另外一本著作《Real-Time Rendering》中，作者将渲染管线分成三个部分：</p>
+<ul>
+<li>Application Stage;</li>
+<li>Geometry Stage;</li>
+<li>Rasterizer Stage;</li>
+</ul>
+<p>应用阶段进行数据准备，包括模型、摄像机、光源，可见面剔除，材质，纹理，使用的Shader，总的来说就是处理好渲染需要的集合信息，称为渲染图元(rendering primitives)，传递给几何阶段；</p>
+<p>几何阶段用于绘制渲染图元，把上一个阶段的坐标变换到屏幕空间，输出各个顶点的二维坐标，深度值，着色信息，传递给下一个阶段；</p>
+<p>光栅化阶段通过几何阶段传来的信息，进行插值，光栅化等操作，控制屏幕上的像素绘制出最终的图形。</p>
+<h2 id="CPU执行（应用阶段）"><a href="#CPU执行（应用阶段）" class="headerlink" title="CPU执行（应用阶段）"></a>CPU执行（应用阶段）</h2><p>这一阶段主要是程序员绝对控制数据，在Unity开发中体现为导入资产，地形编辑，设置材质等操作，主要是CPU在执行，大致分为三个阶段：</p>
+<ul>
+<li>加载数据到显存中；</li>
+<li>设置渲染状态；</li>
+<li>调用Draw Call；</li>
+</ul>
+<p>学习过操作系统或组成原理可以知道，要将数据存放到GPU的显存中，先要读取硬盘中的数据到内存中，在让数据流向GPU，因为多数GPU不能直接访问内存，而且对显存的访问很快。</p>
+<p>渲染状态是，定义场景中的网格怎么渲染，绑定Shader，材质，光源等内容。</p>
+<p>做好准备后，CPU调用渲染命令Draw Call通知GPU开始渲染，这个命令指向一个待渲染的图元列表，不包括任何材质信息，因为材质在渲染状态中已经定义了。</p>
+<h2 id="GPU流水线"><a href="#GPU流水线" class="headerlink" title="GPU流水线"></a>GPU流水线</h2><p>GPU的渲染过程就是GPU流水线，它实现了几何阶段和光栅化阶段，不能完全被程序员掌控，但是GPU也开放了很多控制权。下面我们详细说明几何阶段和光栅阶段中数据经历了什么变换。</p>
+<p>在之前Games101课程的笔记中，曾经记录了一个大致的渲染管线，我当时以为它就是完整的，但是现在看来它只不过是我们这里介绍的后两个阶段的概述，图形学中介绍了这部分知识，仍然不完整，因此值得从头到尾梳理一下。（下面这个图本来是彩色的，书到了补上，不同颜色表示该阶段的可编程性）</p>
+<p><img src="/2023/04/11/uni-shader1/1.png" alt></p>
+<h3 id="几何阶段"><a href="#几何阶段" class="headerlink" title="几何阶段"></a>几何阶段</h3><p>顶点数据由应用阶段中CPU加载到显存中，再由Draw Call指定，依次经过：</p>
+<ul>
+<li>顶点着色器(Vertex Shader)：完全可编程，实现顶点变换，着色等功能；</li>
+</ul>
+<blockquote>
+<p>处理来自CPU的顶点数据，但是只是单个顶点，不包括顶点之间的关系，从而方便并行处理每个顶点；这一阶段的主要任务是：坐标变换和逐顶点光照。</p>
+<ul>
+<li>坐标变换：对顶点坐标进行变换，从而进行水面、布料等模拟效果，实现动画效果，最基本的是将顶点坐标从模型空间转换到齐次裁剪空间，也就是得到归一化设备坐标(Normalized Devices Coordinates，NDC)</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>曲面系分着色器(Tessellation Shader)：可选，用于细分图元；</p>
+</li>
+<li><p>几何着色器(Geometry Shader)：可选，执行逐图元的着色操作或者产生更多图元；</p>
+</li>
+<li>裁剪(Clipping)：可配置，将不可见的顶点和面片剔除；</li>
+</ul>
+<blockquote>
+<p>图元不一定都在屏幕中，在屏幕外的图元要抛弃，在屏幕内的图元就传递下去，但是对于一部分在屏幕内一部分在屏幕外的图元就需要裁剪，这一步不可编程，但是可以定义裁剪操作来进行配置</p>
+</blockquote>
+<ul>
+<li>屏幕映射(Screen Mapping)：不可编程和配置，将图元坐标转换为屏幕坐标系；</li>
+</ul>
+<blockquote>
+<p>将归一化的坐标缩放到屏幕坐标(x，y)，对z轴不处理，一起输入光栅化阶段</p>
+</blockquote>
+<h3 id="光栅化阶段"><a href="#光栅化阶段" class="headerlink" title="光栅化阶段"></a>光栅化阶段</h3><ul>
+<li>三角形设置(Triangle Setup)：不可编程，固定函数；</li>
+</ul>
+<blockquote>
+<p>由三角性的顶点数据计算三角形各条边的坐标，给下一个阶段做准备；</p>
+</blockquote>
+<ul>
+<li>三角形遍历(Triangle Traversal)：不可编程，固定函数；</li>
+</ul>
+<blockquote>
+<p>根据上一个阶段的数据，检查一个像素会不会被三角形覆盖，如果覆盖，就生成一个片元Fragment，还要插值计算整个覆盖区域的的像素，以及片元的深度值。输出一个片元序列，片元不是像素，而是包括该像素位置上的很多状态信息，例如屏幕深度，坐标，法线等</p>
+</blockquote>
+<ul>
+<li>片元着色器(Fragment Shader)：完全可编程，实现逐片元的着色操作；</li>
+</ul>
+<blockquote>
+<p>根据上一步插值得到的数据计算该片元的输出颜色，纹理映射就是这个阶段实现的，而且每个片元的颜色相互独立</p>
+</blockquote>
+<ul>
+<li>逐片元操作(Per-Fragment Operations)：可配置，实现修改颜色、深度缓冲、混合等操作；</li>
+</ul>
+<blockquote>
+<p>决定片元的可见性，模板测试和深度测试；如果都通过了，将片元的颜色值同已经存储在缓冲区中的颜色进行混合或者合并，不透明物体不用开启混合。很多时候为了优化性能，测试也会在片元着色器之前计算，防止计算无效的片元颜色</p>
+</blockquote>
+<h1 id="什么是Shader？"><a href="#什么是Shader？" class="headerlink" title="什么是Shader？"></a>什么是Shader？</h1><p>现在我们明白，Shader就是渲染流水线中高度可编程的阶段，最终编译结果会运行在GPU上，而且存在特定的着色器，如顶点、片元着色器，前者用来顶点变换、传递数据，后者用来进行逐像素渲染。</p>
+<p>Unity提供的Shader并不是HLSL或者GLSL，GC这样的更接近GPU的Shader语言，而是更高级的编辑工具，既方便了着色器编写，又可以设置渲染状态。</p>
+<h1 id="Unity-Shader基础"><a href="#Unity-Shader基础" class="headerlink" title="Unity Shader基础"></a>Unity Shader基础</h1><p>没有Unity Shader时，为了渲染一个模型会是这样的代码：</p>
+<p><img src="/2023/04/11/uni-shader1/2.png" alt></p>
+<p><img src="/2023/04/11/uni-shader1/3.png" alt></p>
+<p><img src="/2023/04/11/uni-shader1/4.png" alt></p>
+<p>Unity Shader方便了上面繁琐的过程，不用使用代码管理多个文件和函数。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="材质和Unity-Shader"><a href="#材质和Unity-Shader" class="headerlink" title="材质和Unity Shader"></a>材质和Unity Shader</h3><p>在Unity中我们需要配合使用材质和Shader才能达到需要的效果，使用步骤是：</p>
+<ul>
+<li>创建材质</li>
+<li>创建Unity Shader并赋给材质</li>
+<li>材质赋给渲染对象</li>
+<li>在材质面板中调整Unity Shader属性控制效果</li>
+</ul>
+<p><img src="/2023/04/11/uni-shader1/5.png" alt></p>
+<p>Unity Shader定义的属性，会和脚本定义的属性一样显示在窗口中。</p>
+<p>材质的创建：</p>
+<ul>
+<li>Assets或者Project窗口/Create/Material；</li>
+<li>将这个Material文件拖拽到场景中目标物体或者在物体的Mseh Renderer组件中赋值；</li>
+</ul>
+<p>默认情况下，新建材质会使用Standard Shader，一种基于物理模拟的渲染。</p>
+<p>Unity Shader的创建：</p>
+<ul>
+<li>Assets或者Project窗口/Create/Shader；</li>
+</ul>
+<blockquote>
+<p>Unity提供四种Unity Shader模板，Standard Surface Shader包含标准光照模型，Unlit Shader产生一个不含光照但包含烟雾的基本着色器，Image Effect Shader提供实现各种屏幕后处理效果的基本模板，Compute Shader提供典型的表面着色器的实现方法，这本书主要用Unlit Shader</p>
+</blockquote>
+<ul>
+<li>在材质的属性菜单中选择使用的Shader；</li>
+</ul>
+<p>选中一个Shader后，Inspector窗口中会显示该Unity Shader相关的信息。</p>
+<h3 id="ShaderLab和Unity-Shader"><a href="#ShaderLab和Unity-Shader" class="headerlink" title="ShaderLab和Unity Shader"></a>ShaderLab和Unity Shader</h3><p>ShaderLab是Unity Shader使用的Shader跨平台抽象语言，后面我们会知道，在Pass中编写的ShaderLab语言其实和Cg/HLSL两种语言是差不多的，但是ShaderLab本身于其他Shader代码来说就如同Python于C语言一样，当然这个比喻可能不是十分恰当。通过{}作为语义标识来描述Shader文件的结构，一般来说，一个Shader可以由下面的例子来说明它的结构：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line">shader <span class="string">&quot;Custom/Simple Shader&quot;</span></span><br><span class="line">&#123;</span><br><span class="line">	Properties&#123;</span><br><span class="line">		_Color(<span class="string">&quot;Color Tint&quot;</span>, Color) = (<span class="number">1.0</span>,<span class="number">1.0</span>,<span class="number">1.0</span>,<span class="number">1.0</span>)</span><br><span class="line">        _Boundary(<span class="string">&quot;Boundary&quot;</span>, Float) = <span class="number">100</span></span><br><span class="line">		_K(<span class="string">&quot;Max Iteration&quot;</span>, Int) = <span class="number">256</span></span><br><span class="line">        _p(<span class="string">&quot;Offset of x&quot;</span>, Float) = <span class="number">-1</span></span><br><span class="line">        _q(<span class="string">&quot;Offset of y&quot;</span>, Float) = <span class="number">0</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	SubShader</span><br><span class="line">	&#123;</span><br><span class="line">		        Pass</span><br><span class="line">        &#123;</span><br><span class="line">            CGPROGRAM</span><br><span class="line">            <span class="meta">#<span class="keyword">pragma</span> vertex vert</span></span><br><span class="line">            <span class="meta">#<span class="keyword">pragma</span> fragment frag</span></span><br><span class="line"></span><br><span class="line">            <span class="meta">#include &quot;UnityCG.cginc&quot;</span></span><br><span class="line">            <span class="built_in">float</span> _Boundary;</span><br><span class="line">			<span class="built_in">int</span> _K;</span><br><span class="line">            <span class="built_in">float</span> _p;</span><br><span class="line">            <span class="built_in">float</span> _q;</span><br><span class="line">            fixed4 _Color;</span><br><span class="line">            <span class="keyword">struct</span> a2v</span><br><span class="line">            &#123;</span><br><span class="line">                float4 vertex : POSITION;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">                float3 normal : NORMAL;</span><br><span class="line">            &#125;;</span><br><span class="line">            <span class="keyword">struct</span> v2f</span><br><span class="line">            &#123;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">                float4 vertex : SV_POSITION;</span><br><span class="line">                float3 color : COLOR;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            <span class="function">v2f <span class="title">vert</span> (<span class="params">a2v v</span>)</span></span><br><span class="line">            &#123;</span><br><span class="line">                v2f o;</span><br><span class="line">                o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line">                o.uv = v.uv;</span><br><span class="line">                o.color = v.normal * <span class="number">0.5</span> + fixed3(<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>);</span><br><span class="line">                <span class="keyword">return</span> o;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="function">fixed2 <span class="title">iteration</span>(<span class="params">fixed2 pos</span>)</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">fixed</span> x2 = pos.x * pos.x;</span><br><span class="line">				<span class="keyword">fixed</span> y2 = pos.y * pos.y;</span><br><span class="line">				<span class="keyword">fixed</span> xy = pos.x * pos.y;</span><br><span class="line">				<span class="keyword">fixed</span> rx = (x2 - y2);</span><br><span class="line">				<span class="keyword">fixed</span> ry = (<span class="number">2</span> * xy);</span><br><span class="line">				fixed2 result = fixed2(rx + _p, ry + _q);</span><br><span class="line">				<span class="keyword">return</span> result;</span><br><span class="line">			&#125;</span><br><span class="line">            <span class="function">fixed4 <span class="title">fractal</span>(<span class="params">fixed2 pos, fixed4 cor</span>)</span></span><br><span class="line">			&#123;</span><br><span class="line">				fixed2 pos1 = pos;</span><br><span class="line">				fixed2 posF = pos;</span><br><span class="line">				<span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; _K; i++) &#123;</span><br><span class="line">					posF = iteration(posF);</span><br><span class="line">                    <span class="keyword">fixed</span> r = (posF.x * posF.x + posF.y * posF.y);</span><br><span class="line">                    <span class="keyword">if</span>(r &gt; _Boundary)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">return</span> cor;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span>(i == _K<span class="number">-1</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">return</span> fixed4(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>);  </span><br><span class="line">                    &#125;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">return</span> cor;</span><br><span class="line">			&#125;</span><br><span class="line">            <span class="function">fixed4 <span class="title">frag</span> (<span class="params">v2f i</span>) : SV_Target</span></span><br><span class="line">            &#123;</span><br><span class="line">                fixed4 curCol = fixed4(i.color, <span class="number">1.0</span>);</span><br><span class="line">                fixed2 pos = i.vertex;</span><br><span class="line">                <span class="built_in">float</span> width = <span class="number">1980</span>;</span><br><span class="line">                <span class="built_in">float</span> height = <span class="number">1080</span>;</span><br><span class="line">                <span class="built_in">float</span> dx = <span class="number">2</span> / (width<span class="number">-1</span>);</span><br><span class="line">                <span class="built_in">float</span> dy = <span class="number">2</span> / (height - <span class="number">1</span>);</span><br><span class="line">                fixed2 complexPos = fixed2(<span class="number">-1</span> + pos.x * dx, <span class="number">-1</span> + pos.y * dy);</span><br><span class="line">                curCol = fractal(complexPos, curCol);</span><br><span class="line">                <span class="keyword">return</span> curCol * _Color;</span><br><span class="line">            &#125;</span><br><span class="line">            ENDCG</span><br><span class="line">        &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	FallBack <span class="string">&quot;Diffuse&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Properties：可以添加需要出现在材质面板中的属性，包括数值、纹理等，在这里创建的属性需要到Pass中声明才能引用；</li>
+<li><p>SubShader：一个Unity Shader中可能包含多个SubShader，Unity会选择第一个能够运行的SubShader执行，如果一个都不能执行，Unity将会选择Fallback指定的着色器；一个SubShader可能含有多个Pass，这些Pass将全部被执行；在SubShader顶部可以使用可选的Tags和RenderSetup来指定使用的渲染设置；</p>
+</li>
+<li><p>指定如果没有可运行的SubShader时选择什么着色器；</p>
+</li>
+</ul>
+<p>你不需要完全了解其中的含义，只要知道Shader由这三个结构组成即可，后面我们会了解这个Shader的作用，它使用了除Tags和RenderSetup以外的所有Shader结构，在屏幕上绘制一个Julia集合。此外，我们还要知道这个Shader使用了顶点和片元着色器，它们是我们接下来学习的重点，#pragma语句指定了哪个函数作为着色器使用。可以看到，Pass中是我们重点要编写的代码，它定义了一次完整的渲染流程。</p>
+<p>下一篇开始我们将正式进入学习。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Shader/" rel="tag"># Shader</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/04/10/unity4/" rel="prev" title="unity入门(四)-制作一个2D游戏">
+                  <i class="fa fa-angle-left"></i> unity入门(四)-制作一个2D游戏
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/04/15/unity5/" rel="next" title="unity入门(五)-制作一个2D游戏">
+                  unity入门(五)-制作一个2D游戏 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

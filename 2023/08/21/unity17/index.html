@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="经过两天研究，是时候总结下unity的数据存储方式了。 之前我们的工程里全部用类或者静态类保存数据，维护起来很不方便，尤其对于策划来说没有直接的工作流，所以我们得提供一个配表解决方案，让策划能够通过修改Excel或者其它文本格式的文件来完成属性的配置。而且有时候需要用网络传输数据文件，我们程序里的数据是不能直接传输的，这就涉及到序列化和反序列化。下面我看看Unity中一般有哪些存储数据的方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unity进阶(一)-数据存储和持久化">
+<meta property="og:url" content="https://ankiima.github.io/2023/08/21/unity17/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="经过两天研究，是时候总结下unity的数据存储方式了。 之前我们的工程里全部用类或者静态类保存数据，维护起来很不方便，尤其对于策划来说没有直接的工作流，所以我们得提供一个配表解决方案，让策划能够通过修改Excel或者其它文本格式的文件来完成属性的配置。而且有时候需要用网络传输数据文件，我们程序里的数据是不能直接传输的，这就涉及到序列化和反序列化。下面我看看Unity中一般有哪些存储数据的方式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-21T13:51:47.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.577Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/08/21/unity17/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/08/21/unity17/","path":"2023/08/21/unity17/","title":"unity进阶(一)-数据存储和持久化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>unity进阶(一)-数据存储和持久化 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">数据持久化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">序列化和反序列化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Scriptable-Object"><span class="nav-number">3.</span> <span class="nav-text">Scriptable Object</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSON%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">JSON序列化和反序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">4.1.</span> <span class="nav-text">反序列化</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/08/21/unity17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="unity进阶(一)-数据存储和持久化 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          unity进阶(一)-数据存储和持久化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-08-21 21:51:47" itemprop="dateCreated datePublished" datetime="2023-08-21T21:51:47+08:00">2023-08-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>经过两天研究，是时候总结下unity的数据存储方式了。</p>
+<p>之前我们的工程里全部用类或者静态类保存数据，维护起来很不方便，尤其对于策划来说没有直接的工作流，所以我们得提供一个配表解决方案，让策划能够通过修改Excel或者其它文本格式的文件来完成属性的配置。而且有时候需要用网络传输数据文件，我们程序里的数据是不能直接传输的，这就涉及到序列化和反序列化。下面我看看Unity中一般有哪些存储数据的方式。</p>
+<span id="more"></span>
+<h1 id="数据持久化"><a href="#数据持久化" class="headerlink" title="数据持久化"></a>数据持久化</h1><p>之前写代码总是让数据在声明的时候进行初始化，那么这个类每次被实例化的时候就会初始化一次该对象，这样做有两个缺点：第一，如果类是单例还好，可有时需要让这个类作为预制件的脚本挂上去，后续还会实例化这个预制件，那么我们这样会浪费很多空间用来声明这些值，尽管它们有可能是相同的。</p>
+<p>第二，每次我们启动游戏，所有的状态都会被重置，因为类在实例化的时候重新声明了数据值，没办法保存上一次打开游戏的数据状态，这就是数据的持久化不能实现。</p>
+<p>数据持久化指的是，让数据能够保存在硬盘等外部硬件资源，供后续使用的存储方式。在类的内部进行数据的声明，不能实现数据的持久化。因此我们要以文件作为媒介将数据保存下来。</p>
+<h1 id="序列化和反序列化"><a href="#序列化和反序列化" class="headerlink" title="序列化和反序列化"></a>序列化和反序列化</h1><p>了解了持久化，我们再介绍序列化是什么。由于程序运行中某一时刻的状态无法直接保存，我们需要将运行在程序中的数据转化为文件，这样才能用网络通信的接口进行传输或自己保存在本地，这就是序列化。Unity编辑器中提供了Inspector窗口查看程序的值，它的实现就使用了序列化，将运行过程中变量的值序列化为某种格式，然后展示到窗口中。</p>
+<p>我们自己实现序列化说白了就是将某个时候的一个或多个变量值存在某种格式的文件中，例如JSON，XML等，这样通信将这些文件传输出去，或者下次打开的时候读取这些文件，就能知道这个时候的状态是什么了。</p>
+<p>反序列化就是上面说的读取的这个过程，收到了一个JSON文件，此时对它进行解析，将其中的值重新赋值给我们的变量，就完成了反序列化。通过序列化和反序列化，可以实现网络通信的部分要求和数据持久化。</p>
+<h1 id="Scriptable-Object"><a href="#Scriptable-Object" class="headerlink" title="Scriptable Object"></a>Scriptable Object</h1><p>这个神器本身是很好用的，但是由于它只支持编辑器的数据持久化，打包以后就不能了，所以有的教程用这个做背包简直是毫无用处，只能在编辑器里看看效果，真要做背包还是得数据库。但是这个东西优点也很多，比如可以在编辑器里查看、修改，而且资源加载的时候也不用自己再手动反序列化一次，省了一点时间。</p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/40879788">这位</a>大佬贴了一个用SO做数据存储的解决方案，可以瞻仰一下。</p>
+<p>Unity中新建一个类，继承ScriptableObject即可创建一个Scriptable Object类，你可以通过添加序列化关键字的方式来配置它管理的内容，并且支持嵌套，用一个Root类管理其它Scriptable Object，其余完全和类变量的序列化一致。</p>
+<p>唯一区别是你不用将它挂载到对象上实例化，而是通过Editor添加一个创建Scriptable Object的选项，在Project中创建该资产，后缀为asset，这样就可以直接使用了，在Inspector中修改序列化的值，然后就能</p>
+<h1 id="JSON序列化和反序列化"><a href="#JSON序列化和反序列化" class="headerlink" title="JSON序列化和反序列化"></a>JSON序列化和反序列化</h1><h2 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h2><p>当我们的应用接收到一个JSON文件，需要进行解析，对应到我们自己创建的实体类中，其实就是反序列化。首先需要建立对应JSON文件的实体类，推荐一个<a target="_blank" rel="noopener" href="https://www.json.cn/json/json2csharp.html">网站</a>可以自动生成JSON文件对应的实体类。当然自己写也可以，只是有可能会出错。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;NAME&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Vardan&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;HP&quot;</span><span class="punctuation">:</span> <span class="number">100.0</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;ATK&quot;</span><span class="punctuation">:</span> <span class="number">30.0</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;DEF&quot;</span><span class="punctuation">:</span> <span class="number">20.0</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+<p>通过这两个方法就可以实现序列化和反序列化，但是要注意处理的都是字符串，要解析文件的内容还需要进一步将JSON文件转化为字符串才行。而字符串也因为JSON的格式有不同的限制，这里以二维表格为例，在JSON中一个对象是用{}括起来的，对象可以组成数组，用[]括起来，JSON反序列化的API解析的是单个对象，因此需要注意自己处理的JSON文件的格式是什么，特别是要将数组转化为对象的List，单独对每个对象进行反序列化，不然就会出错。</p>
+<p>我这里生成的JSON文件都是默认数组，因此尽管这里文件中只有一个对象，还是用[]括起来了。它生成的数据类是：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AIConfig</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> </span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> NAME &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> </span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">int</span> HP &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> </span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">int</span> ATK &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> </span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">int</span> DEF &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Root</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> </span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> AIConfig AIConfig &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，后面Root类也可以不要，声明为public以后不使用属性也能够获得类，自动生成的数据类为了方便JSON的嵌套会额外加一个Root，实际上需要的就是匹配的数据类就行了。</p>
+<p>使用newtonsoft来解析，Unity自带的方法不足够解析嵌套的JSON文件，所以我们采用这个第三方插件完成，这个是最推荐的，还有另外两个方法：JsonLit和JsonUtility，后者是Unity自带的，一般情况也足够使用。</p>
+<ul>
+<li>JsonConvert.DeserializeObject(json);将一个json对象的字符串解析成一个类对象</li>
+<li>JsonConvert.SerializeObject;将一个类对象转化成一个json字符串对象</li>
+</ul>
+<p>通过上面的API可以实现序列化和反序列化了，我们先读取json文件：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//json路径</span></span><br><span class="line">      <span class="built_in">string</span> filePath = <span class="string">&quot;Assets/Resources/Data/Config_AI.json&quot;</span>;</span><br><span class="line">      <span class="comment">//如果没找到就返回</span></span><br><span class="line">      <span class="keyword">if</span>(File.Exists(filePath) == <span class="literal">false</span>) </span><br><span class="line">      &#123;</span><br><span class="line">          Debug.Log(<span class="string">&quot;File not Found&quot;</span>);</span><br><span class="line">          <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">//读取文件为字符串</span></span><br><span class="line">      <span class="built_in">string</span> json = File.ReadAllText(filePath);</span><br></pre></td></tr></table></figure>
+<p>读取以后解析，如果是一个{}包括的JSON对象，直接使用：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AIConfig root = JsonConvert.DeserializeObject&lt;AIConfig&gt;(json);</span><br></pre></td></tr></table></figure>
+<p>但是我们这里是JSON数组，因此必须要使用：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;AIConfig&gt; roots = JsonConvert.DeserializeObject&lt;List&lt;AIConfig&gt;&gt;(json);</span><br></pre></td></tr></table></figure>
+<p>这样才能单独处理每个对象，否则会报错。之后json文件的配置信息就已经读取到数据类AIConfig中了，你可以通过拷贝方法来完成赋值或者初始化，这就涉及到深拷贝和浅拷贝的知识了，后面用到再说，现在直接等号赋值就完了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/08/04/tinyRenderer5/" rel="prev" title="五百行C++理解OpenGL机制(六)">
+                  <i class="fa fa-angle-left"></i> 五百行C++理解OpenGL机制(六)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/02/profile/" rel="next" title="Personal Profile">
+                  Personal Profile <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

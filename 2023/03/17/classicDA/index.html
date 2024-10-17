@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="记录一些常用的竞赛数据结构和算法，当然不包括基本知识，包含的内容是：线段树，并查集，差分数组，期望DP，博弈，数论基础。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="竞赛常用数据结构和算法">
+<meta property="og:url" content="https://ankiima.github.io/2023/03/17/classicDA/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="记录一些常用的竞赛数据结构和算法，当然不包括基本知识，包含的内容是：线段树，并查集，差分数组，期望DP，博弈，数论基础。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/11.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/12.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/5.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/7.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/8.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/9.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/17/classicDA/10.png">
+<meta property="article:published_time" content="2023-03-17T07:05:35.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:40.922Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="Data Structure and Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/03/17/classicDA/11.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/03/17/classicDA/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/03/17/classicDA/","path":"2023/03/17/classicDA/","title":"竞赛常用数据结构和算法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>竞赛常用数据结构和算法 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%A3%B0%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">数据声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">线段树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%92%8C%E7%BB%B4%E6%8A%A4%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%85%B3%E7%B3%BB"><span class="nav-number">2.1.</span> <span class="nav-text">建立线段树和维护线段树关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E4%BF%AE%E6%94%B9%E5%92%8C%E2%80%9C%E6%87%92%E2%80%9D%E6%A0%87%E8%AE%B0"><span class="nav-number">2.2.</span> <span class="nav-text">区间修改和“懒”标记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.3.</span> <span class="nav-text">区间查询</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%AE%E5%88%86%E6%95%B0%E7%BB%84"><span class="nav-number">3.</span> <span class="nav-text">差分数组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86"><span class="nav-number">4.</span> <span class="nav-text">并查集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A6%E6%9D%83%E5%B9%B6%E6%9F%A5%E9%9B%86"><span class="nav-number">4.1.</span> <span class="nav-text">带权并查集</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%9F%E6%9C%9BDP"><span class="nav-number">5.</span> <span class="nav-text">期望DP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%9A%E5%BC%88%E7%9B%B8%E5%85%B3"><span class="nav-number">6.</span> <span class="nav-text">博弈相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E8%A1%A8"><span class="nav-number">6.1.</span> <span class="nav-text">打表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DFS"><span class="nav-number">6.2.</span> <span class="nav-text">DFS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E8%AE%BA%E5%9F%BA%E7%A1%80"><span class="nav-number">7.</span> <span class="nav-text">数论基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E8%BF%90%E7%AE%97"><span class="nav-number">7.1.</span> <span class="nav-text">模运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%B9%82"><span class="nav-number">7.2.</span> <span class="nav-text">快速幂</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%B9%E9%A9%AC%E5%B0%8F%E5%AE%9A%E7%90%86"><span class="nav-number">7.3.</span> <span class="nav-text">费马小定理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E5%BF%AB%E9%80%9F%E5%B9%82"><span class="nav-number">7.4.</span> <span class="nav-text">矩阵快速幂</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%88%B0dp%E9%97%AE%E9%A2%98"><span class="nav-number">7.4.1.</span> <span class="nav-text">应用到dp问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%88%B0%E5%9B%BE%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="nav-number">7.4.2.</span> <span class="nav-text">应用到图的最短路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GCD%E5%92%8CLCM"><span class="nav-number">7.5.</span> <span class="nav-text">GCD和LCM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%9D%E7%A5%96%E5%AE%9A%E7%90%86"><span class="nav-number">7.5.1.</span> <span class="nav-text">贝祖定理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="nav-number">7.5.2.</span> <span class="nav-text">扩展欧几里得算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0"><span class="nav-number">7.6.</span> <span class="nav-text">素数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E7%B4%A0%E6%95%B0%E6%A3%80%E9%AA%8C"><span class="nav-number">7.6.1.</span> <span class="nav-text">大素数检验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%B9%E9%A9%AC%E7%B4%A0%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-number">7.6.1.1.</span> <span class="nav-text">费马素性检验</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Miller-Rabin%E7%B4%A0%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-number">7.6.1.2.</span> <span class="nav-text">Miller-Rabin素性检验</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A8%81%E5%B0%94%E9%80%8A%E5%AE%9A%E7%90%86"><span class="nav-number">7.6.2.</span> <span class="nav-text">威尔逊定理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0%E7%AD%9B%E5%92%8C%E5%90%88%E6%95%B0%E5%88%86%E8%A7%A3%E8%B4%A8%E5%9B%A0%E6%95%B0"><span class="nav-number">7.6.3.</span> <span class="nav-text">素数筛和合数分解质因数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0%E7%AD%9B"><span class="nav-number">7.6.3.1.</span> <span class="nav-text">素数筛</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%88%E6%95%B0%E5%88%86%E8%A7%A3"><span class="nav-number">7.6.3.2.</span> <span class="nav-text">合数分解</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E4%BD%99"><span class="nav-number">7.7.</span> <span class="nav-text">同余</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E7%BA%BF%E6%80%A7%E5%90%8C%E4%BD%99%E6%96%B9%E7%A8%8B%E5%92%8C%E4%B9%98%E6%B3%95%E9%80%86%E5%85%83"><span class="nav-number">7.7.1.</span> <span class="nav-text">一元线性同余方程和乘法逆元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E4%BD%99%E6%96%B9%E7%A8%8B%E7%BB%84"><span class="nav-number">7.7.2.</span> <span class="nav-text">同余方程组</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/03/17/classicDA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="竞赛常用数据结构和算法 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          竞赛常用数据结构和算法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-03-17 15:05:35" itemprop="dateCreated datePublished" datetime="2023-03-17T15:05:35+08:00">2023-03-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/408/" itemprop="url" rel="index"><span itemprop="name">408</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>记录一些常用的竞赛数据结构和算法，当然不包括基本知识，包含的内容是：线段树，并查集，差分数组，期望DP，博弈，数论基础。</p>
+<span id="more"></span>
+<h1 id="数据声明"><a href="#数据声明" class="headerlink" title="数据声明"></a>数据声明</h1><p>算法竞赛中经常会因为数据声明不到位而产生误差和错误，要对数据运算有清晰的把握，需要多开的时候完全不用精打细算。</p>
+<ul>
+<li>int：10^9</li>
+<li>long long：10^18</li>
+</ul>
+<h1 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h1><p>几乎是算法竞赛中最常用的数据结构，用来维护区间信息，能实现对数级别复杂度的区间修改，重点是只能处理满足结合律的问题。</p>
+<p>线段树是一个平衡二叉树，每个父亲节点代表区间信息，因此最上面的父节点就代表整个区间的信息；此外，每个节点还对应了一个区间，也就是所谓的线段，线段信息就是节点存储的值。例如一个数组[1,2,3,4,5]的线段树如下，定义区间信息为区间内的数字和：</p>
+<p><img src="/2023/03/17/classicDA/11.jpg" alt></p>
+<p>下面是具体的模板，一般采用树状数组来实现线段树，学过数据结构可以知道，此时一个节点下标为k，那么它的左儿子下标是2k，右儿子是2k+1，父亲节点下标是floor(k/2)，以这样的规则建立线段树和维护线段树。</p>
+<h2 id="建立线段树和维护线段树关系"><a href="#建立线段树和维护线段树关系" class="headerlink" title="建立线段树和维护线段树关系"></a>建立线段树和维护线段树关系</h2><p>首先根据线段树的性质，假设元素个数$n=2^h$(就是说最后一行有$2^h$个元素为全部的元素)，h就是线段树的高度，这里不论n是不是2的幂函数都无所谓，因为最后一行可能不会全部用到，可以先这样假设。因此总共要存储的节点数为$1+2+4+8+…+2^h=2^{h+1}-1=2<em>2^h-1=2n-1$，空间复杂度是$O(2n)$，但是在实际使用中，我们只要找到一个可以满足n需要的h，让$2^{h-1}&lt;=n&lt;=2^h$，那么显然$2^h&lt;=2n$，因此之前计算的复杂度进一步扩充应该是$2</em>2^{h}-1 &lt;= 2*2n-1$，所以开4n的空间，没必要精打细算。</p>
+<p>而线段树的维护则是从最下层开始的，因为每个元素更新以后才能逐层往上更新，这就是线段树的维护。这里以区间和跟区间最大值为例。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> n;</span><br><span class="line"><span class="comment">//线段树</span></span><br><span class="line"><span class="type">int</span> tree[n*<span class="number">4</span>];</span><br><span class="line"><span class="comment">//数据</span></span><br><span class="line"><span class="type">int</span> ans[n];</span><br><span class="line"><span class="comment">//取左儿子</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">ls</span><span class="params">(<span class="type">int</span> p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> p &lt;&lt; <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//取右儿子</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">rs</span><span class="params">(<span class="type">int</span> p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//维护区间和</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">load_sum</span><span class="params">(<span class="type">int</span> p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    tree[p] = tree[<span class="built_in">ls</span>(p)] + tree[<span class="built_in">rs</span>(p)];</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//维护区间最大值</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">load_max</span><span class="params">(<span class="type">int</span> p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    tree[p] = <span class="built_in">max</span>(tree[<span class="built_in">ls</span>(p)], tree[<span class="built_in">rs</span>(p)]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//递归建树</span></span><br><span class="line"><span class="comment">//建树过程涉及前面的全部函数，所以可以从build开始写</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">build</span><span class="params">(ll p, ll l, ll r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//这是懒标记初始化，后面会说</span></span><br><span class="line">    mark[p] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(l == r)</span><br><span class="line">    &#123;</span><br><span class="line">        tree[p] = ans[l];</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        ll mid = (l + r)/<span class="number">2</span>;</span><br><span class="line">        <span class="comment">//递归到左儿子和右儿子</span></span><br><span class="line">        <span class="built_in">build</span>(<span class="built_in">ls</span>(p),l,mid);</span><br><span class="line">    	<span class="built_in">build</span>(<span class="built_in">rs</span>(p),mid+<span class="number">1</span>,r);</span><br><span class="line">        <span class="built_in">load_sum</span>(p);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="区间修改和“懒”标记"><a href="#区间修改和“懒”标记" class="headerlink" title="区间修改和“懒”标记"></a>区间修改和“懒”标记</h2><p>对于区间修改，朴素的想法是改动叶子的值后像建树一样递归上去，但是通过懒标记可以大大降低这个时间复杂度。懒标记就是给需要修改的所有区间进行一次标记，因此这个懒标记是从上传递到下面的，表示当前区间已经更新过，但是子区间没有更新，以及更新的信息是什么。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//给区间[l,r]内的元素全部加上k，当前在p点</span></span><br><span class="line">ll mark[<span class="number">4</span>*n];</span><br><span class="line"></span><br><span class="line"><span class="comment">//传递懒标记到p的下层，并清除当前的懒标记</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">save</span><span class="params">(ll p, ll l, ll r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ll mid = (l+r)/<span class="number">2</span>;</span><br><span class="line">    <span class="comment">//更新左子树</span></span><br><span class="line">    mark[<span class="built_in">ls</span>(p)] += mark[p];</span><br><span class="line">    tree[ls[p]] += mark[p] * (mid - l + <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//更新右子树</span></span><br><span class="line">    mark[<span class="built_in">ls</span>(p)] += mark[p];</span><br><span class="line">    tree[p] += mark[p] * (r - mid);</span><br><span class="line">    mark[p] = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//更新元素值，t代表目标</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">update</span><span class="params">(ll tl, ll tr, ll l, ll r, ll p, ll k)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//要修改的区间包含当前区间则标记当前区间并直接返回</span></span><br><span class="line">    <span class="keyword">if</span>(tl&lt;=l &amp;&amp; r &lt;= tr)</span><br><span class="line">    &#123;</span><br><span class="line">        tree[p] += k*(r-l+<span class="number">1</span>);</span><br><span class="line">        mark[p] += k;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//传递懒标记，此时还没有递归到下层</span></span><br><span class="line">    <span class="built_in">save</span>(p,l,r);</span><br><span class="line">    ll mid = (l+r)/<span class="number">2</span>;</span><br><span class="line">    <span class="comment">//目标区间涉及左子树区间，递归更新左子树</span></span><br><span class="line">    <span class="keyword">if</span>(tl &lt;= mid)</span><br><span class="line">        <span class="built_in">update</span>(tl,tr,l,mid,<span class="built_in">ls</span>(p),k);</span><br><span class="line">    <span class="comment">//目标区间涉及右子树区间，递归更新右子树</span></span><br><span class="line">    <span class="keyword">if</span>(tr&gt;mid)</span><br><span class="line">        <span class="built_in">update</span>(tl,tr,mid+<span class="number">1</span>,r,<span class="built_in">rs</span>(p),k);</span><br><span class="line">    <span class="comment">//已经递归完左右子树了，回到上层更新节点值</span></span><br><span class="line">    <span class="built_in">load_sum</span>(p);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>归结起来就是三个步骤：</p>
+<ul>
+<li>判断当前区间是否包含于被修改区间，是则给当前区间添加懒标记并返回；否则下一步；</li>
+<li>传递当前层的标记到下一层；</li>
+<li>递归传递左右子树；</li>
+<li>更新并返回上层节点。</li>
+</ul>
+<p>值得注意的是，如果当前区间被包含于目标区间，更新函数直接返回了，因此这个节点之下的其他节点并没有更新，这就是懒的地方，虽然没有更新下面的节点，但是这个点已经有了懒标记并且没有被save清空，也就是说，这一步以后线段树的状态是这个节点的值更新了，并且打上了标记，但是它的子树并没有更新，仍然是原来的状态。</p>
+<p>显然这会导致部分错误，但是，线段树的精髓就在于懒标记，我们完全可以在查询的时候将这个没有传递的懒标记传递下去，从而保证查询结果的正确；而那些没有懒标记的节点即使传递了懒标记也不会出现问题，因为它们的懒标记应当为0，除非它们的某个祖先节点为他们传递了懒标记。</p>
+<p>因此，懒标记实际上记录的是修改的操作值，而不仅仅是要不要修改的flag。</p>
+<h2 id="区间查询"><a href="#区间查询" class="headerlink" title="区间查询"></a>区间查询</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(ll qx, ll qy, ll l, ll r, ll p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	ll res = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//查询区间包含当前区间，返回当前区间的值</span></span><br><span class="line">	<span class="keyword">if</span>(qx&lt;=l &amp;&amp; r &lt;= qy)</span><br><span class="line">		<span class="keyword">return</span> tree[p];</span><br><span class="line">	ll mid = (l+r)/<span class="number">2</span>;</span><br><span class="line">    <span class="comment">//否则传递到下面继续查询</span></span><br><span class="line">	<span class="built_in">save</span>(p,l,r);</span><br><span class="line">    <span class="comment">//涉及左子树</span></span><br><span class="line">	<span class="keyword">if</span>(qx &lt;= mid) </span><br><span class="line">		res += <span class="built_in">query</span>(qx,qy,l,mid,<span class="built_in">ls</span>(p));</span><br><span class="line">    <span class="comment">//涉及右子树</span></span><br><span class="line">	<span class="keyword">if</span>(qy &gt; mid)</span><br><span class="line">		res += <span class="built_in">query</span>(qx,qy,mid+<span class="number">1</span>,r,<span class="built_in">rs</span>(p));</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后，在设计线段树维护的信息的时候要注意两个地方，一个是怎么安排懒标记或者信息的初值，例如在洛谷线段树2模板中，要求同时支持加和乘两种操作，由于两种操作的懒标记意义不同，因此要维护两个标记，其中加操作的懒标记显然初植为0，而乘操作的懒标记则需要为1的初植；另一个是查询时的懒标记传递函数怎么确定，前面的问题中，我们只能在查询的时候才能将懒标记传递下去，因此对左右子孙的更新要先乘法再加法，如果先加法，那么在加法之前的乘法会多乘，显然是错的。</p>
+<h1 id="差分数组"><a href="#差分数组" class="headerlink" title="差分数组"></a>差分数组</h1><p>前面线段树有提到区间操作这个概念，对一个数组来说，直接随机存取后虽然能很快地查询每个元素值，但是并不利于修改整个数组区间的值，或者查询数组区间的值，因为大量的遍历显然会很大程度地浪费时间，换句话说随机存取的数组方便进行单点操作而不便进行区间操作。</p>
+<p>有个方法叫前缀和，比较简单，就是记录数组累加或者其他的一些操作，从而方便进行区间查询，对单点查询一般也可以实现随机存取，但是并不能方便单点和区间修改，因为无论什么修改操作都只能让后面的数组重新更新一遍。</p>
+<p>线段树则比较全面，查询和修改都是对数级别，泛用性比较强。</p>
+<p>因此，除去普通数组，我们现在知道前缀和方便查询，线段树对查询修改都不错，最后还要介绍一个差分数组，当然就是方便修改了，对区间和单点修改，它的复杂度都是$O(1)$级别的。</p>
+<p>简单来说，差分数组存储的就是当前元素和前一个元素的差值，就像下面这样：</p>
+<p><img src="/2023/03/17/classicDA/12.png" alt></p>
+<p>区间修改利用了差分数组的性质，试着将序号为[2,4]内的所有元素全部加3，那么差分数组中实际上只有序号为2，5的两个元素发生了改变，前者减3，后者加3，也就是说对区间[l,r]修改后差分数组中只有l和r+1发生改变，前者改变相同，后者改变相反，而中间的元素并不会发生改变，这样以来就实现了修改的$O(1)$操作。</p>
+<p>更有意思的是，差分数组的前缀和就是原数组！这就是从差分数组求原数组的方法。</p>
+<p>总结一下，方便区间查询用前缀和，方便区间修改用差分数组，都需要的话要么同时前缀和+差分，要么线段树。</p>
+<h1 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h1><p>维护一个类似树的数据结构，其中的含义是每个树作为一个集合，其中的根节点是集合代表元素，而子节点属于这个集合，从而表示一种从属关系，将不同的数据分成不同集合。可以用数组来实现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> fa[max]</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Init</span><span class="params">(<span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i)</span><br><span class="line">        fa[i] = i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>数组存储每个节点的父节点。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> i, <span class="type">int</span> j)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    fa[<span class="built_in">find</span>(i)] = <span class="built_in">find</span>(j);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将节点i合并到节点j的集合中，也就是将节点i的最终的父结点设置为j的最终父结点。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(<span class="type">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(fa[x] == x)</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">find</span>(fa[x]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所谓最终父节点就是节点所在集合的代表元素，通过递归的方式查询，确定从属于哪一个集合。</p>
+<p>此外还有一个称为路径压缩的操作，将一个代表元素下的所有的子元素的父结点都直接设置为这个代表元素，这样就不用通过慢慢递归的方式查询了，因此可以在第一次查询的时候进行一次维护，也就是路径压缩，将子结点的子结点变成子结点：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(<span class="type">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x == fa[x] ? x : (fa[x] = <span class="built_in">find</span>(fa[x]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="带权并查集"><a href="#带权并查集" class="headerlink" title="带权并查集"></a>带权并查集</h2><p>并查集的推广，有些情况下不仅要记录不同元素之间的关系，还要记录他们之间某个相关联的值，此时声明另一个数组val来将连边上的值存储为节点上的值，方便查找。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> fa[max];</span><br><span class="line"><span class="type">int</span> val[max];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Init</span><span class="params">(<span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		fa[i] = i;</span><br><span class="line">		val[i] = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(<span class="type">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(x == fa[x]) <span class="keyword">return</span> x;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">//路径压缩</span></span><br><span class="line">        <span class="comment">//注意这里必须是先查father再更新value</span></span><br><span class="line">        <span class="comment">//递归的时候让value从根节点往下更新到当前节点</span></span><br><span class="line">        <span class="comment">//先find再更新value根本原因是，递归过程中可能把前面的节点路径压缩了</span></span><br><span class="line">        <span class="type">int</span> tmp = fa[x];</span><br><span class="line">        fa[x] = <span class="built_in">find</span>(fa[x]);</span><br><span class="line">		val[x] += val[tmp];</span><br><span class="line">		<span class="keyword">return</span> fa[x];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> i, <span class="type">int</span> j, <span class="type">int</span> weight)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> px = <span class="built_in">find</span>(i);</span><br><span class="line">	<span class="type">int</span> py = <span class="built_in">find</span>(j);</span><br><span class="line">	<span class="keyword">if</span>(px != py)</span><br><span class="line">	&#123;</span><br><span class="line">		fa[px] = py;</span><br><span class="line">		val[px] = val[j] + weight - val[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>带权并查集的合并比较难理解，可以通过下图这样计算理解：</p>
+<p><img src="/2023/03/17/classicDA/1.png" alt></p>
+<p>当然也不全是这样计算权值，有些题目中可能会进行取模乘除等操作，要参考具体情况。</p>
+<h1 id="期望DP"><a href="#期望DP" class="headerlink" title="期望DP"></a>期望DP</h1><p>相比于普通的动态规划，期望DP主要是在求期望的递推式，常见的一种做法是，定义dp[i]为在第i个状态下，到达目标dp[n]还需要的花费，因此可以利用期望的线性可加性质计算dp[i]的状态为$dp[i] = p_1 dp[j]+p_2dp[k]+1$，注意后面可能还要加1，这是因为有时候题目表述下无论dp为何种状态，总是要先进行一次花费才能转移状态，因此每次要迭代加上一个1。此外还有很多期望DP的问题，不一定利用这种类似全概率公式的方式推导，这里暂时不记录了。</p>
+<p>下面是一道典型例题，问有T组测试，每个测试输入一个n，表示一个n面的骰子，问期望投几次才能投到所有的面。</p>
+<p>思路：定义dp[i]为摇到第i种点数时，还要摇到n种点数的期望，那么可以判断，dp[i]时再摇一次有两种可能，即摇到前面i种点数之一和摇到新的点数了，因此写出方程$dp[i] = dp[i+1] <em> (n-i)/n + i/n </em> dp[i] + 1$，也就是说摇到前面的点数那么期望就是现在的dp[i]，有新的点数就将状态转移到下一个dp[i+1]，最后无论是否转移状态，都要摇一次骰子，因此还要加1。化简这个式子得到状态转移方程：</p>
+<p>$dp[i] = dp[i+1] + n / (n-i)$</p>
+<p>代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> t;</span><br><span class="line">	cin &gt;&gt; t;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; t; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">int</span> n;</span><br><span class="line">		cin &gt;&gt; n;</span><br><span class="line">		<span class="type">double</span> dp[<span class="number">1005</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">		dp[n] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> j = n<span class="number">-1</span>; j &gt;= <span class="number">0</span>; j--)</span><br><span class="line">		&#123;</span><br><span class="line">			dp[j] = dp[j+<span class="number">1</span>] + (<span class="type">double</span>)n / (<span class="type">double</span>)(n-j);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%.2f\n&quot;</span>, dp[<span class="number">0</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="博弈相关"><a href="#博弈相关" class="headerlink" title="博弈相关"></a>博弈相关</h1><p>有许多游戏可以通过博弈来确定最佳策略，从而达到先手或者后手必胜的情况，根据策梅洛定理，这类游戏满足五个特点：</p>
+<ul>
+<li>双人、回合制；</li>
+<li>信息完全公开（perfect information）；</li>
+<li>无随机因素（deterministic）；</li>
+<li><p>必然在有限步内结束；</p>
+</li>
+<li><p>没有平局；</p>
+</li>
+</ul>
+<p>可以通过必胜态和必败态的转换情况，最终确定玩家先手胜利还是后手胜利。采用模拟的办法来记录，判断条件为下面三个：</p>
+<ul>
+<li>游戏终局是必败态，取决于游戏规则，如果当前局面下玩家已经无路可走，那么就是必败态，这位玩家的上一位就赢了；</li>
+<li>某个状态进行一步游戏操作后，如果只能转变为必胜态，那么这个状态就是必败态（通过操作将必胜态给了对手）；</li>
+<li>某个状态进行一步游戏操作后，如果至少存在一个必败态，那么这个状态就是必胜态（通过操作将必败态给了对手）；</li>
+</ul>
+<p>因此对于博弈问题，可以确定某个状态的玩家必胜还是必败。竞赛中给出打表和DFS两种模板。打表还不明白，先介绍DFS的一般做法。</p>
+<h2 id="打表"><a href="#打表" class="headerlink" title="打表"></a>打表</h2><p>其实就是先DFS再记录，然后拷贝进来根据输入直接输出，所以其实没啥区别。</p>
+<p>打表方法就是竞赛中简单的暴力方法，只不过打表要求数据有限多(指你方便暴力循环后重新复制一遍)，然后复制进代码里直接输出，就不会超时了。</p>
+<h2 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a>DFS</h2><p>其实DFS就是暴力方法，只不过结合了博弈论的判断方法，加快了终止。一个博弈游戏因为两个人的决策会出现许多分支，那么我可以把这些分支像树的节点那样全部记录下来，同时判断出这些分支的状态是必胜还是必败，如果一个节点后面的状态是终局，那么就结束；如果后面的状态都是必胜态，那么当前这位玩家处于必败态，同样可以结束；如果后面的状态存在必败态，那么选择这个必败态继续遍历(因为没必要让对手得到必胜态)，这也是选择DFS而不是BFS的原因。</p>
+<p>也就是说，DFS解决这种博弈问题就是写check函数和遍历函数，这两个确定了之后就都能常规处理。</p>
+<p>下面是2022年蓝桥杯第二题的解法，就是经典的nim博弈游戏，用递归dfs解决。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;map&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">checklast</span><span class="params">(string s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; s.<span class="built_in">size</span>(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[i] == <span class="string">&#x27;0&#x27;</span>)</span><br><span class="line">            count++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建二元数组记录dfs情况</span></span><br><span class="line">map&lt;string, <span class="type">bool</span>&gt; m;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">dfs</span><span class="params">(string s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//m中存在s，直接将刚才判断的状态返回</span></span><br><span class="line">    <span class="keyword">if</span>(m.<span class="built_in">count</span>(s) == <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> m[s];</span><br><span class="line">    <span class="comment">//如果s是终局状态，也就是必败态，返回false</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">checklast</span>(s) == <span class="literal">true</span>)</span><br><span class="line">        <span class="keyword">return</span> m[s] = <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">//对没有判断过，也不是终局的状态进行递归dfs</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; s.<span class="built_in">size</span>(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[i] == <span class="string">&#x27;0&#x27;</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            string tmp = s;</span><br><span class="line">            tmp[i] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">            <span class="comment">//能转移到必败态都是必胜态</span></span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">dfs</span>(tmp) == <span class="literal">false</span>)</span><br><span class="line">                <span class="keyword">return</span> m[s] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; s.<span class="built_in">size</span>() - <span class="number">1</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[i] == <span class="string">&#x27;0&#x27;</span> &amp;&amp; s[i+<span class="number">1</span>] == <span class="string">&#x27;0&#x27;</span> &amp;&amp; i != <span class="number">3</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            string tmp = s;</span><br><span class="line">            tmp[i] = tmp[i+<span class="number">1</span>] = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">            <span class="comment">//能转移到必败态都是必胜态</span></span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">dfs</span>(tmp) == <span class="literal">false</span>)</span><br><span class="line">                <span class="keyword">return</span> m[s] = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//一次都不能转移到必败态，只能转移到必胜态，此时当前状态则是必败</span></span><br><span class="line">    <span class="keyword">return</span> m[s] = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    string s[] = &#123;<span class="string">&quot;10000000&quot;</span>, <span class="string">&quot;11000000&quot;</span>, <span class="string">&quot;01000000&quot;</span>, <span class="string">&quot;01100000&quot;</span>&#125;;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">dfs</span>(s[i]) == <span class="literal">true</span>)</span><br><span class="line">            cout&lt;&lt;<span class="string">&quot;L&quot;</span>;<span class="comment">///此时为必胜态，说明后手面临的局面必胜，输出L</span></span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">            cout&lt;&lt;<span class="string">&quot;V&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="数论基础"><a href="#数论基础" class="headerlink" title="数论基础"></a>数论基础</h1><p>数论是数学的分支，研究整数的性质，自然在计算机中就有很大用处。不过我们竞赛过程中也没必要完全掌握，下面是竞赛中常见的数论内容，并且以C++的处理为主，对于某些问题(例如对负数取模)不同语言结果不同，这一点要注意。</p>
+<h2 id="模运算"><a href="#模运算" class="headerlink" title="模运算"></a>模运算</h2><p>在竞赛中会出现一些比较大的数字，没办法直接输出或者计算，采用模运算来减小规模。编程上取模运算就是%，但是要注意左操作数（被除数）的正负，因为在C++中，如果有负数参与了取模运算，遵循以下规则：</p>
+<ul>
+<li>结果的符号只于左操作数有关；</li>
+<li>结果的绝对值等于操作数绝对值的模运算；</li>
+</ul>
+<p>这种模运算定义被称为<strong>truncated division</strong>，Java和C都采用这种定义。Python采用的是<strong>floored division</strong>，可以自行了解。</p>
+<p>模运算具有一些基本定理：</p>
+<ul>
+<li>和的模运算=模运算的和取模；</li>
+<li>差的模运算=模运算的差取模；</li>
+<li>积的模运算=模运算的积取模；</li>
+</ul>
+<p>除法则没有这个性质。通过这些定理可以防止数据溢出，从而计算大的数据。例如，下面的程序计算了(a*b)%m的结果：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">mul</span><span class="params">(ll a, ll b, ll m)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	a = a%m;</span><br><span class="line">	b = b%m;</span><br><span class="line">	ll res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(b &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(b&amp;<span class="number">1</span>) </span><br><span class="line">            res = (res + a) % m;</span><br><span class="line">		a = (a + a) % m;</span><br><span class="line">		b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>利用了乘法的性质，同时还利用了快速幂运算(while循环，后面会说)，先得到a、b的模运算结果，然后要计算积的模运算，此时将a、b看成二进制，b作为乘数，最低位如果是奇数，那么结果中就会有a取模的结果，再将a移动到高一位，乘以2，然后b移动到低一位，除以2，最终当b已经运算完了最高位，那么就得到结果。</p>
+<h2 id="快速幂"><a href="#快速幂" class="headerlink" title="快速幂"></a>快速幂</h2><p>直接做幂运算，那么显然a^n%m的时间复杂度是log(n)，如果采用快速幂运算方法，降低到对数级别。思想就是分治，下面的代码计算了a^n%m的值：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">fastPow</span><span class="params">(ll a, ll n, ll m)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ll ans = <span class="number">1</span>;</span><br><span class="line">    a %= m;</span><br><span class="line">    <span class="keyword">while</span>(n)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(n &amp; <span class="number">1</span>)</span><br><span class="line">            ans = (ans * a) % m;</span><br><span class="line">        a = (a  * a) % m;</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>和上面的例子差不多，都是利用模运算性质后进一步优化乘法，这里a不断相乘，指数翻倍，从而减少乘法运算。</p>
+<h2 id="费马小定理"><a href="#费马小定理" class="headerlink" title="费马小定理"></a>费马小定理</h2><p><img src="/2023/03/17/classicDA/2.png" alt></p>
+<p>可以用来求乘法逆元。将快速幂和费马小定理结合，通常用来处理x/y%m形式的数据，求出y的乘法逆元$y^{-1}$，就得到$x*y^{-1}\%m$，从而防止了精度丢失，对大数据的运算很有用。22年蓝桥杯E题爬树的甲壳虫需要用这个方法。</p>
+<h2 id="矩阵快速幂"><a href="#矩阵快速幂" class="headerlink" title="矩阵快速幂"></a>矩阵快速幂</h2><p>原理和普通的快速幂相似，定义矩阵乘法后，可以用几乎相同的代码计算，依然是分治的思想：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">matrix</span> &#123;<span class="type">int</span> m[N][N];&#125;;</span><br><span class="line">matrix <span class="keyword">operator</span> * (<span class="type">const</span> matrix &amp;a, <span class="type">const</span> matrix &amp;b)</span><br><span class="line">&#123;</span><br><span class="line">    matrix c;</span><br><span class="line">    <span class="built_in">memset</span>(c.m, <span class="number">0</span>, <span class="built_in">sizeof</span>(c.m));</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j &lt; N; j++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> k = <span class="number">0</span>; k &lt; N; k++)</span><br><span class="line">            &#123;</span><br><span class="line">                c.m[i][j] = (c.m[i][j] + a.m[i][k] * b.m[k][j]) % mod;<span class="comment">//如果数字大可以取模</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">matrix <span class="title">fastPow</span><span class="params">(matrix a, <span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    matrix ans;</span><br><span class="line">    <span class="comment">//初始为单位矩阵</span></span><br><span class="line">    <span class="built_in">memset</span>(ans.m, <span class="number">0</span>, <span class="built_in">sizeof</span>(ans.m));</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        ans.[i][i] = i+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(n)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(n &amp; <span class="number">1</span>) ans = ans * a;</span><br><span class="line">        a = a * a;</span><br><span class="line">        n &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>矩阵快速幂的时间复杂度是$O(N^3\log(n))$，通常会给出一个较大的n和较小的N来考察。</p>
+<h3 id="应用到dp问题"><a href="#应用到dp问题" class="headerlink" title="应用到dp问题"></a>应用到dp问题</h3><p>矩阵快速幂可以用于解决部分能化简成幂函数形式的dp问题，将递归数列的递推关系转化为矩阵乘法，所以递推数列就能转化为幂函数，最后就可以应用快速幂得到结果。</p>
+<p><img src="/2023/03/17/classicDA/3.png" alt></p>
+<p><img src="/2023/03/17/classicDA/4.png" alt></p>
+<p>垒骰子这道题考察得比较隐蔽，dp可以想到，如何转化为快速矩阵幂不容易想。<br><img src="/2023/03/17/classicDA/5.png" alt><br>这里通过手推找到规律，确定幂函数的底数a是六行六列的矩阵，其中每个元素表示确定了下面骰子以j为顶面且确定了位置时上面骰子以i为顶面的方案数为4，就将问题转化成矩阵快速幂了，最后求出n-1次方，然后取模即可。</p>
+<h3 id="应用到图的最短路径"><a href="#应用到图的最短路径" class="headerlink" title="应用到图的最短路径"></a>应用到图的最短路径</h3><p>可以计算出赋权图上只经过m条边的最短通路长度，因为这个本来是通过邻接矩阵的幂函数实现的，邻接矩阵的m次方代表经过m条边的路径数，那么显然就可以通过快速幂计算。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">matrix <span class="title">fastPow</span><span class="params">(matrix adj, <span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    matrix ans = a;</span><br><span class="line">    n--;</span><br><span class="line">    <span class="keyword">while</span>(n)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(n &amp; <span class="number">1</span>) ans = ans * a;</span><br><span class="line">        a = a * a;</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出重要的其实就是while内部的操作，这里将ans赋值为单位矩阵也可以的，只不过要多计算一次a和单位矩阵的乘法。</p>
+<h2 id="GCD和LCM"><a href="#GCD和LCM" class="headerlink" title="GCD和LCM"></a>GCD和LCM</h2><p>最大公约数和最小公倍数有很多性质：</p>
+<ul>
+<li>$gcd(a,b) = gcd(a,a+b) = gcd(a,k*a+b)$</li>
+<li>$gcd(ka,kb) = k * gcd(a,b)$</li>
+<li>$gcd(a,b,c) = gcd(gcd(a,b), c)$</li>
+<li>如果$gcd(a,b)=d$，那么$gcd(a/d,b/d)=1$</li>
+<li>$gcd(a+cb,b)=gcd(a,b)$</li>
+<li>辗转相除法：$gcd(a,b)= gcd(b, a\%b)$</li>
+<li>$gcd(a,b)<em>lcm(a,b)=a</em>b, lcm(a, b) = a<em>b/gcd(a, b) = a/gcd(a, b)</em>b$</li>
+</ul>
+<p>还是要多做题才方便记住这些定理。</p>
+<h3 id="贝祖定理"><a href="#贝祖定理" class="headerlink" title="贝祖定理"></a>贝祖定理</h3><ul>
+<li><p>如果$gcd(a,b) = d$，那么对任意的$x,y$一定有$ax+by$是$d$的倍数</p>
+</li>
+<li><p>推论：$a,b$互质，那么存在$x,y$使得$ax+by=1$</p>
+</li>
+</ul>
+<p><img src="/2023/03/17/classicDA/6.png" alt></p>
+<p><img src="/2023/03/17/classicDA/7.png" alt></p>
+<h3 id="扩展欧几里得算法"><a href="#扩展欧几里得算法" class="headerlink" title="扩展欧几里得算法"></a>扩展欧几里得算法</h3><p>用于求出$ax+by=gcd(a,b)$时的x，y和最大公因数。这个方程可以写成二元线性丢番图方程$ax+by=c$，这个方程有解的充要条件就是$c$能被$gcd(a,b)$整除。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">extend_gcd</span><span class="params">(ll a, ll b, ll &amp;x, ll &amp;y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (b == <span class="number">0</span>) &#123;<span class="comment">//如果辗转相除到b为0，此时a就是最大公因数了</span></span><br><span class="line">    x = <span class="number">1</span>;</span><br><span class="line">    y = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//递归调用，每次辗转相除找最大公因数，并交换x，y</span></span><br><span class="line">  <span class="comment">//这是因为在递归结束后要更新此时x，y的值，根据辗转相除法得到</span></span><br><span class="line">  <span class="comment">//如果里层递归时的值为x1和y1，那么外层的x应该等于y1，y等于按照下面式子更新后的值</span></span><br><span class="line">  <span class="comment">//才能保证ax+by=gcd(a,y)，推导见代码块之后</span></span><br><span class="line">  ll d = <span class="built_in">extend_gcd</span>(b, a % b, y, x);</span><br><span class="line">  </span><br><span class="line">  y -= a / b * x;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>$b <em> x1 + (a \% b) </em> y1 = gcd(b, a \% b)$</li>
+<li>$a <em> x + b </em> y = gcd(a, b)$</li>
+<li>$gcd(a,b) = b <em> x1 + (a - (a/b)</em>b) <em> y1     = a </em> y1 + b <em> (x1 - (a/b)</em>y1)$</li>
+</ul>
+<p>以上是推导过程。此时已经求出一个方程的特解(x,y)，其通解为$x^<em> = x_0+(b/gcd(a,b))</em>t,y^<em>=y_0-(a/gcd(a,b))</em>t$。利用通解我们可以进一步求出这个方程的最小正整数解，将x，y分别对$b/gcd(a,b)$和$a/gcd(a,b)$取正整数即可。</p>
+<p>下面是一个实例：</p>
+<p><img src="/2023/03/17/classicDA/8.png" alt></p>
+<p>在这里两个地方要注意，一个是列出线性同余方程，这一步是关键；其次输出的时候为了保证x不是负数，要通过上面的取模处理：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = x * c / d;//求出初步的特解</span><br><span class="line">x = (x % (L/d) + L/d);//将x转化为正整数，这里L/d从扩展欧几里得算法中的x通解得来</span><br><span class="line">x = x % (L/d);//再次取模，如果x之前为负，这里没用；否则这里就是除去之前加上的一个L/d</span><br></pre></td></tr></table></figure>
+<h2 id="素数"><a href="#素数" class="headerlink" title="素数"></a>素数</h2><p>基本定理：</p>
+<ul>
+<li>有无穷多个素数，从小到大分布越来越稀少；</li>
+<li>对任意整数n，存在n个连续的合数；</li>
+<li>小的素数判断，只需要遍历到这个数的平方根处，因为不可能会有两个大于它平方根的数相乘得到这个数；</li>
+</ul>
+<h3 id="大素数检验"><a href="#大素数检验" class="headerlink" title="大素数检验"></a>大素数检验</h3><h4 id="费马素性检验"><a href="#费马素性检验" class="headerlink" title="费马素性检验"></a>费马素性检验</h4><p>基于费马小定理的逆定理，如果两个数a，n互质，那么，$a^{n-1}\equiv 1 \pmod n$。从1~n中选择一个数a来验证即可。</p>
+<h4 id="Miller-Rabin素性检验"><a href="#Miller-Rabin素性检验" class="headerlink" title="Miller-Rabin素性检验"></a>Miller-Rabin素性检验</h4><p>如果存在$x$使得$x^2 \equiv 1 \pmod n,x \not= 1或n-1$，那么n是合数。</p>
+<p>步骤：</p>
+<ul>
+<li>找到一个$t$和$u$使得$n- 1 = 2^t * u$；</li>
+<li>找到一个$x_0$和$a$使得$x_0^2 = a^u \% n$；</li>
+<li>递推$x<em>t = x</em>{t-1}^2 \% n$;</li>
+<li>对最后的$x<em>t$判断，如果$x_t \not = 1$，且$x_t^{n-1} \not \equiv 1 \pmod n$，那么证明$n$是合数；对每个$x_t$判断，如果$x_t = 1$，而且$x</em>{t-1} \not = 1或n-1$，也证明n是合数。</li>
+<li>注意，要对所有选择过的$x_t$都进行判断后才能输出，因为费马小定理对合数不一定正确，只要求两个数互质，因此即便满足了$x_t^{n-1} \equiv 1 \pmod n$也不能说n就是质数，除非确定此时的$x_t$是质数。但是，只要不符合这个条件，$n$就一定不是质数，所以费马小定理的逆定理仅作为判断合数的充分条件。</li>
+</ul>
+<p>如果遍历完选择的$t$个$x_t$后，条件都满足合数，那么就判断是合数，一般这样测试五十次就够了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">witness</span><span class="params">(ll a, ll b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ll u = n<span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> t = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//求出u和t</span></span><br><span class="line">    <span class="keyword">while</span>(u$l == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//看n-1能被2整除几次得到t</span></span><br><span class="line">        u = u&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        t++;</span><br><span class="line">    &#125;</span><br><span class="line">    ll x1, x2;</span><br><span class="line">    x1 = <span class="built_in">fast_pow</span>(a,u,n);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;=t; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        x2 = <span class="built_in">fastPow</span>(x1,<span class="number">2</span>,n);</span><br><span class="line">        <span class="comment">//如果满足第二个条件，说明是合数，存在非平凡平方根</span></span><br><span class="line">        <span class="keyword">if</span>(x2 == <span class="number">1</span> &amp;&amp; x1 !=<span class="number">1</span> &amp;&amp; x1 != n<span class="number">-1</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        x1 = x2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果满足第二个条件，即不满足费马小定理，那就是合数</span></span><br><span class="line">    <span class="keyword">if</span>(x1 != <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="comment">//都没检测出来，大概率是质数</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">miller_rabin</span><span class="params">(ll n, <span class="type">int</span> s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//1既不是质数也不是合数</span></span><br><span class="line">    <span class="keyword">if</span>(n &lt; <span class="number">2</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//2是质数</span></span><br><span class="line">    <span class="keyword">if</span>(n == <span class="number">2</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//偶数是合数</span></span><br><span class="line">    <span class="keyword">if</span>(n % <span class="number">2</span> == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//做s次测试</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; s &amp;&amp; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//a通过随机数确定，1~n-1</span></span><br><span class="line">        ll a = <span class="built_in">rand</span>() % (n<span class="number">-1</span>) + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">witness</span>(a,n))</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="威尔逊定理"><a href="#威尔逊定理" class="headerlink" title="威尔逊定理"></a>威尔逊定理</h3><p>给定一个素数p，那么：</p>
+<ul>
+<li>$((p-1)!+1)\%p=0$</li>
+<li>$(p-1)!\%p=p-1$</li>
+<li>$(p-1)!=kp-1$</li>
+<li>$(p-1)! \equiv -1 \pmod p$</li>
+</ul>
+<p>对合数：除4外，(n-1)!肯定有两个数积为n的倍数。</p>
+<p><img src="/2023/03/17/classicDA/9.png" alt></p>
+<p>对这个题来说，n=4的时候单独计算，其余的n都是0。</p>
+<h3 id="素数筛和合数分解质因数"><a href="#素数筛和合数分解质因数" class="headerlink" title="素数筛和合数分解质因数"></a><strong>素数筛和合数分解质因数</strong></h3><p>素数筛可以找出小于数n的所有质数。</p>
+<h4 id="素数筛"><a href="#素数筛" class="headerlink" title="素数筛"></a>素数筛</h4><ul>
+<li>埃氏筛：找到一个素数，筛去它所有的倍数；遍历所有小于n的数，输出没有被标记为合数的数，就是全部的质数；</li>
+<li>欧拉筛：初始将所有数标记为素数isPrime，然后开始遍历，对标记为素数的数，添加到素数组Prime中并遍历Prime，筛去它所有已知素数倍数的合数，并且筛去后判断当前的这个数是否是Prime中某个素数的倍数，这样能保证每个合数只被它最小质因数筛选一次，例如对2标记为素数后，只筛去4；3标记为素数后，筛去6，9；4标记为合数，不加入Prime，筛去8，12；5标记后筛去10，15，25；</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> MAXN = <span class="number">10000</span>;</span><br><span class="line"><span class="type">int</span> prime[MAXN+<span class="number">1</span>];</span><br><span class="line"><span class="type">bool</span> isprime[MAXN+<span class="number">1</span>];</span><br><span class="line"><span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">euler</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(isprime,<span class="literal">true</span>,<span class="built_in">sizeof</span>(isprime));</span><br><span class="line">    isprime[<span class="number">1</span>] = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">2</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(isprime[i] == <span class="literal">true</span>)</span><br><span class="line">            prime[++count] = i;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">1</span>; j &lt;= count &amp;&amp; i * prime[j] &lt;= n; j++)</span><br><span class="line">        &#123;</span><br><span class="line">            isprime[i * prime[j]] = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">if</span>(i % prime[j] == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="合数分解"><a href="#合数分解" class="headerlink" title="合数分解"></a>合数分解</h4><ul>
+<li>试除法：用筛后的素数去除；如果有素数整除了n，那么用这个数再除，直到不能整除，记录这个素数，用下一个素数继续遍历以此类推；</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//试除法</span></span><br><span class="line">ll factor[<span class="number">100</span>][<span class="number">2</span>];</span><br><span class="line"><span class="type">int</span> facount;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">getFactors</span><span class="params">(ll x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    facount = <span class="number">0</span>;</span><br><span class="line">    ll tmp = x;</span><br><span class="line">    <span class="comment">//只需要遍历到平方根即可</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; prime[i] &lt;= tmp/prime[i]; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//factor[i][0]记录n被prime[i]整除</span></span><br><span class="line">        <span class="comment">//factor[i][1]记录n能被几个prime[i]整除</span></span><br><span class="line">        <span class="comment">//没有达到终止条件就要继续找下一个素因数，而不是用上次剩下的tmp作为最后的素因数</span></span><br><span class="line">        factor[facount][<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">//看n能不能整除素数prime[i]</span></span><br><span class="line">        <span class="keyword">if</span>(tmp % prime[i] == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//记录这次整除到多少</span></span><br><span class="line">            factor[facount][<span class="number">0</span>] = prime[i];</span><br><span class="line">            <span class="comment">//循环整除到几次</span></span><br><span class="line">            <span class="keyword">while</span>(tmp%prime[i] == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                factor[facount][<span class="number">1</span>]++;</span><br><span class="line">                tmp /= prime[i];</span><br><span class="line">            &#125;</span><br><span class="line">            facount++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//记录剩下多少tmp，作为最后一个因数</span></span><br><span class="line">        <span class="keyword">if</span>(tmp!=<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            factor[facount][<span class="number">0</span>] = tmp;</span><br><span class="line">            factor[facount++][<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> facount;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Pollard_rho启发式方法；</li>
+</ul>
+<p>该方法采用随机数的方式选择试除对象，根据生日悖论提供一个以两个数绝对值作为除数的方法，不同的组合可以增加这个数是因数的概率，从而在判断中快速找到因数。而构造的序列$x<em>i=(x</em>{i-1}^2+C)%N$会构成一个$\rho$形状的数环，即不论从什么地方开始，这个序列总会进入循环，因此这也是一个伪随机的序列。</p>
+<p>而为了判断环的存在，可以使用简单的Floyd判环算法，设经过时间$i$后，$t=i，r=2i$，表示后者速度是前者的一倍。因此当后者遇上前者时，有$x<em>t=x_r$，也就是$x_i=x</em>{2i}=x_{i+kC}$，其中k是整数，C是环的长度。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//启发式方法pollard_rho</span></span><br><span class="line"><span class="comment">//返回一个因数，不一定是质因数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//序列函数x=(x^2+c)%n</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">f</span><span class="params">(<span class="type">int</span> x,<span class="type">int</span> c,<span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (x*x+c)%n;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//返回N的一个因数，不一定是质因数</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pollard_rho</span><span class="params">(<span class="type">int</span> N)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//生成常数C</span></span><br><span class="line">    <span class="type">int</span> c=<span class="built_in">rand</span>()%(N<span class="number">-1</span>)+<span class="number">1</span>;</span><br><span class="line">    <span class="comment">//floyd优化环判断，t是龟，r是兔子</span></span><br><span class="line">    <span class="comment">//设t=x1=f(0)，r=x2=f(x1)</span></span><br><span class="line">    <span class="type">int</span> t=<span class="built_in">f</span>(<span class="number">0</span>,c,N),r=<span class="built_in">f</span>(<span class="built_in">f</span>(<span class="number">0</span>,c,N),c,N);</span><br><span class="line">    <span class="keyword">while</span>(t!=r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> d=<span class="built_in">gcd</span>(<span class="built_in">abs</span>(t-r),N);</span><br><span class="line">        <span class="keyword">if</span>(d&gt;<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">return</span> d;</span><br><span class="line">        <span class="comment">//更新时保证t=f(t)=x_i，那么r=f(r)=x_2i</span></span><br><span class="line">        t=<span class="built_in">f</span>(t,c,N),r=<span class="built_in">f</span>(<span class="built_in">f</span>(r,c,N),c,N);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> N;<span class="comment">//没有找到,重新调整参数c</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="同余"><a href="#同余" class="headerlink" title="同余"></a>同余</h2><p>定义：$a \equiv b \pmod m$</p>
+<p>性质：</p>
+<ul>
+<li>自反性：$a \equiv a \pmod p$</li>
+<li>对称性：$a \equiv b \pmod m \Rightarrow b \equiv a \pmod m$</li>
+<li>传递性：$a \equiv b \pmod p，b \equiv c \pmod p \Rightarrow a \equiv c \pmod m$</li>
+</ul>
+<p>运算，如果a，b同余，c，d同余，那么：</p>
+<ul>
+<li>$a\pm c \equiv b \pm d$</li>
+<li>$ac \equiv bd$</li>
+<li>$a^k \equiv b^k$</li>
+<li>$(a/b)\%m = ((a\%m)*(b^{-1}\%m))\%m$</li>
+</ul>
+<h3 id="一元线性同余方程和乘法逆元"><a href="#一元线性同余方程和乘法逆元" class="headerlink" title="一元线性同余方程和乘法逆元"></a>一元线性同余方程和乘法逆元</h3><p>一元线性同余方程基本形式：$ax\equiv b \pmod m$，等价于前面扩展欧几里得算法提到的二元线性丢番图方程$ax+my=b$，因此有以下定理：</p>
+<ul>
+<li>定理：方程有解的充要条件是$gcd(a,m)|b$，与前面相同；此时有$gcd(a,m)$个不同的整数$x$使得$ax \equiv b \pmod m$；</li>
+<li>推论：$gcd(a,m)=1$时，只有一个满足要求的解$x$，称为$a$模$m$的乘法逆元，记作$a^{-1}$。</li>
+</ul>
+<p>求乘法逆元的方法前面已经介绍了，通过扩展欧几里得算法，如果有一个特解是$x_0$，那么通解是$x=x_0+km$，其中k是整数，可以求出最小正整数解(逆的代表元)为：$((x_0\%m)+m)\%m$。</p>
+<p>另外还可以通过费马小定理求逆，如果正好两个数$a$和$n$互质，那么有$a^{n-1} \equiv 1 \pmod n$，因此$a$的乘法逆元就是$a^{n-2}\%n$，而且已经是唯一解，因为此时$gcd(a,n)=1$。利用快速幂运算就是$fastPow(a,m-2,m)$。</p>
+<p><img src="/2023/03/17/classicDA/10.png" alt></p>
+<h3 id="同余方程组"><a href="#同余方程组" class="headerlink" title="同余方程组"></a>同余方程组</h3><p>中国剩余定理，如果同余方程组的模两两互素，设$m_1,m_2,…,m_r,r \geq 1$为$r$个方程的模，令$M=m_1<em>m_2</em>…<em>m_r=m_1</em>M_1=…=m_k<em>M_k$，那么方程组的解是$x=a_1</em>M_1<em>M_1^{-1}+…+a_r</em>M_r<em>M_r^{-1} \pmod M$，其中$M_i^{-1}$是$M_i$对方程的模$m_i$的逆元，即$M_i</em>M_i^{-1} \equiv 1 \pmod {m_i}$。</p>
+<p>如果同余方程组的模并不是两两互素，那么就要使用扩展中国剩余定理。</p>
+<p>扩展中国剩余定理每次将两个方程合并成一个，假设有方程$x \equiv r_1 \pmod {m_1},x \equiv r_2 \pmod {m_2}$，那么将这两个方程等价于$x = r_1 + k_1 <em> m_1,x=r_2+k_2</em>m_2$，合并两个方程并移项可以得到：</p>
+<ul>
+<li>$k_1m_1-k_2m_2=r_2-r_1$</li>
+</ul>
+<p>根据贝祖定理，这个方程组有解的充要条件是$r_2-r_1$能被$gcd(m1,m2)$整除，所以这时需要进行判断，如果不能整除，方程组无解；如果能整除，那么自然就是扩展欧几里得算法了，能求出方程$k_1m_1-k_2m_2=gcd(m_1,m_2)$的参数。</p>
+<p>因此，进一步令$p_1=gcd(m_1,m_2)/(r_2-r_1)<em>k_1,p2=-gcd(m_1,m_2)/(r_2-r_1)</em>k_2$，那么这个式子就变成：</p>
+<ul>
+<li>$p_1<em>m_1+p_2</em>m_2=gcd(m_1,m_2)$</li>
+</ul>
+<p>然后用扩展欧几里得算法得到$p_1,p_2$，进而求出$k_1=p_1<em>gcd(m_1,m_2)/(r_2-r_1)，k_2=-p_2</em>gcd(m_1,m_2)/(r_2-r_1)$，这样以来又可以求出满足这两个方程的特解$x$，从而得到通解$x^<em>=x+k</em>lcm(m_1,m_2)$，等价于同余方程$x^* \equiv x \pmod {lcm(m_1,m_2)}$，就把两个方程合并成一个了。</p>
+<p>因此，扩展中国剩余定理的流程就是：</p>
+<ul>
+<li>读入一个方程；</li>
+<li>判断能否与之前处理好的方程合并，如果不能，返回无解；否则执行下一步；</li>
+<li>返回第一步，直到全部方程都读入了。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line">ll n,mod[<span class="number">100009</span>],yu[<span class="number">100009</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//快速幂运算a*b%m</span></span><br><span class="line"><span class="function">ll <span class="title">qMul</span><span class="params">(ll a,ll b,ll m)</span></span>&#123;</span><br><span class="line">    ll an = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(b) &#123;</span><br><span class="line">        <span class="keyword">if</span>(b&amp;<span class="number">1</span>) an =(an+a) % m;</span><br><span class="line">        a = (a+a)%m;</span><br><span class="line">        b&gt;&gt;=<span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">return</span> an%m;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//扩展欧几里得算法，返回gcd(a,b),并计算出ax+by = gcd(a,b)中的x和y</span></span><br><span class="line"><span class="function">ll <span class="title">exGcd</span><span class="params">(ll a,ll b,ll &amp;x,ll &amp;y)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>( b == <span class="number">0</span> ) &#123; x = <span class="number">1</span>;y = <span class="number">0</span>; <span class="keyword">return</span> a;&#125;</span><br><span class="line">    ll gcd = <span class="built_in">exGcd</span>(b,a%b,y,x);  <span class="comment">//注意x和y的顺序</span></span><br><span class="line">    y = y - a/b*x;</span><br><span class="line">    <span class="keyword">return</span> gcd;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//exCrt</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//读数据</span></span><br><span class="line">    cin&gt;&gt;n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>;i &lt;= n;i++) cin&gt;&gt;mod[i]&gt;&gt;yu[i];</span><br><span class="line">    <span class="comment">//ans表示前i-1个方程式的特解（余数），M为前i-1个方程式的模数的最小公倍数(i从2开始)</span></span><br><span class="line">    <span class="comment">//k1和k2是合并两个同余方程时的待求参数</span></span><br><span class="line">    ll ans = yu[<span class="number">1</span>],M = mod[<span class="number">1</span>] ,k1,k2;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">2</span>;i &lt;= n;i++)&#123;</span><br><span class="line">        <span class="comment">//记录mi和r2-r1</span></span><br><span class="line">        ll mi = mod[i],res = ((yu[i] - ans)%mi + mi)%mi;</span><br><span class="line">        <span class="comment">//求出gcd(mi,M)</span></span><br><span class="line">        ll gcd = <span class="built_in">exGcd</span>(M,mi,k1,k2);</span><br><span class="line">        <span class="comment">//如果等式右边不能整除gcd，方程组无解</span></span><br><span class="line">        <span class="keyword">if</span>(res % gcd != <span class="number">0</span>) </span><br><span class="line">        &#123; </span><br><span class="line">            cout&lt;&lt;<span class="number">-1</span>&lt;&lt;endl;</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">0</span>); </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//求出k1还要乘上倍数，注意是快速乘取模mi (对谁取模要分清)</span></span><br><span class="line">        k1 = <span class="built_in">qMul</span>(k1,res/gcd,mi);</span><br><span class="line">        <span class="comment">//得到前i个方程的特解（余数）</span></span><br><span class="line">        ans += k1 * M; </span><br><span class="line">        <span class="comment">//M等于lcm(M,mi)，注意乘法要在除法后面做，否则会爆long long</span></span><br><span class="line">        M = mi /gcd * M; </span><br><span class="line">        <span class="comment">//合并后的ans特解取最小正整数</span></span><br><span class="line">        ans = (ans%M+M)%M;</span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;ans;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Data-Structure-and-Algorithm/" rel="tag"># Data Structure and Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/12/unity3/" rel="prev" title="unity入门(三)-制作一个2D游戏">
+                  <i class="fa fa-angle-left"></i> unity入门(三)-制作一个2D游戏
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/28/classicDA1/" rel="next" title="竞赛常用数据结构和算法(续)">
+                  竞赛常用数据结构和算法(续) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

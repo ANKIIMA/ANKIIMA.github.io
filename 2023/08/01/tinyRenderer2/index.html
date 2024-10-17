@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="继光栅化之后的一大问题是，如何判断每个面谁被渲染，谁被遮挡。前一节的工作中我们绘制了所有的三角形面，但是并没有判断遮挡关系，也没有插值处理像素，这次我们解决这两个问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="五百行C++理解OpenGL机制(三)">
+<meta property="og:url" content="https://ankiima.github.io/2023/08/01/tinyRenderer2/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="继光栅化之后的一大问题是，如何判断每个面谁被渲染，谁被遮挡。前一节的工作中我们绘制了所有的三角形面，但是并没有判断遮挡关系，也没有插值处理像素，这次我们解决这两个问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/01/tinyRenderer2/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/01/tinyRenderer2/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/01/tinyRenderer2/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/01/tinyRenderer2/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/01/tinyRenderer2/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/01/tinyRenderer2/7.png">
+<meta property="article:published_time" content="2023-08-01T02:43:25.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.378Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="OpenGL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/08/01/tinyRenderer2/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/08/01/tinyRenderer2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/08/01/tinyRenderer2/","path":"2023/08/01/tinyRenderer2/","title":"五百行C++理解OpenGL机制(三)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>五百行C++理解OpenGL机制(三) | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lesson-3"><span class="nav-number">1.</span> <span class="nav-text">Lesson 3</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Z-buffer"><span class="nav-number">1.1.</span> <span class="nav-text">Z-buffer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%80%BC%E8%AE%A1%E7%AE%97%E5%92%8C%E7%BA%B9%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">插值计算和纹理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E7%BA%B9%E7%90%86%E5%9D%90%E6%A0%87"><span class="nav-number">1.2.1.</span> <span class="nav-text">读取纹理坐标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E7%BA%B9%E7%90%86%E9%A2%9C%E8%89%B2"><span class="nav-number">1.2.2.</span> <span class="nav-text">返回纹理颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%80%BC%E8%AE%A1%E7%AE%97%E5%83%8F%E7%B4%A0%E9%A2%9C%E8%89%B2"><span class="nav-number">1.2.3.</span> <span class="nav-text">插值计算像素颜色</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/08/01/tinyRenderer2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="五百行C++理解OpenGL机制(三) | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          五百行C++理解OpenGL机制(三)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-08-01 10:43:25" itemprop="dateCreated datePublished" datetime="2023-08-01T10:43:25+08:00">2023-08-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/" itemprop="url" rel="index"><span itemprop="name">Graphics API</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/OpenGL/" itemprop="url" rel="index"><span itemprop="name">OpenGL</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>继光栅化之后的一大问题是，如何判断每个面谁被渲染，谁被遮挡。前一节的工作中我们绘制了所有的三角形面，但是并没有判断遮挡关系，也没有插值处理像素，这次我们解决这两个问题。</p>
+<span id="more"></span>
+<h1 id="Lesson-3"><a href="#Lesson-3" class="headerlink" title="Lesson 3"></a>Lesson 3</h1><h2 id="Z-buffer"><a href="#Z-buffer" class="headerlink" title="Z-buffer"></a>Z-buffer</h2><p>我们的渲染器初具规模，现在终于可以学习大名鼎鼎的Z-buffer了。首先我们先简述一下画家算法，它也是一种判断遮挡关系的简单算法，因为我们绘制是直接对像素进行赋值，所以可以想到从后往前绘制的话就能得到相对正确的渲染结果了。但是为什么说是相对正确呢？看下面这个图片：</p>
+<p><img src="/2023/08/01/tinyRenderer2/1.png" alt></p>
+<p>如果我们从上往下看这个场景，渲染结果应该是这样的：</p>
+<p><img src="/2023/08/01/tinyRenderer2/2.png" alt></p>
+<p>发现问题了吗？如果使用画家算法，无法处理两个平面交叉时的情况，因为它们的遮挡关系不是不变的，上图中如果使用画家算法，先绘制红色三角形，然后绘制蓝色三角形，最后绘制绿色三角形，显然绿色三角形将会覆盖蓝色三角形，而不会呈现上图中交叉的正确结果。</p>
+<p>因此我们需要采用一个buffer来存储具体像素而不是面的深度信息，以屏幕为原点Z轴正方向向里，在绘制像素时，只有当缓冲区中的深度信息大于像素的深度信息，才允许更新当前像素的颜色和深度值。buffer大小为总的像素数，初始化值为最小值。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Lesson3.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">const</span> TGAColor white = <span class="built_in">TGAColor</span>(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>);</span><br><span class="line"><span class="type">const</span> TGAColor red = <span class="built_in">TGAColor</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line"><span class="type">const</span> TGAColor green = <span class="built_in">TGAColor</span>(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line">Model* model = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> width = <span class="number">800</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> height = <span class="number">800</span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Vec3f <span class="title">light_dir</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>, <span class="number">-1</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Vec3f <span class="title">world2screen</span><span class="params">(Vec3f v)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">Vec3f</span>(<span class="built_in">int</span>((v.x + <span class="number">1.</span>) * width / <span class="number">2.</span> + <span class="number">.5</span>), <span class="built_in">int</span>((v.y + <span class="number">1.</span>) * height / <span class="number">2.</span> + <span class="number">.5</span>), v.z);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>** argv)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="number">2</span> == argc) &#123;</span><br><span class="line">		model = <span class="keyword">new</span> <span class="built_in">Model</span>(argv[<span class="number">1</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		model = <span class="keyword">new</span> <span class="built_in">Model</span>(<span class="string">&quot;obj/african_head.obj&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//初始化深度缓冲</span></span><br><span class="line">	<span class="type">float</span>* zbuffer = <span class="keyword">new</span> <span class="type">float</span>[width * height];</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = width * height; i--; zbuffer[i] = -std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">max</span>());</span><br><span class="line"></span><br><span class="line">	<span class="function">TGAImage <span class="title">image</span><span class="params">(width, height, TGAImage::RGB)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; model-&gt;<span class="built_in">nfaces</span>(); i++)</span><br><span class="line">	&#123;</span><br><span class="line">		std::vector&lt;<span class="type">int</span>&gt; face = model-&gt;<span class="built_in">face</span>(i);</span><br><span class="line">		Vec3f pts[<span class="number">3</span>];</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++)</span><br><span class="line">		&#123;</span><br><span class="line">			pts[j] = <span class="built_in">world2screen</span>(model-&gt;<span class="built_in">vert</span>(face[j]));</span><br><span class="line">		&#125;</span><br><span class="line">		Triangle_ZBuffer::<span class="built_in">Triangle</span>(pts, zbuffer, image, <span class="built_in">TGAColor</span>(<span class="built_in">rand</span>() % <span class="number">255</span>, <span class="built_in">rand</span>() % <span class="number">255</span>, <span class="built_in">rand</span>() % <span class="number">255</span>, <span class="number">255</span>), width);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	image.<span class="built_in">flip_vertically</span>(); <span class="comment">// i want to have the origin at the left bottom corner of the image</span></span><br><span class="line">	image.<span class="built_in">write_tga_file</span>(<span class="string">&quot;output.tga&quot;</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">delete</span> model;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然我们修改了一下之前绘制三角形的方法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Triangle_ZBuffer::Triangle</span><span class="params">(Vec3f* pts, <span class="type">float</span>* zbuffer, TGAImage&amp; image, TGAColor color, <span class="type">int</span> width)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="function">Vec2f <span class="title">bboxmin</span><span class="params">(std::numeric_limits&lt;<span class="type">float</span>&gt;::max(), std::numeric_limits&lt;<span class="type">float</span>&gt;::max())</span></span>;</span><br><span class="line">	<span class="function">Vec2f <span class="title">bboxmax</span><span class="params">(-std::numeric_limits&lt;<span class="type">float</span>&gt;::max(), -std::numeric_limits&lt;<span class="type">float</span>&gt;::max())</span></span>;</span><br><span class="line">	<span class="function">Vec2f <span class="title">clamp</span><span class="params">(image.get_width() - <span class="number">1</span>, image.get_height() - <span class="number">1</span>)</span></span>;</span><br><span class="line">	<span class="comment">//找到bounding box的大小</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">2</span>; j++) &#123;</span><br><span class="line">			bboxmin[j] = std::<span class="built_in">max</span>(<span class="number">0.f</span>, std::<span class="built_in">min</span>(bboxmin[j], pts[i][j]));</span><br><span class="line">			bboxmax[j] = std::<span class="built_in">min</span>(clamp[j], std::<span class="built_in">max</span>(bboxmax[j], pts[i][j]));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//逐个判断bbox中的像素是否在三角形中</span></span><br><span class="line">	Vec3f p;</span><br><span class="line">	<span class="keyword">for</span> (p.x = bboxmin.x; p.x &lt;= bboxmax.x; p.x++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> (p.y = bboxmin.y; p.y &lt;= bboxmax.y; p.y++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">//p点重心坐标</span></span><br><span class="line">			Vec3f bc_screen = <span class="built_in">barycentric</span>(pts, p);</span><br><span class="line">			<span class="comment">//不在三角形内</span></span><br><span class="line">			<span class="keyword">if</span> (bc_screen.x &lt; <span class="number">0</span> || bc_screen.y &lt; <span class="number">0</span> || bc_screen.z &lt; <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">			p.z = <span class="number">0</span>;</span><br><span class="line">			<span class="comment">//插值计算p的深度，后面会细说</span></span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) p.z += pts[i][<span class="number">2</span>] * bc_screen[i];</span><br><span class="line">			<span class="comment">//深度值大于当前缓存值</span></span><br><span class="line">			<span class="keyword">if</span> (zbuffer[<span class="built_in">int</span>(p.x + p.y * width)] &lt; p.z)</span><br><span class="line">			&#123;</span><br><span class="line">				zbuffer[<span class="built_in">int</span>(p.x + p.y * width)] = p.z;</span><br><span class="line">				image.<span class="built_in">set</span>(p.x, p.y, color);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用了深度缓冲之后，我们就可以避免之前的错误渲染顺序了，下面是得到的结果：</p>
+<p><img src="/2023/08/01/tinyRenderer2/3.png" alt></p>
+<p>如果你想使用上次课程中简单的光照模拟自然也不是问题，计算的方法和上次完全一致：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; model-&gt;<span class="built_in">nfaces</span>(); i++)</span><br><span class="line">	&#123;</span><br><span class="line">		std::vector&lt;<span class="type">int</span>&gt; face = model-&gt;<span class="built_in">face</span>(i);</span><br><span class="line">		Vec3f pts[<span class="number">3</span>];</span><br><span class="line">		Vec3f world_coords[<span class="number">3</span>];</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++)</span><br><span class="line">		&#123;</span><br><span class="line">			pts[j] = <span class="built_in">world2screen</span>(model-&gt;<span class="built_in">vert</span>(face[j]));</span><br><span class="line">			world_coords[j] = model-&gt;<span class="built_in">vert</span>(face[j]);</span><br><span class="line">		&#125;</span><br><span class="line">		Vec3f normal = <span class="built_in">cross</span>(<span class="built_in">Vec3f</span>(world_coords[<span class="number">2</span>] - world_coords[<span class="number">0</span>]), <span class="built_in">Vec3f</span>(world_coords[<span class="number">1</span>] - world_coords[<span class="number">0</span>])).<span class="built_in">normalize</span>();</span><br><span class="line">		<span class="type">float</span> intensity = normal * light_dir;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(intensity &gt; <span class="number">0</span>)</span><br><span class="line">			Triangle_ZBuffer::<span class="built_in">Triangle</span>(pts, zbuffer, image, <span class="built_in">TGAColor</span>(intensity * <span class="number">255</span>, intensity * <span class="number">255</span>, intensity * <span class="number">255</span>, <span class="number">255</span>), width);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>完成的效果是下面这样的，对比上次的结果，我们这次把不同的面都正确绘制出来了，尤其是嘴巴。</p>
+<p><img src="/2023/08/01/tinyRenderer2/4.png" alt></p>
+<h2 id="插值计算和纹理"><a href="#插值计算和纹理" class="headerlink" title="插值计算和纹理"></a>插值计算和纹理</h2><p>阅读代码后你肯定注意到，前面的部分我们为了获得每个像素单独的深度值，实际上是先计算p的重心坐标，根据这个面上三个顶点的深度值进行插值得到了p点的深度值。这是就不得不说到另一部分重要的知识：纹理。</p>
+<p>这里不再具体讲原理了，之前说obj文件格式的时候提到里面存储了一个vt开头的行，就是代表纹理坐标，顶点将读取坐标找到纹理图中的颜色，作为该顶点的颜色。那么有了三个顶点的颜色之后，我们自然可以通过对三个顶点的颜色插值得到像素点的颜色了。注意我们不是对纹理坐标进行插值，我不能确定它是否正确，因为某些模型的纹理坐标并不保证是连续的，对颜色插值是最保险的方法。</p>
+<p>这部分是作者给出的作业，并没有实例代码，所以简单说下思路：读取表示obj模型一个面的数据，它的形式大概是：f x/x/x x/x/x x/x/x，第一个x是顶点序号，第二个x是顶点对应的纹理坐标序号，首先要想办法把这个值读出来；之后在main中调用前面写的方法得到纹理坐标，它范围是[0,1]，读取颜色的话需要先用tga读纹理图，出来是一个二维数组，那么纹理坐标的xy分别乘以宽高，得到的就是一个TGAColor值，存储三个顶点的颜色，然后插值，再乘以光照强度，最后就是颜色了。</p>
+<p>我们一步一步来实现。</p>
+<h3 id="读取纹理坐标"><a href="#读取纹理坐标" class="headerlink" title="读取纹理坐标"></a>读取纹理坐标</h3><p>Model类中原来只写了读取顶点和边的构造函数，我们修改其中的内容，添加私有变量texcoord_，然后同样构造函数中赋值。注意两个地方，第一由于行开头是vt，trash要收集两次；第二obj文件中纹理坐标还是三维的，只不过第三维是0，所以要声明为Vec3f。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">Model::<span class="built_in">Model</span>(<span class="type">const</span> <span class="type">char</span> *filename) : <span class="built_in">verts_</span>(), <span class="built_in">faces_</span>() &#123;</span><br><span class="line">    std::ifstream in;</span><br><span class="line">    in.<span class="built_in">open</span> (filename, std::ifstream::in);</span><br><span class="line">    <span class="keyword">if</span> (in.<span class="built_in">fail</span>()) <span class="keyword">return</span>;</span><br><span class="line">    std::string line;</span><br><span class="line">    <span class="keyword">while</span> (!in.<span class="built_in">eof</span>()) &#123;</span><br><span class="line">        std::<span class="built_in">getline</span>(in, line);</span><br><span class="line">        <span class="function">std::istringstream <span class="title">iss</span><span class="params">(line.c_str())</span></span>;</span><br><span class="line">        <span class="type">char</span> trash;</span><br><span class="line">        <span class="keyword">if</span> (!line.<span class="built_in">compare</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="string">&quot;v &quot;</span>)) &#123;</span><br><span class="line">            iss &gt;&gt; trash;</span><br><span class="line">            Vec3f v;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">3</span>;i++) iss &gt;&gt; v[i];</span><br><span class="line">            verts_.<span class="built_in">push_back</span>(v);</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (!line.<span class="built_in">compare</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="string">&quot;f &quot;</span>)) &#123;</span><br><span class="line">            std::vector&lt;<span class="type">int</span>&gt; f;</span><br><span class="line">            std::vector&lt;<span class="type">int</span>&gt; ft;</span><br><span class="line">            <span class="type">int</span> itrash, idx, texidx;</span><br><span class="line">            iss &gt;&gt; trash;</span><br><span class="line">            <span class="comment">//f x/x/x</span></span><br><span class="line">            <span class="keyword">while</span> (iss &gt;&gt; idx &gt;&gt; trash &gt;&gt; texidx &gt;&gt; trash &gt;&gt; itrash) &#123;</span><br><span class="line">                idx--; <span class="comment">// in wavefront obj all indices start at 1, not zero</span></span><br><span class="line">                f.<span class="built_in">push_back</span>(idx);</span><br><span class="line">                ft.<span class="built_in">push_back</span>(texidx);</span><br><span class="line">            &#125;</span><br><span class="line">            faces_.<span class="built_in">push_back</span>(f);</span><br><span class="line">            faces_tex_.<span class="built_in">push_back</span>(ft);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (!line.<span class="built_in">compare</span>(<span class="number">0</span>, <span class="number">3</span>, <span class="string">&quot;vt &quot;</span>)) &#123;</span><br><span class="line">            iss &gt;&gt; trash;</span><br><span class="line">            iss &gt;&gt; trash;</span><br><span class="line">            Vec3f vt;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) iss &gt;&gt; vt[i];</span><br><span class="line">            texcoords_.<span class="built_in">push_back</span>(vt);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    std::cerr &lt;&lt; <span class="string">&quot;# v# &quot;</span> &lt;&lt; verts_.<span class="built_in">size</span>() &lt;&lt; <span class="string">&quot; f# &quot;</span>  &lt;&lt; faces_.<span class="built_in">size</span>() &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我增加了两个成员函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//存储面对应的三个纹理坐标序号</span></span><br><span class="line">std::vector&lt;std::vector&lt;<span class="type">int</span>&gt; &gt; faces_tex_;</span><br><span class="line"><span class="comment">//存储纹理坐标</span></span><br><span class="line">std::vector&lt;Vec3f&gt; texcoords_;</span><br></pre></td></tr></table></figure>
+<p>然后给出返回纹理坐标的方法，注意在返回对应纹理坐标序号的纹理坐标时，texidx要减少1，因为obj中序号从1开始，而我们的数组从0开始。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//返回一个面三个顶点对应的纹理坐标序号</span></span><br><span class="line"><span class="function">std::vector&lt;<span class="type">int</span>&gt; <span class="title">Model::faceTex</span><span class="params">(<span class="type">int</span> idx)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> faces_tex_[idx];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回对应纹理坐标序号的纹理坐标</span></span><br><span class="line"><span class="function">Vec2f <span class="title">Model::texcoord</span><span class="params">(<span class="type">int</span> texidx)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Vec2f</span>(texcoords_[texidx - <span class="number">1</span>][<span class="number">0</span>], texcoords_[texidx - <span class="number">1</span>][<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="返回纹理颜色"><a href="#返回纹理颜色" class="headerlink" title="返回纹理颜色"></a>返回纹理颜色</h3><p>阅读TGA读写的方法，其中给出一个get方法用来返回像素(i,j)的颜色，所以我们这里编写一个Texture类，提供返回像素颜色的方法。注意读取图片后我对图片数据进行了垂直反转，因为数据存储颜色从图片的左上角开始，纹理坐标原点是左下角，因此需要将它上下反转。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//读取纹理图片</span></span><br><span class="line">Texture::<span class="built_in">Texture</span>(<span class="type">const</span> <span class="type">char</span>* filename)</span><br><span class="line">&#123;</span><br><span class="line">	texture.<span class="built_in">read_tga_file</span>(filename);</span><br><span class="line">	texture.<span class="built_in">flip_vertically</span>();</span><br><span class="line">	width = texture.<span class="built_in">get_width</span>();</span><br><span class="line">	height = texture.<span class="built_in">get_height</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回纹理颜色</span></span><br><span class="line">TGAColor Texture:: <span class="built_in">texColor</span>(Vec2f texcoord)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> texture.<span class="built_in">get</span>(<span class="built_in">int</span>(texcoord.x * (width)), <span class="built_in">int</span>(texcoord.y * (height)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="插值计算像素颜色"><a href="#插值计算像素颜色" class="headerlink" title="插值计算像素颜色"></a>插值计算像素颜色</h3><p>现在通过调用纹理类，我们可以得到每个面的三个顶点的纹理颜色，对颜色进行插值，最后就能计算当前像素的颜色值了。而插值是在绘制三角形的时候，遍历每个包围盒中的像素，才能得到像素对应的重心坐标，因此现在像素颜色将由绘制三角形的方法决定，我们取消之前传入颜色的做法，将光照强度和该三角形三个顶点的颜色传入，再进行插值。</p>
+<p>值得注意的是，常见的方法应该是通过对三个顶点的纹理坐标进行插值，根据插值得到的纹理坐标映射找到纹理颜色，作为像素的颜色。不过这种方法我们后续也会使用，所以这里我选择对颜色进行插值，这种方法得到的结果显然不如纹理映射得到的效果好，特点在于平滑了颜色值。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Lesson3.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;texture.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">const</span> TGAColor white = <span class="built_in">TGAColor</span>(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>);</span><br><span class="line"><span class="type">const</span> TGAColor red = <span class="built_in">TGAColor</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line"><span class="type">const</span> TGAColor green = <span class="built_in">TGAColor</span>(<span class="number">0</span>, <span class="number">255</span>, <span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line">Model* model = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> width = <span class="number">800</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> height = <span class="number">800</span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Vec3f <span class="title">light_dir</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>, <span class="number">-1</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Vec3f <span class="title">world2screen</span><span class="params">(Vec3f v)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">Vec3f</span>(<span class="built_in">int</span>((v.x + <span class="number">1.</span>) * width / <span class="number">2.</span> + <span class="number">.5</span>), <span class="built_in">int</span>((v.y + <span class="number">1.</span>) * height / <span class="number">2.</span> + <span class="number">.5</span>), v.z);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>** argv)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="number">2</span> == argc) &#123;</span><br><span class="line">		model = <span class="keyword">new</span> <span class="built_in">Model</span>(argv[<span class="number">1</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		model = <span class="keyword">new</span> <span class="built_in">Model</span>(<span class="string">&quot;obj/african_head.obj&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//初始化深度缓冲</span></span><br><span class="line">	<span class="type">float</span>* zbuffer = <span class="keyword">new</span> <span class="type">float</span>[width * height];</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = width * height; i--; zbuffer[i] = -std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">max</span>());</span><br><span class="line"></span><br><span class="line">	<span class="function">TGAImage <span class="title">image</span><span class="params">(width, height, TGAImage::RGB)</span></span>;</span><br><span class="line">	<span class="comment">//初始化纹理</span></span><br><span class="line">	<span class="function">Texture <span class="title">tex</span><span class="params">(<span class="string">&quot;obj/african_head/african_head_diffuse.tga&quot;</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; model-&gt;<span class="built_in">nfaces</span>(); i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">//面对应的顶点序号</span></span><br><span class="line">		std::vector&lt;<span class="type">int</span>&gt; face = model-&gt;<span class="built_in">face</span>(i);</span><br><span class="line">		<span class="comment">//面对应的纹理序号</span></span><br><span class="line">		std::vector&lt;<span class="type">int</span>&gt; faceTex = model-&gt;<span class="built_in">faceTex</span>(i);</span><br><span class="line">		<span class="comment">//顶点坐标</span></span><br><span class="line">		Vec3f pts[<span class="number">3</span>];</span><br><span class="line">		<span class="comment">//三个顶点的纹理坐标</span></span><br><span class="line">		Vec2f ptstex[<span class="number">3</span>];</span><br><span class="line">		Vec3f world_coords[<span class="number">3</span>];</span><br><span class="line">		TGAColor vertColors[<span class="number">3</span>];</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++)</span><br><span class="line">		&#123;</span><br><span class="line">			pts[j] = <span class="built_in">world2screen</span>(model-&gt;<span class="built_in">vert</span>(face[j]));</span><br><span class="line">			ptstex[j] = model-&gt;<span class="built_in">texcoord</span>(faceTex[j]);</span><br><span class="line">			world_coords[j] = model-&gt;<span class="built_in">vert</span>(face[j]);</span><br><span class="line"></span><br><span class="line">			vertColors[j] = tex.<span class="built_in">texColor</span>(ptstex[j]);</span><br><span class="line">		&#125;</span><br><span class="line">		Vec3f normal = <span class="built_in">cross</span>(<span class="built_in">Vec3f</span>(world_coords[<span class="number">2</span>] - world_coords[<span class="number">0</span>]), <span class="built_in">Vec3f</span>(world_coords[<span class="number">1</span>] - world_coords[<span class="number">0</span>])).<span class="built_in">normalize</span>();</span><br><span class="line">		<span class="type">float</span> intensity = normal * light_dir;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(intensity &gt; <span class="number">0</span>)</span><br><span class="line">			Triangle_ZBuffer::<span class="built_in">Triangle</span>(pts, zbuffer, image, intensity, width, vertColors);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	image.<span class="built_in">flip_vertically</span>(); <span class="comment">// i want to have the origin at the left bottom corner of the image</span></span><br><span class="line">	image.<span class="built_in">write_tga_file</span>(<span class="string">&quot;output.tga&quot;</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">delete</span> model;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后记得修改绘制三角形的方法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Triangle_ZBuffer::Triangle</span><span class="params">(Vec3f* pts, <span class="type">float</span>* zbuffer, TGAImage&amp; image, <span class="type">float</span> intensity, <span class="type">int</span> width, TGAColor* vertColors)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="function">Vec2f <span class="title">bboxmin</span><span class="params">(std::numeric_limits&lt;<span class="type">float</span>&gt;::max(), std::numeric_limits&lt;<span class="type">float</span>&gt;::max())</span></span>;</span><br><span class="line">	<span class="function">Vec2f <span class="title">bboxmax</span><span class="params">(-std::numeric_limits&lt;<span class="type">float</span>&gt;::max(), -std::numeric_limits&lt;<span class="type">float</span>&gt;::max())</span></span>;</span><br><span class="line">	<span class="function">Vec2f <span class="title">clamp</span><span class="params">(image.get_width() - <span class="number">1</span>, image.get_height() - <span class="number">1</span>)</span></span>;</span><br><span class="line">	<span class="comment">//找到bounding box的大小</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">2</span>; j++) &#123;</span><br><span class="line">			bboxmin[j] = std::<span class="built_in">max</span>(<span class="number">0.f</span>, std::<span class="built_in">min</span>(bboxmin[j], pts[i][j]));</span><br><span class="line">			bboxmax[j] = std::<span class="built_in">min</span>(clamp[j], std::<span class="built_in">max</span>(bboxmax[j], pts[i][j]));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//逐个判断bbox中的像素是否在三角形中</span></span><br><span class="line">	Vec3f p;</span><br><span class="line">	<span class="keyword">for</span> (p.x = bboxmin.x; p.x &lt;= bboxmax.x; p.x++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> (p.y = bboxmin.y; p.y &lt;= bboxmax.y; p.y++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">//p点重心坐标</span></span><br><span class="line">			Vec3f bc_screen = <span class="built_in">barycentric</span>(pts, p);</span><br><span class="line">			<span class="comment">//不在三角形内</span></span><br><span class="line">			<span class="keyword">if</span> (bc_screen.x &lt; <span class="number">0</span> || bc_screen.y &lt; <span class="number">0</span> || bc_screen.z &lt; <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">			p.z = <span class="number">0</span>;</span><br><span class="line">			<span class="function">TGAColor <span class="title">curColor</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>)</span></span>;</span><br><span class="line">			<span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">			<span class="comment">//插值计算p的深度和颜色</span></span><br><span class="line">			<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++)</span><br><span class="line">			&#123;</span><br><span class="line">				p.z += pts[i][<span class="number">2</span>] * bc_screen[i];</span><br><span class="line">				curColor = curColor + vertColors[i] * bc_screen[i];</span><br><span class="line"></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="comment">//深度值大于当前缓存值</span></span><br><span class="line">			<span class="keyword">if</span> (zbuffer[<span class="built_in">int</span>(p.x + p.y * width)] &lt; p.z)</span><br><span class="line">			&#123;</span><br><span class="line">				zbuffer[<span class="built_in">int</span>(p.x + p.y * width)] = p.z;</span><br><span class="line">				image.<span class="built_in">set</span>(p.x, p.y, curColor * intensity);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，上面我们对TGAColor类型的值使用了+号，文件中没有给出该符号的重载，因此我们也必须手动补充在TGAColor的结构体中：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">TGAColor <span class="keyword">operator</span>+(<span class="type">const</span> TGAColor tgacolor) <span class="type">const</span> &#123;</span><br><span class="line">    <span class="comment">//默认alpha值是255</span></span><br><span class="line">       <span class="function">TGAColor <span class="title">res</span><span class="params">(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>)</span></span>;</span><br><span class="line">       <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++)</span><br><span class="line">       &#123;</span><br><span class="line">           res.bgra[i] = <span class="keyword">this</span>-&gt;bgra[i] + tgacolor.bgra[i];</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> res;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>最后渲染得到的效果就是这样的：</p>
+<p><img src="/2023/08/01/tinyRenderer2/6.png" alt></p>
+<p>模型还是棱角分明，但如果你看到人物额头部分，就能明白我们已经对三角形进行了平滑，但是由于采样频率太低，也就是每次仅仅对三个顶点的颜色插值，得到的纹理细节不足，单个三角形上能看到平滑的表现，但是不同三角形之间就很难关联了，所以造成这样的结果。对比一下采用坐标插值的结果：</p>
+<p><img src="/2023/08/01/tinyRenderer2/7.png" alt></p>
+<p>这就是为什么我们要对纹理坐标进行插值，而不是颜色插值。当然对颜色插值或许也有它自己的用途。下节内容我们将回顾MVP变换。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/07/31/tinyRenderer1/" rel="prev" title="五百行C++理解OpenGL机制(二)">
+                  <i class="fa fa-angle-left"></i> 五百行C++理解OpenGL机制(二)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/08/02/tinyRenderer3/" rel="next" title="五百行C++理解OpenGL机制(四)">
+                  五百行C++理解OpenGL机制(四) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

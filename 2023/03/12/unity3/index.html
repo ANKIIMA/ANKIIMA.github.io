@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前面的博客中我们熟悉了Unity界面的布局和使用，并没有介绍怎么让Unity和脚本&#x2F;IDE进行挂接，从现在开始我们进一步学习Unity，仅导入非编程资源构建一个2D的项目，包括代码的调试方法，角色的基本移动脚本，Tilemap如何使用。默认你拥有面向对象基础，方便开展接下来的学习任务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unity入门(三)-制作一个2D游戏">
+<meta property="og:url" content="https://ankiima.github.io/2023/03/12/unity3/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前面的博客中我们熟悉了Unity界面的布局和使用，并没有介绍怎么让Unity和脚本&#x2F;IDE进行挂接，从现在开始我们进一步学习Unity，仅导入非编程资源构建一个2D的项目，包括代码的调试方法，角色的基本移动脚本，Tilemap如何使用。默认你拥有面向对象基础，方便开展接下来的学习任务。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/5.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/7.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/8.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/9.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/10.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/11.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/12.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/13.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/14.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/16.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/12/unity3/15.png">
+<meta property="article:published_time" content="2023-03-12T10:29:47.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.581Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/03/12/unity3/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/03/12/unity3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/03/12/unity3/","path":"2023/03/12/unity3/","title":"unity入门(三)-制作一个2D游戏"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>unity入门(三)-制作一个2D游戏 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEUnity%E7%9A%84IDE"><span class="nav-number">1.1.</span> <span class="nav-text">设置Unity的IDE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unity%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">Unity序列化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B4%A0%E6%9D%90%E5%87%86%E5%A4%87"><span class="nav-number">1.3.</span> <span class="nav-text">素材准备</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%92%E8%89%B2%E6%8E%A7%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">角色控制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TileMap"><span class="nav-number">3.</span> <span class="nav-text">TileMap</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E7%BE%8E%E6%9C%AF%E7%B4%A0%E6%9D%90%E8%BD%AC%E5%8C%96%E4%B8%BASprite"><span class="nav-number">3.1.</span> <span class="nav-text">将美术素材转化为Sprite</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BATileMap"><span class="nav-number">3.2.</span> <span class="nav-text">创建TileMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Sprite-Editor%E5%92%8CPPU%E5%A4%84%E7%90%86%E7%BE%8E%E6%9C%AF%E7%B4%A0%E6%9D%90"><span class="nav-number">3.3.</span> <span class="nav-text">使用Sprite Editor和PPU处理美术素材</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Tile-Palette%E7%BB%98%E5%88%B6%E5%9C%BA%E6%99%AF"><span class="nav-number">3.4.</span> <span class="nav-text">使用Tile Palette绘制场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E6%95%B4%E5%9B%BE%E7%89%87%E6%8E%92%E5%BA%8F"><span class="nav-number">3.5.</span> <span class="nav-text">调整图片排序</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/03/12/unity3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="unity入门(三)-制作一个2D游戏 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          unity入门(三)-制作一个2D游戏
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-03-12 18:29:47" itemprop="dateCreated datePublished" datetime="2023-03-12T18:29:47+08:00">2023-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>前面的博客中我们熟悉了Unity界面的布局和使用，并没有介绍怎么让Unity和脚本/IDE进行挂接，从现在开始我们进一步学习Unity，仅导入非编程资源构建一个2D的项目，包括代码的调试方法，角色的基本移动脚本，Tilemap如何使用。默认你拥有面向对象基础，方便开展接下来的学习任务。</p>
+<span id="more"></span>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>为了方便学习，我们暂时先进行一些准备工作，首先确保我们正确设置了IDE，要了解如何用IDE对Unity的脚本进行开发和调试；然后是Unity序列化的介绍，这个工具能帮助我们在Unity中直接查看并调整脚本对游戏对象的某些设置，对素材导入也有帮助；最后是素材的准备，对个人来说这通常是最头疼的部分。</p>
+<h2 id="设置Unity的IDE"><a href="#设置Unity的IDE" class="headerlink" title="设置Unity的IDE"></a>设置Unity的IDE</h2><p>C#开发的话采用vscode和visual studio都可以，不够后者更值得推荐 ，它集成了多种IDE功能，并且基本不用进行多余的设置就可以和Unity挂接成功，包括debug、项目对接、成员查找等，适合初学者使用，因此我这里直接采用后者。</p>
+<p>Unity对visual studio支持比较完善，首先要使用vs进行C#开发，需要在vs的安装选项中选择安装桌面开发模块(.NET)，相当于Java必备的虚拟机，让C#程序有一个运行的环境支持，同时也新增了C#语言的识别工具，方便了开发，但这只是一个推荐的可选项；Unity游戏开发模块则是必选的模块，它提供了与Unity挂接的接口和编译器等C#运行环境。</p>
+<p><img src="/2023/03/12/unity3/1.png" alt></p>
+<p>以vs2019社区版为例，安装可以在新建项目窗口找到，点击后确认安装的模块并安装即可。如果仅使用Unity进行C#的开发，可以不选择.NET，Unity仍然在使用mono作为编译环境，点击“使用Unity的游戏开发”可以发现简介中提到已经包含了C#的编译器。</p>
+<p><img src="/2023/03/12/unity3/2.png" alt></p>
+<p>下载完成后，打开Unity，找到Edit/Preferences/ExternalTools，点击External Script Editor，选中已经存在的vs即可。</p>
+<p><img src="/2023/03/12/unity3/3.png" alt></p>
+<p>你可以打开之前的项目或者试着创建脚本，查看是否跳转成功。</p>
+<p>接下来我们尝试调试一个脚本，随便创建一个空对象，然后添加新的脚本：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MainPlayer</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> myName;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> strength;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> health;</span><br><span class="line">    <span class="comment">// Start is called before the first frame update</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;我的名字是：&quot;</span> + myName);</span><br><span class="line">        Debug.Log(strength);</span><br><span class="line">        Debug.Log(health);</span><br><span class="line">        Debug.Log(Add(<span class="number">3</span>,<span class="number">5</span>,<span class="number">6</span>)); </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> x, <span class="built_in">int</span> y, <span class="built_in">int</span> z</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> x + y + z;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后添加断点，选择附加到Unity</p>
+<p><img src="/2023/03/12/unity3/4.png" alt></p>
+<p>接着在Game视图中运行场景，经过调用后Unity自动会跳转到vs的调试界面，就可以和正常程序一样查看变量并且调试了。</p>
+<h2 id="Unity序列化"><a href="#Unity序列化" class="headerlink" title="Unity序列化"></a>Unity序列化</h2><p>序列化指的是，从程序运行的内存中，将指定对象转换为二进制流（数据），为传输（可能是输出到硬盘文件、或传输给网络上其他电脑）做准备的过程。这点和Unity脚本的序列化不同，后者主要说的就是能不能在Inspector窗口中查看对应脚本给游戏对象设置的属性，类等成员；而Unity也具备文件序列化的功能，方便资源读取等操作，这个我们暂且不说，导入素材的时候也许会用到。</p>
+<p>首先对于游戏对象的脚本中，通常会定义一个主类来设置对象的属性、方法等，而属性一般以成员变量的形式呈现，我们知道成员变量需要被访问指定词限制，public的成员变量可以直接被挂接到Unity的Inspector窗口中，而private、protect修饰的成员变量并不被展示。但是有的时候又想让这些变量出现在窗口中方便更改，就可以在其定义前面添加[UnityEngine.SerializeField]，从而序列化一个私有域。</p>
+<p>我们在Unity的脚本开发中，除了给游戏对象创建的类外，可能会有一些自定义类存在，方便在游戏对象对应的主类中进行调用。它和我们为游戏对象直接添加的脚本中类的区别是，Unity添加的类继承了一个父类MonoBehavior，这个基类为Unity提供将脚本和对象挂接的接口，也让子类能够被自动序列化，但是自定义类不同，它并没有从这个类派生出去，所以不会被Unity序列化。为了在Inspector窗口中也能对这些类进行修改，就需要在这些类的定义之前加上序列化标签：[System.Serializable]。</p>
+<p>关于序列化暂且简单记录到这里，贴一个链接方便深入<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhaoqingqing/p/3995304.html">学习</a>。</p>
+<h2 id="素材准备"><a href="#素材准备" class="headerlink" title="素材准备"></a>素材准备</h2><p>新建一个2D模板项目，导入Unity资产：<a target="_blank" rel="noopener" href="https://assetstore.unity.com/packages/2d/2d-beginner-tutorial-resources-140167?_ga=2.134705203.331241089.1633678521-522971275.1624332126">RubyAdventure</a>。</p>
+<p><img src="/2023/03/12/unity3/5.png" alt></p>
+<p>这是一个仅拥有游戏素材的Unity资产，它提供了我们接下来要制作的游戏的所有材料，例如图片、关键帧动画、音效等，而完全没有已经编写的脚本、预制件等内容，因此，所有关于Unity的内容我们都将从零开始。</p>
+<p>这个项目包括的内容有：</p>
+<ul>
+<li>2D素材的导入和使用；</li>
+<li>角色控制系统；</li>
+<li>TileMap使用；</li>
+<li>设置动态Sprite；</li>
+<li>入门粒子系统；</li>
+</ul>
+<h1 id="角色控制"><a href="#角色控制" class="headerlink" title="角色控制"></a>角色控制</h1><p>2D素材我们已经准备好了，具体如何使用这些五花八门的素材，将在使用到某个素材的时候结合操作进行介绍。现在作为脚本的入门，我们先选择一个简单的角色移动控制系统来引入。</p>
+<p>2D角色的控制很简单，它通常由两部分构成：移动和动画播放。也就是说，我们创建的角色将在播放动画的同时进行移动，从而完成游戏中移动的效果。现在我们尝试制作角色移动的脚本，将上面这个主角的图片添加到Art/Sprite中，然后再次添加到层级栏中，这样就创建了主角的游戏对象。</p>
+<p>然后我们给这个主角对象添加一个新的脚本：RubyController，并将自动创建的脚本拖动到Assets/Scripts文件夹中方便管理。</p>
+<p>新建的脚本中给出了一个继承自MonoBehaviour的类RubyController，并且已经创建了两个基本方法：Start和Update。前者在游戏开始前自动调用一次，后者将会在每一帧进行一次调用。</p>
+<p>就目前来看，并不需要Start方法，因此可以暂时删除它。为了让角色移动，我们需要调用Unity提供的两个基本类：Input和Transform，前者接受键盘鼠标的输入，后者记录当前游戏对象的位置状态。这样一来我们要做的事情就很明显了，你可能想到，我们使用Input接受键盘按键，再编写一个Move函数，每次接受到信号时，更改Transform即可。Input类还在ProjectSetting中提供了InputManager，将枚举的类型值绑定到自定义按键上，用GetAxis方法接受枚举值；当然你也可以直接用GetKey等一系列方法直接获取按键信息。</p>
+<p><img src="/2023/03/12/unity3/6.png" alt></p>
+<p>事实上我们也是这样做的，只不过其中有一个问题值得讨论：如何控制游戏帧数和移动速度？</p>
+<p>一台高配置的PC可能会具有800帧/秒的性能，如果这个位移量为常量，它将导致极快的移动速度；但是在另一台只有10帧/秒的PC上角色将移动得很慢，并且明显能感受到0.1s的延迟。为了解决这个问题，我们需要根据帧数调整移动量，帧数通过Unity提供的基本类Time中的deltaTime获取，它记录了每帧间隔的时间，为了保持一致的移动速度，我们像下面这样进行编写：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">    	<span class="comment">//Input类接受键盘输入，在Unity设置中修改对应按键</span></span><br><span class="line">        <span class="built_in">float</span> horizontal = Input.GetAxis(<span class="string">&quot;Horizontal&quot;</span>);</span><br><span class="line">        <span class="built_in">float</span> vertical = Input.GetAxis(<span class="string">&quot;Vertical&quot;</span>);</span><br><span class="line">    	<span class="comment">//获取当前对象位置</span></span><br><span class="line">        Vector2 position = transform.position;</span><br><span class="line">    	<span class="comment">//根据帧数设置移动速度</span></span><br><span class="line">        position.x = position.x + speed * horizontal * Time.deltaTime;</span><br><span class="line">        position.y = position.y + speed * vertical * Time.deltaTime;</span><br><span class="line">        transform.position = position;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>现在我们设置了以时间为单位的移动速度，它通过deltaTime平衡了不同帧数的影响，800帧时每帧移动量为原本的1/800，10帧时移动原本的1/10，因此每秒移动的距离是相等的。</p>
+<p>启用这个脚本以后，我们的角色已经可以移动了，不过由于缺少动画，它显得很奇怪。</p>
+<h1 id="TileMap"><a href="#TileMap" class="headerlink" title="TileMap"></a>TileMap</h1><p>除了角色外，另一个重要的内容是场景是如何进行绘制的。显然在我们前面做的飞机小游戏中，背景就是一张图片，我们向其中添加了一些陨石图片并加上各种组件，使得陨石可以进行交互。</p>
+<p>而在很多2D游戏中，显然不可能直接用一张图片作为背景就结束场景制作，因为需要设计可交互的场景例如地板、门等东西，尤其是像素游戏中，可以观察到地图并不是一整个图片，而是一格一格的，这其实就是TileMap，利用它可以通过一张美术资源素材图片就设计出大片的地图，下面我们具体看看如何操作。</p>
+<h2 id="将美术素材转化为Sprite"><a href="#将美术素材转化为Sprite" class="headerlink" title="将美术素材转化为Sprite"></a>将美术素材转化为Sprite</h2><p>在Unity中，对图片的操作可以使用Sprite完成，这是Unity处理纹理的容器，很像一个有很多方法的实例化对象，可以将任意图片通过Sprite处理。</p>
+<p><img src="/2023/03/12/unity3/7.png" alt></p>
+<p>这就是我们要用到的素材，直接将图片保存到当前文件夹中自定义的地方即可，可以将其保存到Sprite中。在Unity中选中这个图片，就会发现右边的Inspector窗口中已经显示了Texture Type为Sprite(2D and UI)。</p>
+<h2 id="创建TileMap"><a href="#创建TileMap" class="headerlink" title="创建TileMap"></a>创建TileMap</h2><p>有了素材以后，不能直接使用TileMap功能，因为它是作为一个游戏对象存在的，在层级栏中创建TileMap后才能使用它的功能。</p>
+<p><img src="/2023/03/12/unity3/8.png" alt></p>
+<p>这里创建的是矩形的，这个选项卡中都是说的TileMap形状，学会矩形的就可以了，如果后面需要的话可以自行了解，都差不多。创建以后会发现，TileMap还连带创建了一个父对象Grid，都有各自对应的组件，现在也暂时不需要修改，就是一些所在平面等设置。</p>
+<h2 id="使用Sprite-Editor和PPU处理美术素材"><a href="#使用Sprite-Editor和PPU处理美术素材" class="headerlink" title="使用Sprite Editor和PPU处理美术素材"></a>使用Sprite Editor和PPU处理美术素材</h2><p>这时我们可以介绍一下Environment中那些奇怪的图片了，它们看起来毫无关联，并且上面的内容也看不出来，但其实它们是用来制作地图的。具体来说，这些图片是一个九宫格图片，其中每一个都是地图上的一块，例如看起来最明显的那一张：</p>
+<p><img src="/2023/03/12/unity3/9.png" alt></p>
+<p>分成九宫格以后，我们可以通过后面的方法让左上角的这个格子图片只出现在拐弯的地方，从而不受限与这个图片的大小，而是制作一个足够面积、任意形状的水池：</p>
+<p><img src="/2023/03/12/unity3/10.png" alt></p>
+<p>这样看就很清楚了，这里美术素材很大程度上节省了画师的时间，同时我们对资源读取的要求也只是那一张图片。选中需要分割的图片，在Inspector窗口中，修改Sprite Mode为Multiple，代表这个素材中含有多个小的素材；将Pixels Per Unit修改为64；打开Sprite Editor，点开Slice选项卡，选择Grid By Cell Count，表示用网格数进行均等划分，这里自然就是3*3，点击slice，点击右上角Apply，然后保存修改。</p>
+<p><img src="/2023/03/12/unity3/11.png" alt></p>
+<p>这样就划分好一个素材了。而刚才的砖块图片则不需要进行分割，因为它不需要变化，所有地方都一样。</p>
+<p>除此之外，还要将这些图片的Sprite属性Pixels Per Unit全部改成64，默认情况下图片读取进来都是100，100*100个像素/单位，接下来我们简称这个值为PPU。</p>
+<p>为了解这个值的用法，首先要明白什么是一个单位，在Unity中不论2D还是3D都有摄像机Camera，其中有一个属性是size，解释为摄像机视图的垂直大小，代表摄像机能看到场景的竖直长度为几个单位。这里默认的是5，也就是说摄像机能看到上下各五个网格，总共是十个网格的长度，那么这里一个网格就是一个单位。</p>
+<p>既然摄像机上下的尺寸可以通过size确定，那么左右呢？答案是修改size的同时也修改了左右尺寸，因为在Unity中确定了上下尺寸后，根据屏幕横纵比同时也能确定左右尺寸，例如屏幕是9:16的，又知道前面设置size为5，那么左右尺寸就应该是$16/9<em>5</em>2=160/9$个单位。</p>
+<p>因此PPU的用处就是用来根据图片本来的尺寸计算一个单位应该给多少像素，原来图片的像素肯定是不改变的，如果一个图片是$192<em>192$的，那么将PPU设置成192后就能将这个图片放到一个格子中；将PPU设置成64就需要9个格子来放这个图片，因为$192=64</em>3$，宽高都需要三个格子，也就是九个格子。</p>
+<p>而我们这里之所以划分成九宫格也是这个原因，Brick图片是$64<em>64$的，刚好一个格子；需要分割的图片则是$192</em>192$的，所以划分一下。</p>
+<p>最后，某些情况下素材可能需要进一步调整才能符合需要，例如将一个图片调整到刚好覆盖整个摄像机视图，那么就需要根据图片的尺寸来设计size、PPU，从而达到理想的效果。</p>
+<h2 id="使用Tile-Palette绘制场景"><a href="#使用Tile-Palette绘制场景" class="headerlink" title="使用Tile Palette绘制场景"></a>使用Tile Palette绘制场景</h2><p>得到切分好的素材后，怎么将它绘制到场景中就是最后的问题了。调色板就是用来做这个的，首先在Scene视图的右上角找到一个紫色的按钮，点击后打开Tile Palette，此时其中是空的，我们需要点击Create New Palette自行创建一个调色板，并将其文件保存在Tiles/Palette中。</p>
+<p>接着在Tiles/RuleTiles中创建一个新的RuleTile，选中，修改其中的Default Sprite为刚才处理好的素材，以不需要分割的Brick为例。设置完成后将这个RuleTile拖拽到Palette中，就完成了素材的添加。到这里就可以使用Brush工具选中这个素材，然后在场景中绘制了。</p>
+<p>当然这是最简单的情况，我们之前对后面六个图都进行了分割，应该如何使用？答案和之前是一样的，只不过拖进去后可以发现现在可以任意选中其中某一块九宫格进行绘制。</p>
+<p>但是显然我们创建的RuleTile还有更好的功能，Unity支持使用编程的方式定义Tile排布方式。这里先不介绍，我们使用另一种简单一些的方式实现自动的排布。</p>
+<p>重新创建一个RuleTile，点击+号添加需要进行排布关联数量，并点击select添加图片：<img src="/2023/03/12/unity3/12.png" alt></p>
+<p>依次添加之前分割好的图片(自动以编号顺延的方式命名)，在九宫格中确定排布，勾代表这个图片的这个相对位置可以有图片，叉代表不可以，从而完成排布安排。</p>
+<p><img src="/2023/03/12/unity3/13.png" alt></p>
+<p>其中整个TileMap的Default Sprite可以用任意一个方便分辨的图片，因为最后是以一个格子的形式存放在Palette中的。制作完成后将这个拖动到Palette中，可以发现此时已经会自动变换图边了。</p>
+<p>另外还有一个Rule Override Tile，就是类的继承，同样在Tiles选项卡中创建，选中，在Tile属性中设置为要继承的基Tile，然后就会发现只需要添加图片就可以得到和刚才一样的效果了。</p>
+<p><img src="/2023/03/12/unity3/14.png" alt></p>
+<p>最后，如果要在Palette中调整Tile的位置等操作，注意要选中edit按钮，才能修改当前的Palette，否则不会发生改变。</p>
+<h2 id="调整图片排序"><a href="#调整图片排序" class="headerlink" title="调整图片排序"></a>调整图片排序</h2><p>人物不能在背景之后，也就是说背景应该在最下面的图层。这通过修改order in layer实现，在TileMap的Inspector窗口中找到Tilemap Renderer，选择Additional settings中的order in layer，修改为-10，这样即使在同一层，背景的优先级也很小，也就是说这个值越大越会被排在前面。</p>
+<p><img src="/2023/03/12/unity3/16.png" alt></p>
+<p>而对于一些景物需要存在遮盖关系，这个关系当然会随着人物移动而改变，这可以通过伪透视图实现，在Edit &gt; Project Settings &gt; Graphics &gt; Camera Settings &gt; Transparency Sort Mode = Custom Axis &gt; Transparency Sort Axis x = 0 / y = 1 / z = 0进行设置，表示用y轴的大小作为伪透视的标准，这样一来在我们创建的地图上，走在上面的就会被遮盖，越往下越靠近屏幕，这就是伪透视。</p>
+<p>现在我们将素材tree拖进场景中，启动游戏，却发现每次经过树高一半的时候树就被人物遮挡了，我们希望的是人物走到树根的时候再改变遮蔽关系，因此需要再次打开sprite editor，调整pivot为bottom center即可。pivot就是图片的支点，调整以后就可以让人物走到树根再遮挡树了。</p>
+<p><img src="/2023/03/12/unity3/15.png" alt></p>
+<p>但是如果直接运行游戏会发现并没有得到理想的效果，这是因为我们默认的比较方式是用图片的center位置比较，要pivot生效需要进行两个设置：</p>
+<ul>
+<li>在Scene视图左上角点击Toggle Handle Position，并选择Pivot；</li>
+<li>在游戏对象的Sprite Renderer中将Sprite Sort Point选择为Pivot；</li>
+</ul>
+<p>默认的都是center选项，这样以后就可以用自己定义的pivot位置实现透视效果了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/08/unity2/" rel="prev" title="Unity初识(二)-界面布局的操作实战">
+                  <i class="fa fa-angle-left"></i> Unity初识(二)-界面布局的操作实战
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/17/classicDA/" rel="next" title="竞赛常用数据结构和算法">
+                  竞赛常用数据结构和算法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

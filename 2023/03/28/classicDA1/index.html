@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="篇幅原因，这篇博客继续记录常用算法和数据结构，主要是我不知道或者容易出错的部分。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="竞赛常用数据结构和算法(续)">
+<meta property="og:url" content="https://ankiima.github.io/2023/03/28/classicDA1/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="篇幅原因，这篇博客继续记录常用算法和数据结构，主要是我不知道或者容易出错的部分。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-28T08:30:24.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:40.938Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="Data Structure and Algorithm">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/03/28/classicDA1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/03/28/classicDA1/","path":"2023/03/28/classicDA1/","title":"竞赛常用数据结构和算法(续)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>竞赛常用数据结构和算法(续) | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#string%E5%92%8Cint%EF%BC%8Cchar%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.</span> <span class="nav-text">string和int，char类型的转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">四舍五入的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E8%BE%93%E5%87%BA%E7%9A%84%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5"><span class="nav-number">2.1.</span> <span class="nav-text">实现输出的四舍五入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%95%B0%E5%80%BC%E7%9A%84%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5"><span class="nav-number">2.2.</span> <span class="nav-text">实现数值的四舍五入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#STL%E5%AE%B9%E5%99%A8%E7%9A%84%E9%81%8D%E5%8E%86"><span class="nav-number">3.</span> <span class="nav-text">STL容器的遍历</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BE%83%E5%A4%A7%E6%95%B0%E6%8D%AE"><span class="nav-number">4.</span> <span class="nav-text">较大数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E5%88%86"><span class="nav-number">5.</span> <span class="nav-text">二分</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83"><span class="nav-number">6.</span> <span class="nav-text">贪心</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%AD%90%E5%BA%8F%E5%88%97%E5%92%8C%E5%8F%8C%E6%8C%87%E9%92%88"><span class="nav-number">7.</span> <span class="nav-text">关于子序列和双指针</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E7%9A%84%E6%8E%92%E5%BA%8F"><span class="nav-number">8.</span> <span class="nav-text">结构体的排序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">9.</span> <span class="nav-text">动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4dp"><span class="nav-number">9.1.</span> <span class="nav-text">二维dp</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#String%E6%96%B9%E6%B3%95"><span class="nav-number">10.</span> <span class="nav-text">String方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vector%E6%96%B9%E6%B3%95"><span class="nav-number">11.</span> <span class="nav-text">Vector方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Map%E6%96%B9%E6%B3%95"><span class="nav-number">12.</span> <span class="nav-text">Map方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-%E6%9E%9A%E4%B8%BE%E6%8E%92%E5%88%97"><span class="nav-number">13.</span> <span class="nav-text">C++枚举排列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E7%AD%94%E6%A0%91"><span class="nav-number">14.</span> <span class="nav-text">解答树</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/03/28/classicDA1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="竞赛常用数据结构和算法(续) | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          竞赛常用数据结构和算法(续)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-03-28 16:30:24" itemprop="dateCreated datePublished" datetime="2023-03-28T16:30:24+08:00">2023-03-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/408/" itemprop="url" rel="index"><span itemprop="name">408</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>篇幅原因，这篇博客继续记录常用算法和数据结构，主要是我不知道或者容易出错的部分。</p>
+<span id="more"></span>
+<h1 id="string和int，char类型的转换"><a href="#string和int，char类型的转换" class="headerlink" title="string和int，char类型的转换"></a>string和int，char类型的转换</h1><p>string作为C++的一个类模板，提供了方便的转换函数，to_string通过重载的方式将所有类型的数值转换为string类型。此外，string可以采用类似数组访问的形式访问字符串中的每个字符，也就是string[i]，得到字符串在该位置上的字符，但是其类型并不是string，而是char类型。而stoi函数可以将string类型转换为int，并且只保留string中的整数部分，例如输入表示小数的字符串会被截断，带有其他字符的会自动忽略。</p>
+<p>char类型作为基本的字符类型，采用八位存储，ACSII编码，因此可以看作整型int处理。也就是说，加减不同的字符常量就能对char和int进行转换，这取决于ACSII码，例如要进行数字之间的转换，那么由于’0’的ACSII编码是30，因此char转数字就是减去’0’，数字转char就是加上’0’；而对于字母来说，要得到字母在字母表中的序号，也是减去’a’或者‘A’，但是小写大写字母在ACSII编码中并不连续，因此要分情况处理。</p>
+<p>最后，string可以和char数组转换，strnig.c_str()方法返回一个以’\0’结束符为结尾的char*指针地址，而string.data()方法则直接返回地址，并不添加结束符。而string则可以直接读取char的值，因此直接赋值即可。</p>
+<p>另外，ACSII码的重要点也要记住，小写字母从97开始，大写字母从65开始。</p>
+<p>总结一些具体的转换方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//string-&gt;int</span><br><span class="line">int myint = stoi(str);</span><br><span class="line"></span><br><span class="line">// int-&gt;string</span><br><span class="line">string str = to_string(myint);</span><br><span class="line"></span><br><span class="line">// int-&gt;char</span><br><span class="line">char mychar = myint + ‘0’;</span><br><span class="line">char mychar = myint + &#x27;a&#x27;;</span><br><span class="line"></span><br><span class="line">// char-&gt;int</span><br><span class="line">int myint = mychar - &#x27;0&#x27;;</span><br><span class="line">int myint = mychar - &#x27;a&#x27;;</span><br><span class="line"></span><br><span class="line">//string-&gt;char*</span><br><span class="line">char *mychar = string.c_str();</span><br><span class="line">char *mychar = string.data();</span><br><span class="line"></span><br><span class="line">//char*-&gt;string</span><br><span class="line">string mystr = mychar;</span><br></pre></td></tr></table></figure>
+<h1 id="四舍五入的实现"><a href="#四舍五入的实现" class="headerlink" title="四舍五入的实现"></a>四舍五入的实现</h1><h2 id="实现输出的四舍五入"><a href="#实现输出的四舍五入" class="headerlink" title="实现输出的四舍五入"></a>实现输出的四舍五入</h2><p>第一是用printf函数，规定输出小数位数的同时会自动四舍五入，因此如果要在输出的时候得到四舍五入的结果直接用这个就行了。</p>
+<p>另外还可以用<iomanip>的函数实现，不过这个比较麻烦，cout的同时需要先流入两个函数fixed和setprecision(x)的返回，然后才是正常的输出内容。</iomanip></p>
+<h2 id="实现数值的四舍五入"><a href="#实现数值的四舍五入" class="headerlink" title="实现数值的四舍五入"></a>实现数值的四舍五入</h2><p>除了自己写函数实现外，对整数能用<cmath>库的函数round，这个函数会返回输入浮点数的四舍五入的整数的结果。因此如果还要进一步设置保留位数，那只能自己写了。</cmath></p>
+<h1 id="STL容器的遍历"><a href="#STL容器的遍历" class="headerlink" title="STL容器的遍历"></a>STL容器的遍历</h1><p>使用迭代器和auto关键字最简单：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for(auto iter : slt)</span><br><span class="line">&#123;</span><br><span class="line">	iter.first;</span><br><span class="line">	iter.second;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>string、map、vector也都可以直接用下标找对应元素。</p>
+<h1 id="较大数据"><a href="#较大数据" class="headerlink" title="较大数据"></a>较大数据</h1><p>一定要注意会不会超过ll的界限，有时候可能自己调试是正确的，但是实际运算过程中数据越界了，边界条件下得出的答案并不正确，所以要注意结合问题本身考虑是不是要取模，先除后乘等操作。</p>
+<h1 id="二分"><a href="#二分" class="headerlink" title="二分"></a>二分</h1><p>二分查找是常用的一种算法，但是其模板并不单一，会衍生出许多的边界问题导致最终写法不一，这里简单总结一下。</p>
+<p>根据查找目标可以将其分为以下几类：</p>
+<ul>
+<li>查找最大值中的最小值</li>
+<li><p>查找最小值中的最大值</p>
+</li>
+<li><p>查找最佳值(也就是普通的目标二分查找)</p>
+</li>
+</ul>
+<p>三者区别在于满足条件的区间范围不一致，设l和r是二分的两端，mid是中间，如果要找最大值中的最小值，那么判断mid是否符合，如果符合则应该查找[l,mid]（因为mid可能就是最小的，但是还要看看mid前面是不是还有更小的），反之查找[mid+1,r]（因为此时mid不符合，肯定不会取到）；同理，找最小值中的最大值则是符合时查找[mid,r]，反之查找[l,mid-1]，另外，此时计算mid有所改变：mid=(l+r+1)/2，因为不加的话会导致mid==l，从而更新无效，进入死循环，例如最后一次查找[2,3]中的3；而最佳值查找则不用保存“上一个最佳的”这种信息，而且一般最佳值查找还能根据信息比较目标和mid的大小，因此不用保留mid，而是根据比较结果在[l,mid-1]和[mid+1,r]中进行查找，当mid符合时返回或者用ans保存mid的值直到l&gt;r。</p>
+<p>下面是模板：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//最大值中的最小值</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">bf</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> l,r;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> mid = (l+r)/<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">check</span>(mid) == <span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            r = mid;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            l = mid+<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//最小值中的最大值</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">bf</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> l,r;</span><br><span class="line">    <span class="keyword">while</span>(l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> mid = (l + r + <span class="number">1</span>)/<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">check</span>(mid) == <span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            r = mid;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            l = mid<span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//查找target</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">bf</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> l,r;</span><br><span class="line">	<span class="keyword">while</span>(l &lt;= r)</span><br><span class="line">    &#123;</span><br><span class="line">		<span class="type">int</span> mid = (r + l)/<span class="number">2</span>;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">check</span>(mid) &gt; target) </span><br><span class="line">            right = mid<span class="number">-1</span>;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">check</span>(mid) &lt; target) </span><br><span class="line">            left = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">			<span class="keyword">return</span> mid;</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>最后关于终止条件，前两个没有用小于等于，最后一个用了，因为最后一个需要判断一次是否和target相等，这个逻辑在前面是不需要的，因此如果不用等号，无法在最后一次判断的时候查看是否找到target，非要不用的话就是在退出循环后比较一次，看看是不是找到了（此时l和r相等）。前面两个模板则是将等于的判断合并到左右区间两个判断分支中了，并且即使满足也不直接返回，而是进一步查找，如果l和r相等了，那么此时的这个值一定是边界值。</p>
+<p>总之记住对于要找边界值的问题用前两个模板就行，最后那种模板属于常规写法，要想清楚区间如何划分，要不要接受mid继续查找，还是放弃mid，就没有问题。</p>
+<h1 id="贪心"><a href="#贪心" class="headerlink" title="贪心"></a>贪心</h1><p>说是贪心其实不是暴力，指的是将问题从局部进行考虑，用局部的选择策略来对整个问题进行解决，这个策略必须具备无后效性，也就是说策略的执行并不会影响以前的状态，只与当前的情况有关。将多个局部策略的局部最优解合并为问题的最终解，就是贪心的方法。</p>
+<p>例如蓝桥杯2018省赛C++A组，付账问题，让n个人分别带着a[i]的钱去吃饭，最后花了S元，现在要让这些人近似AA，也就是一起凑钱付账，让每个人付的钱的标准差最小。</p>
+<p>对这个问题考虑贪心策略，如果整体上看最优策略是每个人付总账的平均值就行，但是有些人肯定带的钱不够，所以这时就分出来两类人考虑，钱不够肯定就全部掏出来，钱够的话只需要拿出一部分。因此我们的贪心就得到了两个局部问题要解决：</p>
+<ul>
+<li>如果这个人钱不够怎么办？</li>
+<li>如果这个人钱够怎么办？</li>
+</ul>
+<p>怎么判断够不够就是问题的关键了，由于要尽可能靠近平均值(让标准差最小)，显然的想法就是如果一个人钱不够平均值，那么全部拿出来付掉，此时总账减去他付掉的这部分，剩下的人再来平分这部分的钱。考虑对数组直接使用这个策略，如果前面一个人不够付钱，会导致后面的人付钱的标准”上升”，也就是说很多本来够付原始AA的钱的人现在可能不够了，那么这些人也要全部掏出来。但是我们又没法知道谁最后一个达到这个上升的标准(带的钱比新的这个标准多)，所以就先排序一次，前面的都是穷人，不断付钱，直到这个人带的钱足够付得起现在的平均标准，那么显然他后面的人比他有钱，都能付得起这个钱了，那么就让他们出这个钱就行。</p>
+<p>总结下上面的例子，这种策略将最终的问题拆分成两个子问题，并给出两个子问题的局部最优解方法，通过遍历的方式模拟得出最后的答案；而且策略具有无后效性，每人不断付钱只会影响后面的人的付钱额度(后面的人付钱标准在变化)，而对前面的人的付钱额度没有影响(穷人不够就全部拿出来)。因此，这就是一个典型的贪心问题。</p>
+<p>贪心问题没有固定的模板，也没有固定的解法，只是一种大体上的思想，可以在很多问题中应用。</p>
+<h1 id="关于子序列和双指针"><a href="#关于子序列和双指针" class="headerlink" title="关于子序列和双指针"></a>关于子序列和双指针</h1><p>很多问题会让找某个区间中符合要求的子序列，这里说的是连续的那种，而不是如最长不下降子序列那样断开的。对于连续的子序列可以采用遍历的方法进行查看，对于一维数组序列来说，左指针固定，右指针遍历区间，用O(N^2)的时间完成遍历；对于矩阵来说，则要用到两个双指针，固定列区间后还要用相同的方法遍历行区间，也就是用O(N^4)的时间完成遍历。</p>
+<p>另外关于如何优化，如果问题的区间之间带有单调性，那么可以利用这个性质减少遍历的次数，例如对于一维序列找区间和来说，查找符合要求的子区间可以在区间达到最低要求时停止右指针，然后进入下次操作；对于二维矩阵找子矩阵和问题来说，列区间遍历的时间不能优化了，但是行区间遍历也可以用这种方法，行的下界达到临界时，回过去向下移动上界。</p>
+<h1 id="结构体的排序"><a href="#结构体的排序" class="headerlink" title="结构体的排序"></a>结构体的排序</h1><p>有时需要对具有多个属性的成员根据某个属性进行排序，此时就可以使用结构体，排序通过sort函数的cmp函数指针实现，自定义排序方案。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">student</span>&#123;</span><br><span class="line">	<span class="type">int</span> a;</span><br><span class="line">    intb b;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">cmp</span><span class="params">(student a, student b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a.a&lt;b.a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">student</span> st[<span class="number">3</span>];</span><br><span class="line">    <span class="built_in">sort</span>(st,st+<span class="number">3</span>,cmp);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h1><h2 id="二维dp"><a href="#二维dp" class="headerlink" title="二维dp"></a>二维dp</h2><p>这里先记录下二维dp，出自经典的dp问题：最长公共子序列，给定两个字符串text1和text2，定义子序列是字符串任意删除字符后得到的子串，也就是不要求子序列的字符在原字符串中连续，和LIS问题(最长不下降子序列)类似，现在求其中最长的公共子序列的长度。</p>
+<p>除了暴力枚举其中的每个子序列并比较外，利用动态规划可以很简单地解决这个问题，定义$dp[i][j]$表示text1的前i个前缀和text2的前j个前缀的最长公共子序列长度，那么最终的答案就是dp的终点，现在考虑如何进行状态转移。在边界情况，如果i或者j为零，表示前0个前缀串的公共子序列，显然为0；现在对于$dp[i][j]$如何求解，用动态规划的思路考虑与前面哪个dp值有关。</p>
+<p>要求$dp[i][j]$，现在已经知道这个状态之前的所有i，j的最长子序列长度，又因为子序列不要求连续，所以直接看现在到达的两个字符是否相等：</p>
+<ul>
+<li>如果相等，$dp[i][j] = dp[i-1][j-1]+1$</li>
+<li>如果不相等，$dp[i][j] = max(dp[i-1][j],dp[i][j-1])$</li>
+</ul>
+<p>text1[i]和text[j]相等时，在前面基础上多了一个公共字符，所以直接加1就行了；不相等的时候长度没有增加，就要看这两个字符之前两个字符串的dp状态，取个最大的就行了。这样以后dp的状态就全部分析过了，可以列出方程计算，两层循环得到最后的结果。</p>
+<p>当然这个问题可以说还用到了双指针，也就是双指针+dp。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">longestCommonSubsequence</span><span class="params">(string text1, string text2)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> m = text1.<span class="built_in">size</span>(), n = text2.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">dp</span>(m+<span class="number">1</span>,<span class="built_in">vector</span>&lt;<span class="type">int</span>&gt; (n+<span class="number">1</span>));</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt;= m; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j &lt;= n; j++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span>(i == <span class="number">0</span> || j == <span class="number">0</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    dp[i][j] = <span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(text1[i<span class="number">-1</span>] == text2[j<span class="number">-1</span>])</span><br><span class="line">                    dp[i][j] = dp[i<span class="number">-1</span>][j<span class="number">-1</span>] + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    dp[i][j] = <span class="built_in">max</span>(dp[i<span class="number">-1</span>][j], dp[i][j<span class="number">-1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[m][n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="String方法"><a href="#String方法" class="headerlink" title="String方法"></a>String方法</h1><ul>
+<li>string.at(i)：取出下标为i的字符；</li>
+<li>string.substr(i,n)：从下标为i的地方取出n个字符作为字符串返回；</li>
+<li>string str(n,ch)：初始化字符串str为n个ch字符组成的字符串；</li>
+<li>string.size() / string.length()：返回字符串长度；</li>
+<li>string.resize(n,ch)：字符串长度改为n，不足的部分填充ch字符；</li>
+<li>string.erase(i,n)：删除从下标为i开始的n个字符；</li>
+</ul>
+<h1 id="Vector方法"><a href="#Vector方法" class="headerlink" title="Vector方法"></a>Vector方法</h1><ul>
+<li>vector v(n,value)：初始化一个长度为n，值为value的vector；</li>
+<li>vector.push_back(x)：在尾部添加元素x；</li>
+<li>vector.pop_back()：删除最后一个元素；</li>
+<li>vector.clear()：清空数组；</li>
+<li>vector.size()：返回数组大小；</li>
+</ul>
+<h1 id="Map方法"><a href="#Map方法" class="headerlink" title="Map方法"></a>Map方法</h1><ul>
+<li>map.insert(pair<element1,element2>(value1,value2))：插入一个pair到map中；</element1,element2></li>
+<li>map[value1] = value2：将键值为value1的关键值赋值为value2；</li>
+<li>map.find(value1)：找到键值为value1的关键值返回；</li>
+<li>map.erase(map.begin(), map.end())：清空元素；</li>
+<li>map.size()：返回map大小；</li>
+</ul>
+<h1 id="C-枚举排列"><a href="#C-枚举排列" class="headerlink" title="C++枚举排列"></a>C++枚举排列</h1><p>STL提供了一个能得到数组元素不同排列顺序的方法：next_permutation(stl.begin(), stl.end())，调用后会排出新的容器序列，并返回一个bool值指示还有没有没有下一个未经遍历的序列。</p>
+<p>另外，也可以通过递归的方法进行排列遍历，有机会的话在暴力求解中再说明。</p>
+<h1 id="解答树"><a href="#解答树" class="headerlink" title="解答树"></a>解答树</h1><p>如果一个问题的解可以通过重复的步骤和步骤中多个选择的策略得到，而且这些策略可能依赖于先前的选择，可以用递归枚举法实现，它的工作方法可以用解答树描述。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Data-Structure-and-Algorithm/" rel="tag"># Data Structure and Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/17/classicDA/" rel="prev" title="竞赛常用数据结构和算法">
+                  <i class="fa fa-angle-left"></i> 竞赛常用数据结构和算法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/04/10/unity4/" rel="next" title="unity入门(四)-制作一个2D游戏">
+                  unity入门(四)-制作一个2D游戏 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

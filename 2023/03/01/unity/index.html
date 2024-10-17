@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这是unity引擎学习的博客，首先会更新学习笔记，Unity学习的内容如下图，不过学习笔记将以项目为主，最后可能会汇总并按照大纲更新一遍教程。这篇博客将帮助你学会如何适用unity，包括物理、动画、渲染，最终你可以完成一个2D&#x2F;3D游戏的制作，并且在后期可以进一步学习unity的高级渲染。 本次博客介绍下Unity界面，更多内容请查看后续更新。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity初识(一)-布局和使用">
+<meta property="og:url" content="https://ankiima.github.io/2023/03/01/unity/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="这是unity引擎学习的博客，首先会更新学习笔记，Unity学习的内容如下图，不过学习笔记将以项目为主，最后可能会汇总并按照大纲更新一遍教程。这篇博客将帮助你学会如何适用unity，包括物理、动画、渲染，最终你可以完成一个2D&#x2F;3D游戏的制作，并且在后期可以进一步学习unity的高级渲染。 本次博客介绍下Unity界面，更多内容请查看后续更新。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/5.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/7.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/unity/8.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/9.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/10.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/03/01/unity/11.png">
+<meta property="article:published_time" content="2023-03-01T12:26:21.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.503Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/03/01/unity/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/03/01/unity/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/03/01/unity/","path":"2023/03/01/unity/","title":"Unity初识(一)-布局和使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unity初识(一)-布局和使用 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%95%8C%E9%9D%A2%E5%92%8C%E5%B8%83%E5%B1%80"><span class="nav-number">1.</span> <span class="nav-text">界面和布局</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Scene-View%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">1 Scene View的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E6%93%8D%E4%BD%9C%E8%A7%86%E8%A7%92%E7%9A%84%E7%A7%BB%E5%8A%A8"><span class="nav-number">1.2.</span> <span class="nav-text">1.1 操作视角的移动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%90%E6%A0%87%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.1.</span> <span class="nav-text">坐标系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E8%88%AA%E5%B7%A5%E5%85%B7"><span class="nav-number">1.2.2.</span> <span class="nav-text">导航工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E9%80%89%E4%B8%AD%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.3.</span> <span class="nav-text">1.2 选中对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E4%B8%AD%E6%96%B9%E5%BC%8F"><span class="nav-number">1.3.1.</span> <span class="nav-text">选中方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%80%89%E4%B8%AD%E8%AE%B8%E5%8F%AF"><span class="nav-number">1.3.2.</span> <span class="nav-text">设置选中许可</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%A7%BB%E5%8A%A8"><span class="nav-number">1.4.</span> <span class="nav-text">1.3 对象的移动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E8%A7%86%E5%9B%BE%E5%B7%A5%E5%85%B7%E6%A0%8F"><span class="nav-number">1.5.</span> <span class="nav-text">1.4 视图工具栏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Game-View%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.6.</span> <span class="nav-text">2 Game View的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Hierarchy%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.7.</span> <span class="nav-text">3 Hierarchy窗口的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Project%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.8.</span> <span class="nav-text">4 Project窗口的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%B7%A5%E5%85%B7%E6%A0%8F"><span class="nav-number">1.8.1.</span> <span class="nav-text">4.1 工具栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%9F%BA%E6%9C%AC%E7%9B%AE%E5%BD%95%E8%AF%B4%E6%98%8E"><span class="nav-number">1.8.2.</span> <span class="nav-text">4.2 基本目录说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Inspector%E7%AA%97%E5%8F%A3"><span class="nav-number">1.9.</span> <span class="nav-text">5 Inspector窗口</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/03/01/unity/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unity初识(一)-布局和使用 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity初识(一)-布局和使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-03-01 20:26:21" itemprop="dateCreated datePublished" datetime="2023-03-01T20:26:21+08:00">2023-03-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这是unity引擎学习的博客，首先会更新学习笔记，Unity学习的内容如下图，不过学习笔记将以项目为主，最后可能会汇总并按照大纲更新一遍教程。这篇博客将帮助你学会如何适用unity，包括物理、动画、渲染，最终你可以完成一个2D/3D游戏的制作，并且在后期可以进一步学习unity的高级渲染。</p>
+<p>本次博客介绍下Unity界面，更多内容请查看后续更新。</p>
+<span id="more"></span>
+<p><img src="/2023/03/01/unity/1.png" alt> </p>
+<p>上图展示了学习Unity的大致内容，如果你已经有了面向对象的编程基础，那么C#将变得十分容易，这里不做介绍。现在，我们从Unity的界面说起。</p>
+<h1 id="界面和布局"><a href="#界面和布局" class="headerlink" title="界面和布局"></a>界面和布局</h1><p><img src="/2023/03/01/unity/3.png" alt></p>
+<ul>
+<li>标题栏：标题栏显示当前项目信息，标题组成是当前项目-项目组件-运行环境-Unity版本-图形API；</li>
+<li>菜单栏：Unity编辑器的各种选项卡；</li>
+<li>工具栏：操作视图场景和编辑器布局的工具选项；</li>
+<li>状态栏：显示程序警告、错误信息；</li>
+<li>Scene视图：编辑场景的地方，所有元素的设置都在Scene中修改；</li>
+<li>Game视图：最终游戏展示的场景，可以运行；</li>
+<li>Project窗口：资源库，管理资源；</li>
+<li>Hierarchy窗口：层级窗口，游戏中的对象、元素按照层级顺序排列，可以快速确定、选中对象；</li>
+<li>Inspector窗口：检查窗口，可以显示，调整选中对象的属性。</li>
+</ul>
+<h2 id="1-Scene-View的使用"><a href="#1-Scene-View的使用" class="headerlink" title="1 Scene View的使用"></a>1 Scene View的使用</h2><p><img src="/2023/03/01/unity/4.png" alt></p>
+<p>在Scene View中，可以对所有游戏对象进行互动，选中，定位，从而方便我们布置游戏场景。</p>
+<h2 id="1-1-操作视角的移动"><a href="#1-1-操作视角的移动" class="headerlink" title="1.1 操作视角的移动"></a>1.1 操作视角的移动</h2><h3 id="坐标系统"><a href="#坐标系统" class="headerlink" title="坐标系统"></a>坐标系统</h3><p>2D和3D坐标轴的切换通过工具栏的按钮完成，按钮显示当前状态，点击后改变当前的维度；在Unity中，使用的三位坐标系是左手坐标系，X轴代表水平方向，Y轴代表竖直方向，Z轴代表深度。</p>
+<p>Unity的坐标系分类于图形API中介绍的概念类似，分别是：</p>
+<ul>
+<li>世界坐标系：整个场景中描述物体位置的坐标系；</li>
+<li>局部坐标系：描述单个物体的坐标系；</li>
+<li>屏幕坐标系：图形经过选然后显示成屏幕像素的坐标系；</li>
+<li>视口坐标系：图形经过渲染后，坐标压缩在[0,1]之间的坐标系；</li>
+<li>GUI坐标系：最后呈现的可视化图形界面中，物体的坐标系。</li>
+</ul>
+<p>在点击按钮，转换为3D坐标系后，窗口右上角会提供一个工具：</p>
+<p><img src="/2023/03/01/unity/5.png" alt></p>
+<p>利用这个工具可以快速调整视角，单机锥形可以将当前操作视角和该锥形代表的轴对齐，锥形底座代表屏幕，尖端代表方向；右键正方体可以激活菜单，菜单中free选项代表默认视角。</p>
+<h3 id="导航工具"><a href="#导航工具" class="headerlink" title="导航工具"></a>导航工具</h3><p>除了调整操作视角的朝向，移动位置也是有必要的，如同OpenGL中glLookat函数的原理。为了查看整个场景安排，缩放也是需要掌握的操作。</p>
+<p>移动方式：</p>
+<ul>
+<li>按住右键后，通过WASD前后左右移动，QE上下移动，按下shift键可以加速移动；</li>
+<li>左侧工具栏切换到手型按钮（快捷键Q），即可左键拖动屏幕，此时不能选中；</li>
+<li>按住alt键，此时按住鼠标中键也可以进行移动；</li>
+</ul>
+<p>缩放方式：</p>
+<ul>
+<li>按下alt键，此时左键可以移动视角，右键可以对场景进行缩放；要注意这里左键的移动视角和之前不同了，这里的移动视角指的是，以场景坐标原点为中心，环绕操作视角，而上面提到的则是直接移动视角，和我们平时3D游戏中完全相同（即场景漫游）。因此，场景漫游起始也可以实现场景缩放的效果。</li>
+</ul>
+<p>如果不小心将视角调整到不能判断的地方，可以双击层级窗口中的对象，或者选中后按下F键，就能快速定位到这个物体，然后重新调整。</p>
+<p>总结起来说，按下鼠标右键进入”漫游模式“，可以任意移动操作视角；按下alt键后进入”旋转模式“，此时以坐标原点为中心进行操作。</p>
+<h2 id="1-2-选中对象"><a href="#1-2-选中对象" class="headerlink" title="1.2 选中对象"></a>1.2 选中对象</h2><p>（Hierarchy）层级栏中，展示了所有存在的对象，那么从场景视图中，可以更直观和清晰地选择想要修改的对象。</p>
+<h3 id="选中方式"><a href="#选中方式" class="headerlink" title="选中方式"></a>选中方式</h3><ul>
+<li>单机场景中的某个对象，选中后对象的信息会显示在检查栏（Inspector）中；</li>
+<li>如果对象存在重叠，那么重复单机，选中对象会在这些重叠对象中循环；</li>
+<li>在视图右上角的搜索框中搜索对象；</li>
+<li>拖拽鼠标左键，选中框内所有对象；但是注意此时的工具状态要为矩形工具（Rect Tool）；</li>
+<li>按住shift后点击左键，同样是矩形工具；</li>
+<li>选中后，还可以按住Ctrl键，进一步添加、减少选中的对象；</li>
+</ul>
+<h3 id="设置选中许可"><a href="#设置选中许可" class="headerlink" title="设置选中许可"></a>设置选中许可</h3><p>在层级栏中，为了让一些没必要修改、移动的对象保持状态，可以设置其选中属性，方法是单机对象在层级栏中，名字左侧的手型按钮。</p>
+<ul>
+<li>点击手型按钮，更改对象和对象全部的子对象的选中属性；</li>
+<li>按住shift键再点击，仅更改对象，不更改子对象的选中属性；</li>
+</ul>
+<h2 id="1-3-对象的移动"><a href="#1-3-对象的移动" class="headerlink" title="1.3 对象的移动"></a>1.3 对象的移动</h2><p>场景视图提供了方便的操作，来对所有对象进行调整，从而方便安排场景。移动方式主要是工具栏中的五个按钮：</p>
+<p><img src="/2023/03/01/unity/6.png" alt></p>
+<ul>
+<li>移动：使用移动工具（图1）的情况下（快捷键W），物体选中后会有相应的坐标轴显示出来，鼠标移动到坐标轴上并且进行拖动，即可更改物体的位置；拖动两个坐标轴构成的小平面，可以让物体在这个平面上进行移动；按住shift键，可以让物体在垂直于当前操作摄像机视角的平面上进行移动；</li>
+<li>旋转：使用旋转工具（图2）的情况下（快捷键E），有三根线分别代表三个坐标轴，拖动细线能够让物体垂直于相应的坐标轴进行旋转；最外层的白色细线则是对应当前的操作摄像机视角，让物体垂直于当前视角旋转；</li>
+<li>缩放：使用缩放工具（图3）的情况下（快捷键R），拖动三个坐标轴，让物体沿着对应的轴进行缩放，拖动中间的正方体，让物体等比例缩放；</li>
+<li>2D变换：使用矩形工具（图4）的情况下（快捷键T），一般用来对2D物体进行修改，拖动四个矩形顶点即可；</li>
+<li>3D变换：使用变换工具（图5）的情况下（快捷键Y），综合了移动、旋转、缩放功能，操作和上面介绍的方式完全相同；</li>
+</ul>
+<p>对象的移动修改了对象的位置，位置作为属性，在检查栏中的Transform选项卡可以查看、修改。</p>
+<p>另外，在移动的时候，某些对象可能含有子对象，如果希望在修改的同时不影响子对象，要确保切换到Pivot模式；如果要修改对象及其子对象形成的外接盒，那么就切换到Center模式。</p>
+<p>同理，在旋转的时候，希望对象以父对象为中心，那么就切换到Local模式；否则就切换到Global模式。这两个按钮都在视图工具栏中，作为选项卡存在。</p>
+<h2 id="1-4-视图工具栏"><a href="#1-4-视图工具栏" class="headerlink" title="1.4 视图工具栏"></a>1.4 视图工具栏</h2><ul>
+<li>Draw Mode：切换不同的绘制模式，不同选项含义基本如下：</li>
+</ul>
+<p><img src="/2023/03/01/unity/7.png" alt></p>
+<ul>
+<li>2D：切换2D和3D模式；</li>
+<li>Lighting：开启/关闭光照；</li>
+<li>Audio：开启/关闭声音；</li>
+<li>Effects：管理特效，选型卡含义基本如下：</li>
+</ul>
+<p><img src="/2023/03/01/unity/unity\8.png" alt></p>
+<ul>
+<li>Visibility：开启/关闭场景的可见性，方法和对象拾取的设置相同；</li>
+<li>Grid：设置系统网格；</li>
+<li>Camera：设置场景摄像机的各项属性：</li>
+</ul>
+<p><img src="/2023/03/01/unity/9.png" alt></p>
+<ul>
+<li>Gizmo：在场景和游戏视图中都可以使用，用来标记不可见的游戏对象。</li>
+</ul>
+<h2 id="2-Game-View的使用"><a href="#2-Game-View的使用" class="headerlink" title="2 Game View的使用"></a>2 Game View的使用</h2><p>Game视图中，有三个按钮控制游戏演示，播放(Ctrl+P)、暂停(Ctrl+Shift+P)、按帧播放(Ctrl+Alt+P)，在播放状态下，可以进行游戏演示的试玩，但是试玩过程中进行的所有操作都是暂存的，结束播放以后将重置状态。</p>
+<p>除此外，视图中还有一个工具栏，功能如下：</p>
+<p><img src="/2023/03/01/unity/10.png" alt></p>
+<ul>
+<li>Game：切换Game运行的平台，点击选项卡Stimulator后，可以切换到模拟器视图，用模拟器查看不同设备上游戏运行的情况；</li>
+<li>Display：切换到不同场景摄像机视角；</li>
+<li>Free Aspect：调整设备尺寸，分辨率等，可以自行添加自定义尺寸；</li>
+<li>Scale：缩放；</li>
+<li>Play Focused：设置演示时是否最大化；</li>
+<li>Mute Audio：声音；</li>
+<li>Stats：性能统计；</li>
+<li>Gizmos：和Scene视图中的Gizmos相似；</li>
+</ul>
+<h2 id="3-Hierarchy窗口的使用"><a href="#3-Hierarchy窗口的使用" class="headerlink" title="3 Hierarchy窗口的使用"></a>3 Hierarchy窗口的使用</h2><p>场景中游戏对象的管理器，包括模型、摄像机、预制件等，和Scene中的物体一一对应。</p>
+<p>窗口功能有：</p>
+<ul>
+<li>对象父子关系的设置；</li>
+<li>游戏对象的管理，复制、粘贴、删除、更改嵌套关系，排序等；</li>
+<li>多场景编辑；</li>
+</ul>
+<h2 id="4-Project窗口的使用"><a href="#4-Project窗口的使用" class="headerlink" title="4 Project窗口的使用"></a>4 Project窗口的使用</h2><p>Project窗口管理所有的项目资源，用于查找文件和资源导航；功能和资源管理器类似，能直接进行创建、删除等文件操作。</p>
+<h3 id="4-1-工具栏"><a href="#4-1-工具栏" class="headerlink" title="4.1 工具栏"></a>4.1 工具栏</h3><p><img src="/2023/03/01/unity/11.png" alt></p>
+<ul>
+<li>加号：创建文件，给出多种文件类型，或者添加资源；</li>
+<li>搜索框：按照文件命搜索；</li>
+<li>打开搜索框：用于以单独窗口进行搜索；</li>
+<li>按类型搜索，如网格、预制件；</li>
+<li>按标签搜索；</li>
+<li>收藏文件，将按照当前的搜索设置生成一个过滤器，添加到Favorites中；</li>
+<li>更改隐藏文件可见性；</li>
+</ul>
+<h3 id="4-2-基本目录说明"><a href="#4-2-基本目录说明" class="headerlink" title="4.2 基本目录说明"></a>4.2 基本目录说明</h3><p>通常项目会将所有文件分别放在两个根目录中，一个是Assets，一个是Packages，前者是游戏的资源文件，包括动画、纹理等内容，后者则是游戏运行需要的库文件，一般不需要手动进行链接等操作了。</p>
+<h2 id="5-Inspector窗口"><a href="#5-Inspector窗口" class="headerlink" title="5 Inspector窗口"></a>5 Inspector窗口</h2><p>显示游戏对象的所有属性，包括渲染设置、碰撞设置、移动变换设置等。</p>
+<ul>
+<li>如果选中了相同类型的多个资源，窗口将显示他们共有的属性；如果是多个不同类型的资源，窗口会给出各种类型资源的数量，单机该列表以后可以看到该类型的所有资源。</li>
+<li>一个游戏对象通常关联许多其他的资源，在该窗口中使用Ping选项卡可以快速定位到这些有关联的物体，称为查找“源”。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/24/SE/" rel="prev" title="软件工程总结">
+                  <i class="fa fa-angle-left"></i> 软件工程总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/08/unity2/" rel="next" title="Unity初识(二)-界面布局的操作实战">
+                  Unity初识(二)-界面布局的操作实战 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言本章介绍图这种数据结构。图相关的算法重点是深度优先搜索(DFS)和广度优先搜索(BFS)；对图本身要掌握基本概念和性质，以及存储结构及其转化，在存储结构上的操作。重在掌握思想方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构与算法复习（6）图">
+<meta property="og:url" content="https://ankiima.github.io/2022/08/07/DA-5/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言本章介绍图这种数据结构。图相关的算法重点是深度优先搜索(DFS)和广度优先搜索(BFS)；对图本身要掌握基本概念和性质，以及存储结构及其转化，在存储结构上的操作。重在掌握思想方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/26.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/1.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/3.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/4.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/5.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/6.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/7.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/8.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/9.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/10.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/11.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/12.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/14.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/15.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/16.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/17.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/18.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/19.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/20.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/21.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/22.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/23.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/24.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/07/DA-5/25.jpg">
+<meta property="article:published_time" content="2022-08-07T05:46:55.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:40.836Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="Data Structure and Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2022/08/07/DA-5/26.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/08/07/DA-5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/08/07/DA-5/","path":"2022/08/07/DA-5/","title":"数据结构与算法复习（6）图"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据结构与算法复习（6）图 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">2.2.</span> <span class="nav-text">存储结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5"><span class="nav-number">2.2.1.</span> <span class="nav-text">邻接矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E8%A1%A8"><span class="nav-number">2.2.2.</span> <span class="nav-text">邻接表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%81%E5%AD%97%E8%BE%B9%E8%A1%A8"><span class="nav-number">2.2.3.</span> <span class="nav-text">十字边表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E5%A4%9A%E9%87%8D%E8%A1%A8"><span class="nav-number">2.2.4.</span> <span class="nav-text">邻接多重表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text">图基本操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E9%81%8D%E5%8E%86"><span class="nav-number">3.</span> <span class="nav-text">图的遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2"><span class="nav-number">3.1.</span> <span class="nav-text">广度优先搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="nav-number">3.1.1.</span> <span class="nav-text">性能分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BFS%E6%B1%82%E5%8D%95%E6%BA%90%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="nav-number">3.1.2.</span> <span class="nav-text">BFS求单源最短路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E7%94%9F%E6%88%90%E6%A0%91"><span class="nav-number">3.1.3.</span> <span class="nav-text">广度优先生成树</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2"><span class="nav-number">3.2.</span> <span class="nav-text">深度优先搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">性能分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E7%9A%84%E7%94%9F%E6%88%90%E6%A0%91%E5%92%8C%E7%94%9F%E6%88%90%E6%A3%AE%E6%9E%97"><span class="nav-number">3.2.2.</span> <span class="nav-text">深度优先的生成树和生成森林</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E9%81%8D%E5%8E%86%E5%88%A4%E6%96%AD%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="nav-number">3.3.</span> <span class="nav-text">图遍历判断连通性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">图的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91"><span class="nav-number">4.1.</span> <span class="nav-text">最小生成树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Prim%E7%AE%97%E6%B3%95"><span class="nav-number">4.1.1.</span> <span class="nav-text">Prim算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kruskal%E7%AE%97%E6%B3%95"><span class="nav-number">4.1.2.</span> <span class="nav-text">Kruskal算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="nav-number">4.2.</span> <span class="nav-text">最短路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dijkstra"><span class="nav-number">4.2.1.</span> <span class="nav-text">Dijkstra</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Floyd"><span class="nav-number">4.2.2.</span> <span class="nav-text">Floyd</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E5%90%91%E6%97%A0%E7%8E%AF%E5%9B%BE%E6%8F%8F%E8%BF%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">4.3.</span> <span class="nav-text">有向无环图描述表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F"><span class="nav-number">4.4.</span> <span class="nav-text">拓扑排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E8%B7%AF%E5%BE%84"><span class="nav-number">4.5.</span> <span class="nav-text">关键路径</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/08/07/DA-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据结构与算法复习（6）图 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据结构与算法复习（6）图
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-07 13:46:55" itemprop="dateCreated datePublished" datetime="2022-08-07T13:46:55+08:00">2022-08-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/408/" itemprop="url" rel="index"><span itemprop="name">408</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本章介绍图这种数据结构。图相关的算法重点是深度优先搜索(DFS)和广度优先搜索(BFS)；对图本身要掌握基本概念和性质，以及存储结构及其转化，在存储结构上的操作。重在掌握思想方法。<br><img src="/2022/08/07/DA-5/26.jpg" alt="场景"><br><span id="more"></span></p>
+<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>图<em>G</em>由顶点集<em>V</em>和边集<em>E</em>组成，记为<em>G = (V,E)</em>，其中<em>V(G)</em>表示图G中顶点的有限非空集；<em>E(G)</em>表示图G中顶点之间的关系集合。<br><em>|V|，|E|</em>分别表示顶点数和边数。</p>
+<blockquote>
+<p>线性表和树都可以是空的，但是图不能为空，即顶点集非空，边集可以为空。</p>
+</blockquote>
+<ul>
+<li>有向图：<em>E</em>是有向边的集合，图就是有向图。其中有向边是顶点有序对<em><v,w></v,w></em>，<em>v</em>是弧头，<em>w</em>是弧尾。</li>
+<li>无向图：<em>E</em>是无向边的集合，图就是无向图。其中无向边是顶点无序对<em>(v,w)</em>，两者可以调换位置。</li>
+<li>简单图：如果图没有重复边，没有顶点自环，那么就是简单图；</li>
+<li>多重图：如果两个顶点边数大于1条，且允许顶点自环，图就是多重图；</li>
+<li>完全图：在任意两个顶点之间都存在边；对无向图共有<em>n(n-1)/2</em>条边；有向图共有<em>n(n-1)</em>条边；</li>
+<li>子图：设有两个图<em>G(V,E)</em>和<em>G1(V1,E1)</em>，如果其中一个图的边集和顶点集都分别是另一个图边集和顶点集的子集，该图就是另一个图的子图；</li>
+<li>连通：无向图中如果从顶点<em>v</em>到顶点<em>w</em>有路径存在，那么<em>v</em>和<em>w</em>就是连通的；</li>
+<li>连通图：无向图中任意两个顶点都是连通的，就是连通图；</li>
+<li>连通分量：无向图中的极大连通子图称为连通分量；下图中左图一共有三个连通分量；<blockquote>
+<p>一个非连通图有n个顶点，最多有n-1条边；加入任意一条边就变成连通图</p>
+</blockquote>
+</li>
+</ul>
+<p><img src="/2022/08/07/DA-5/1.jpg" alt="场景"></p>
+<ul>
+<li>强连通：在有向图中，如果从顶点<em>v</em>到顶点<em>w</em>和从<em>w</em>到<em>v</em>都有路径存在，这两个点就是强连通的；</li>
+<li>强连通图：有向图中任意顶点都是强连通的，图就是强连通图；</li>
+<li><p>强连通分量：有向图中的极大强连通子图就是强连通分量；</p>
+<blockquote>
+<p>一个有向连通图最少需要n条边，构成一个环路；</p>
+</blockquote>
+</li>
+<li><p>生成树：连通图的生成树是包含图中全部顶点的极小连通子图；顶点数为n的生成树含有n-1条边，少一条变成非连通图，多一条变成一个回路；</p>
+</li>
+<li>生成森林：在非连通图中，连通分量的生成树构成了非连通图的森林；</li>
+<li>度：顶点<em>v</em>的度指顶点连接的边数<em>TD(v)</em>。无向图的顶点度之和等于边数的两倍；</li>
+<li>入度和出度：有向图中入度是以顶点为终点的有向边数目；出度是以顶点为起点的有向边数目；度等于入度和出度之和；有向图的入度和出度相等，并且等于边数。</li>
+<li>边权：图上每条边的权值叫做边权；带权图也称为网；</li>
+<li>稠密图和稀疏图：边数很少就是稀疏图(一般|E|&lt;|V|log|V|)；边数很多就是稠密图；</li>
+<li>路径：从顶点<em>v</em>到顶点<em>w</em>之间的的路径序列；</li>
+<li>路径长度：路径上边的数目；</li>
+<li>回路：第一个顶点和最后一个顶点相同的路径就是回路（环）；</li>
+<li>简单路径：路径序列中顶点不重复；</li>
+<li>简单回路：除第一个和最后一个顶点外其余顶点不重复的回路；</li>
+<li>距离：两个顶点之间最短路径的长度；若不存在则是无穷；</li>
+<li>有向树：图中一个顶点入度为0，其他入度均为1的有向图。</li>
+</ul>
+<h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><h3 id="邻接矩阵"><a href="#邻接矩阵" class="headerlink" title="邻接矩阵"></a>邻接矩阵</h3><p>对于非带权图：<br><img src="/2022/08/07/DA-5/2.jpg" alt="场景"></p>
+<p>对于带权图：<br><img src="/2022/08/07/DA-5/3.jpg" alt="场景"></p>
+<p>邻接矩阵和图的关系可以用下图表示：<br><img src="/2022/08/07/DA-5/4.jpg" alt="场景">：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#define MaxVertexNum 100</span><br><span class="line">typedef char VertexType;</span><br><span class="line">typedef int EdgeType;</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    VertexType Vex[MaxVertexNum];</span><br><span class="line">    EdgeType Edge[MaxVertexNum][MaxVertexNum];</span><br><span class="line">    int vexnum, arcnum;//当前顶点数和弧数；</span><br><span class="line">&#125;MGraph;</span><br></pre></td></tr></table></figure>
+<p>邻接矩阵有以下特点：</p>
+<ul>
+<li>无向图的邻接矩阵是对称矩阵；</li>
+<li>对无向图，第i行非零元素个数就是顶点i的度；</li>
+<li>对有向图，第i行非零元素个数是出度，第i列非零元素个数是入度；</li>
+<li>邻接矩阵只适合稠密图；</li>
+<li>邻接矩阵的n次幂的元素等于从顶点i到顶点j的长度为n的路径数；</li>
+<li>求两个顶点有没有连边容易，求顶点有多少邻边效率低。</li>
+</ul>
+<h3 id="邻接表"><a href="#邻接表" class="headerlink" title="邻接表"></a>邻接表</h3><p>给每个顶点建立一个单链表，结点表示顶点连接的边（有向图中是以顶点为起始的边），也就是顶点i的边表。边表的头指针和顶点的数据信息采用顺序存储。所以邻接表中有顶点表结点和边表结点。<br><img src="/2022/08/07/DA-5/5.jpg" alt="场景"><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#define MaxVertexNum 100</span><br><span class="line">//边表结点</span><br><span class="line">typedef struct ArcNode&#123;</span><br><span class="line">    int adjvex;</span><br><span class="line">    struct ArcNode *next;</span><br><span class="line">&#125;ArcNode;</span><br><span class="line">//顶点表结点</span><br><span class="line">typedef struct VNode&#123;</span><br><span class="line">    VertexType data;</span><br><span class="line">    ArcNode *first;</span><br><span class="line">&#125;VNode, AdjList[MaxVertexNum];</span><br><span class="line">//邻接表</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    AdjList vertices;</span><br><span class="line">    int vexnum, arcnum;</span><br><span class="line">&#125;ALGraph;</span><br></pre></td></tr></table></figure></p>
+<p>邻接表有以下特点：</p>
+<ul>
+<li>无向图中每条边在邻接表中出现了两次；有向图中每条边只出现一次；</li>
+<li>邻接表能节省稀疏图的存储空间；</li>
+<li>求顶点出度可以计算邻接表的结点数，求入度需要遍历整个表；</li>
+<li>邻接表不唯一，因为边表结点顺序不确定；</li>
+<li>求顶点邻边容易，求两点连边效率低。</li>
+</ul>
+<h3 id="十字边表"><a href="#十字边表" class="headerlink" title="十字边表"></a>十字边表</h3><p>存储有向图的链式结构，每条弧和每个顶点都建立一个结点：<br><img src="/2022/08/07/DA-5/6.jpg" alt="场景"></p>
+<p>其中对弧结点，尾指针和头指针分别指向弧尾和弧头两个顶点的位置；hlink指向弧头相同的下一条弧；tlink指向弧尾相同的下一条弧；info存储弧的信息；这样存储弧头相同和弧尾相同的弧分别在一个链表上。</p>
+<p>对顶点结点，data存放顶点数据信息，firstin和firstout分别指向以该顶点为弧头和弧尾的第一个弧结点（第一个没有定义，图中是按照序号定义）。<br><img src="/2022/08/07/DA-5/7.jpg" alt="场景"></p>
+<h3 id="邻接多重表"><a href="#邻接多重表" class="headerlink" title="邻接多重表"></a>邻接多重表</h3><p>存储无向图的链式结构，边和顶点的结点结构如下：<br><img src="/2022/08/07/DA-5/8.jpg" alt="场景"><br><img src="/2022/08/07/DA-5/9.jpg" alt="场景"></p>
+<p>mark为标志域，标记边是否被搜索过；ivex和jvex是边连接的顶点的位置；ilink指向下一条顶点ivex连接的边；jlink指向下一条顶点jvex连接的边；info存储边信息；</p>
+<p>data存储顶点信息；firstegde指向第一条顶点连接的边；</p>
+<p><img src="/2022/08/07/DA-5/10.jpg" alt="场景"></p>
+<p>对无向图，邻接多重表和多重表区别只在于邻接表中同一条边用两个结点表示；而多重表只用一个结点，但该结点同时在边连接的两个顶点的链表中。</p>
+<h2 id="图基本操作"><a href="#图基本操作" class="headerlink" title="图基本操作"></a>图基本操作</h2><p><img src="/2022/08/07/DA-5/11.jpg" alt="场景"></p>
+<ul>
+<li>遍历：DFS, BFS。</li>
+</ul>
+<h1 id="图的遍历"><a href="#图的遍历" class="headerlink" title="图的遍历"></a>图的遍历</h1><h2 id="广度优先搜索"><a href="#广度优先搜索" class="headerlink" title="广度优先搜索"></a>广度优先搜索</h2><p>BFS(Breadth-First-Search)，访问起始顶点<em>v</em>，然后依次访问它的所有邻接顶点，再进而访问邻接顶点的临界顶点，直到图中所有顶点都访问过；如果有不连接的顶点，则再选择一个进行重复。也就是依次访问距离起始顶点距离为1，2，……的所有顶点。</p>
+<p>类似树层序遍历，要借助队列完成。访问一个节点的同时，将它所有的邻居入队，并且从根节点开始访问，这样就可以借助队列先进先出的特点按顺序访问邻居，然后再访问邻居的邻居。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">bool visited[MAX_VERTEX_NUM];</span><br><span class="line">void BFSTraverse(Graph G)</span><br><span class="line">&#123;</span><br><span class="line">    for (int i = 0; i &lt; G.vexnum; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        visited[i] = FLASE;</span><br><span class="line">    &#125;</span><br><span class="line">    InitQueue(Q);</span><br><span class="line">    for (int i = 0; i &lt; G.vexnum; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        if(!visited[i])</span><br><span class="line">        &#123;</span><br><span class="line">            BFS(G,i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void BFS(Graph G, int v)</span><br><span class="line">&#123;</span><br><span class="line">    visit(v);</span><br><span class="line">    visit[v] = TRUE;</span><br><span class="line">    EnQueue(Q,v);</span><br><span class="line">    while(!isEmpty(Q))</span><br><span class="line">    &#123;</span><br><span class="line">        DeQueue(Q,v);</span><br><span class="line">        for(w = FirstNeighbor(G,v); w&gt;=0; w = NextNeighbor(G,v,w))</span><br><span class="line">        &#123;</span><br><span class="line">            if(!visited[w])</span><br><span class="line">            &#123;</span><br><span class="line">                visit(w);</span><br><span class="line">                visited[w] = TRUE;</span><br><span class="line">                EnQueue(Q,w);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>图的BFS遍历可以看作二叉树层序遍历的推广。</p>
+<h3 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h3><p>空间复杂度：队列最大需要存储所有顶点编号，所以是O(|v|)；<br>时间复杂度：采用邻接矩阵，遍历一遍顶点且遍历顶点对应的行/列，所以是O(|V|^2)；采用邻接表，要遍历顶点结点和对应边表，所以是O(|V|+|E|)；</p>
+<h3 id="BFS求单源最短路径"><a href="#BFS求单源最短路径" class="headerlink" title="BFS求单源最短路径"></a>BFS求单源最短路径</h3><p>下面是一个对非带权图的算法：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">void BFS_min_distance(Graph G, int u)</span><br><span class="line">&#123;</span><br><span class="line">    for (int i = 0; i &lt; G.vernum; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        d[i] = Inf;//d[i]是从u到i的最短路径</span><br><span class="line">    &#125;</span><br><span class="line">    visited[u] = TRUE;</span><br><span class="line">    d[u] = 0;</span><br><span class="line">    EQueue(Q,u);</span><br><span class="line">    while(!isEmpty(Q))</span><br><span class="line">    &#123;</span><br><span class="line">        DeQueue(Q,u);</span><br><span class="line">        for (w = FirstNeighbor(G,u); w &gt;= 0; w = NextNeighbor(G,u,w))</span><br><span class="line">        &#123;</span><br><span class="line">            if(!visited[w])</span><br><span class="line">            &#123;</span><br><span class="line">                visited[w] = TRUE;</span><br><span class="line">                d[w] = d[u] + 1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        EnQueue(Q,w);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="广度优先生成树"><a href="#广度优先生成树" class="headerlink" title="广度优先生成树"></a>广度优先生成树</h3><p>广度遍历得到的生成树。邻接矩阵表示的图有唯一广度优先生成树；邻接表表示的图不唯一。</p>
+<h2 id="深度优先搜索"><a href="#深度优先搜索" class="headerlink" title="深度优先搜索"></a>深度优先搜索</h2><p>DFS(Depth-First-Search)，首先访问一个起始顶点<em>v</em>，然后访问其任意邻居，重复，直到目标顶点没有还未访问的邻居，然后退回到最近的上一个顶点再重复，直到所有顶点完成访问。代码上我们借助递归来实现，从根节点开始访问邻居节点，直到节点没有邻居再返回函数值。</p>
+<p>当然前面学习树的遍历时我们知道，递归也可以用栈来实现，每次访问时将节点入栈，如果节点没有邻居，那么取栈顶元素继续访问，直到节点全部都被访问过。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">//递归形式</span><br><span class="line">bool visited[MAX_VERTEX_NUM]；</span><br><span class="line">void DFSTraverse(Graph G)</span><br><span class="line">&#123;</span><br><span class="line">    for (int v = 0; v &lt; G.vexnum; v++)</span><br><span class="line">    &#123;</span><br><span class="line">        visited[v] = FLASE;</span><br><span class="line">    &#125;</span><br><span class="line">    for (int v = 0; v &lt; G.vexnum; v++)</span><br><span class="line">    &#123;</span><br><span class="line">        if(!visited[v])</span><br><span class="line">        &#123;</span><br><span class="line">            DFS(G,v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void DFS(Graph G, int v)</span><br><span class="line">&#123;</span><br><span class="line">    visit(v);</span><br><span class="line">    visited[v] = TRUE;</span><br><span class="line">    for (int w = FirstNeighbor(G,v); w &gt;= 0; w = NextNeighbot(G,v,w))</span><br><span class="line">    &#123;</span><br><span class="line">        if(!visited[w])</span><br><span class="line">        &#123;</span><br><span class="line">            DFS(G,w);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样对于同样一个图，邻接矩阵的遍历序列唯一，但是邻接表不唯一。</p>
+<h3 id="性能分析-1"><a href="#性能分析-1" class="headerlink" title="性能分析"></a>性能分析</h3><p>空间复杂度：递归非递归都要借助栈，所以空间复杂度为O(|V|)；<br>时间复杂度：与BFS相同。</p>
+<h3 id="深度优先的生成树和生成森林"><a href="#深度优先的生成树和生成森林" class="headerlink" title="深度优先的生成树和生成森林"></a>深度优先的生成树和生成森林</h3><p>同BFS，DFS后也会产生一个深度优先生成树，但是只有对连通图调用DFS才能产生生成树，否则会是森林。如下所示：<br><img src="/2022/08/07/DA-5/12.jpg" alt="场景"></p>
+<h2 id="图遍历判断连通性"><a href="#图遍历判断连通性" class="headerlink" title="图遍历判断连通性"></a>图遍历判断连通性</h2><p>对无向图，连通的时候遍历一次就能访问到所有顶点；非连通的时候只能遍历该顶点所在的连通分量。对有向图也是一样的道理。</p>
+<p>因此，调用BFS或者DFS的次数就是该图的连通分量数。</p>
+<h1 id="图的应用"><a href="#图的应用" class="headerlink" title="图的应用"></a>图的应用</h1><h2 id="最小生成树"><a href="#最小生成树" class="headerlink" title="最小生成树"></a>最小生成树</h2><p>图G的所有生成树中，边权和最小的生成树就是最小生成树MST(Minimum-Spanning-Tree)。</p>
+<ul>
+<li>最小生成树不唯一，只有当生成树的边权和都不相等，才是唯一的；</li>
+<li>无向图的边数比顶点数少1，那么G就是他本身的最小生成树；</li>
+<li>最小生成树的边数为顶点数减一；</li>
+</ul>
+<p>最小生成树的算法一般都利用这个性质：<em>U</em>是<em>V</em>的一个非空顶点子集，如果有<em>U</em>中顶点u，<em>V-U</em>中顶点v，且(u,v)是一条具有最小边权的边，那么一定存在一棵包含(u,v)的最小生成树。</p>
+<p>首先介绍一个通用的算法：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GENERIC_MST(G)</span><br><span class="line">&#123;</span><br><span class="line">    T = NULL;</span><br><span class="line">    while(not_Tree(T))</span><br><span class="line">    &#123;</span><br><span class="line">        find(最小代价边且加入T后不产生回路);</span><br><span class="line">        T = add(T,(u,v));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Prim算法"><a href="#Prim算法" class="headerlink" title="Prim算法"></a>Prim算法</h3><p>初始从图中任取顶点加入树T，然后找到距离顶点集合最近(边权最小)的邻居，将边和点都加入T；直到图中所有顶点都加入了T。此时T中必然有n-1条边。<br><img src="/2022/08/07/DA-5/14.jpg" alt="场景"><br>时间复杂度O(V^2)，与边数无关，所以适合求稠密图的最小生成树。</p>
+<h3 id="Kruskal算法"><a href="#Kruskal算法" class="headerlink" title="Kruskal算法"></a>Kruskal算法</h3><p>该算法通过并查集检查环完成，初始时T中只有顶点集没有边集，每个顶点都是单独的连通分量，也就是初始化的并查集；然后按照边权的大小排序所有边，依次权值最小的边，如果这条边连接的顶点在不同连通分量中（加入后不构成回路），也就是并查集find找到root不一致，则将这条边加入T，直到T中所有顶点在一个连通分量中，或者边集有n-1条边。<br><img src="/2022/08/07/DA-5/15.jpg" alt="场景"><br>算法中存放边权通常使用堆，所以找到最小边权的边时间只需要O(log(E))；其它排序方法也可以。此外，生成树T中的所有边可以视为一个等价类，采用并查集描述T，构造T需要O(E*log(E))。时间复杂度与顶点数无关，所以适合处理边稀疏多顶点的图。</p>
+<h2 id="最短路径"><a href="#最短路径" class="headerlink" title="最短路径"></a>最短路径</h2><p>无向图路径长度视为路径上的边数；有向图路径长度视为路径上的边权和。从顶点<em>v1</em>到顶点<em>v2</em>的具有最短路径长度的路径就是两点之间的最短路径。</p>
+<p>最短路径算法一般使用这个性质：两点之间的最短路径由其他点之间的最短路径构成。Dijkstra算法用来求单源最短路径；Floyd算法用来求每对顶点之间的最短路径。</p>
+<h3 id="Dijkstra"><a href="#Dijkstra" class="headerlink" title="Dijkstra"></a>Dijkstra</h3><p>设置一个集合S记录求得最短路径的顶点，初始时将起始顶点<em>v</em>加入S，然后在<em>v</em>的所以邻居中，选择距离最近的顶点加入S，并修改记录从<em>v</em>到其他顶点<em>i</em>最短路径长度的数组dist[i]，如果加入的顶点j使得dist[j]+arcs[j][k]&lt;dist[k]，就更新dist[k]；以及记录从<em>v</em>到其他顶点<em>i</em>最短路径的前驱数组path[i]。重复以上操作，直到S中包含了所有顶点。<br><img src="/2022/08/07/DA-5/16.jpg" alt="场景"></p>
+<p>时间复杂度：邻接矩阵和邻接表都是O(V^2)；</p>
+<p>当边上带有负权值的时候，算法不适用，因为算法的贪心策略认定，在某次选择最小路径长度的时候，目标顶点已经加入了集合S，就已经找到了对应该顶点的最短路径，接下来显然也不会再更新这个点的最短路径，负边的存在却有可能让这个路径变短。如下所示：</p>
+<p><img src="/2022/08/07/DA-5/17.jpg" alt="场景"></p>
+<p>这种情况下算法先将2加入集合S，1作为最后一个添加的顶点并不会影响2的最短路径。</p>
+<h3 id="Floyd"><a href="#Floyd" class="headerlink" title="Floyd"></a>Floyd</h3><p>该算法是一个迭代的过程，定义一个最短路径邻接矩阵，初始时就是图的邻接矩阵，每次迭代时增加一个顶点考虑最短路径，直到所有顶点都考虑过。原理就是矩阵每迭代一次，最短路径都已经更新到考虑某个顶点为中介时的情况，下次迭代就可以在这个基础上进一步考虑另一个顶点做中介的情况，而且还保留了上一个顶点做中介时最短路径长度。</p>
+<p>从这一点考虑，Floyd算法实际上采用了动态规划的思想，最短路径邻接矩阵就是一个动态规划数组，且数组之间的关系也明了（取经过中介k和不经过中介的最小路径），初始值也具备（初始邻接矩阵），可以用历史值推出新的矩阵。<br><img src="/2022/08/07/DA-5/18.jpg" alt="场景"><br><img src="/2022/08/07/DA-5/19.jpg" alt="场景"><br>表中有下划线的数字代表更新过的最短路径。</p>
+<p>时间复杂度：O(V^3)；</p>
+<p>同时Floyd算法也允许带负权的边，但不允许有包含负权边的回路。Dijkstra也可以用来求每对顶点之间的最短路径，对每个顶点都运行一次算法即可，时间复杂度变得和Floyd相同。</p>
+<h2 id="有向无环图描述表达式"><a href="#有向无环图描述表达式" class="headerlink" title="有向无环图描述表达式"></a>有向无环图描述表达式</h2><p>有向无环图，有向图中不存在环的图，简称DAG图。这种图可以用来描述含有公共子式的表达式，例如：<br><img src="/2022/08/07/DA-5/20.jpg" alt="场景"><br>相同子式为(c+d)和(c+d)*e，二叉树也可以表示这个式子，但是有向无环图能节省存储空间。<br><img src="/2022/08/07/DA-5/21.jpg" alt="场景"></p>
+<h2 id="拓扑排序"><a href="#拓扑排序" class="headerlink" title="拓扑排序"></a>拓扑排序</h2><p>AOV网，用DAG图表示一个工程，顶点表示活动，且规定<v1,v2>有向边表示活动1必须在活动2之前进行，这种图就是顶点表示活动的网络(Activity On Vertex Network)。其中v1是v2的直接前驱，v2是v1的直接后继。任何活动不能作为自己的前驱后继。</v1,v2></p>
+<p>拓扑排序，由一个有向无环图顶点组成的序列，如果每个顶点仅出现一次，且当顶点A在序列中排在顶点B前面时图中就不存在从B到A的顶点，这个序列就是图的一个拓扑排序。每个AOV网都有一个或多个拓扑排序。</p>
+<p>下面是常用的一种拓扑排序算法：<br>找到AOV网中所有（可能有多个顶点入度为0）没有前驱的顶点并输出，删除这个顶点和以他为起点的有向边，重复前面的步骤直到AOV为空或者网络中不存在无前驱的顶点。后面一种情况说明图中有环存在。<br><img src="/2022/08/07/DA-5/22.jpg" alt="场景"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">bool TopologicalSort(Graph G)</span><br><span class="line">&#123;</span><br><span class="line">    InitStack(S);</span><br><span class="line">    for (int i = 0; i &lt; G.vexnum; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        if(indegree[i] == 0)</span><br><span class="line">        &#123;</span><br><span class="line">            Push(S,i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    int count = 0;</span><br><span class="line">    while(IsEmpty(S))</span><br><span class="line">    &#123;</span><br><span class="line">        Pop(S,i);</span><br><span class="line">        print[count++] = i;</span><br><span class="line">        for (p = G.vertices[i].firstarc; p; p = p-&gt;nextarc)</span><br><span class="line">        &#123;</span><br><span class="line">            v = p-&gt;adjvex;</span><br><span class="line">            if((--indegree[v]) == 0)</span><br><span class="line">                Push(S,v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if(count&lt;G.vexnum)//有回路失败</span><br><span class="line">        return false;</span><br><span class="line">    else</span><br><span class="line">        return true;//排序成功</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度：邻接表O(V+E)，邻接矩阵O(V^2)；</p>
+<ul>
+<li>入度为0的顶点，在AOV网中代表活动可以从这里开始，不需要前置活动；</li>
+<li>一个顶点有多个直接后继，则拓扑排序结果通常不唯一；每个顶点有唯一的前驱后继时，结果是唯一的；</li>
+<li>可以按照拓扑排序的结果重新给AOV网编号，生成邻接矩阵，这种矩阵可以是三角矩阵；但对于一般的图，如果邻接矩阵是三角矩阵，那么一定存在拓扑排序（三角矩阵的有向图肯定没有环）；存在拓扑排序，邻接矩阵不一定是三角矩阵。（注意这里不是有序拓扑排列，有序拓扑排列这两者互为充分必要条件）</li>
+</ul>
+<h2 id="关键路径"><a href="#关键路径" class="headerlink" title="关键路径"></a>关键路径</h2><p>AOE网，顶点表示事件，边表示活动，边权代表活动时间开销，称为边表示活动网络(Activity On Edge)。只有在某顶点表示的事件发生后，该顶点出发的有向边活动才能开始；而只有进入某顶点的有向边活动都结束时，该顶点的事件才能发生。</p>
+<p>因此，网络中只有一个入度为0的源点，代表工程开始；只有一个出度为0的汇点，代表工程结束。</p>
+<p>从源点到汇点的所有路径中，具有最大路径长度的称为关键路径。关键路径的长度就是完成工程的最短时间，这是因为关键活动影响了整个工程的时间，只要找到关键活动，就找到了关键路径。例如有两条边指向同一个顶点，两条边代表的活动要全部完成才能进行顶点代表的事件，所以要找相对长的那一条边作为关键路径。<br><img src="/2022/08/07/DA-5/23.jpg" alt="场景"></p>
+<p>关键路径算法设计了五个参数：</p>
+<ul>
+<li>事件最早发生时间<em>ve(k)</em>：从源点到顶点k的最长路径长度，<strong>决定所有从顶点k开始的活动最早能开始的时间</strong>。计算时可以在拓扑排序的基础上完成，初始时<em>ve</em>的值为0，输出一个入度为0的顶点j时，计算所有直接后继顶点k的最早发生时间，如果j的最早发生时间加上j到其后继边权的长度比k记录的最早发生时间长，那么就更新<em>ve(k)</em>。</li>
+</ul>
+<blockquote>
+<p>人话：找到达每个点最长的路径的边权和</p>
+</blockquote>
+<ul>
+<li>事件最迟发生时间<em>vl(k)</em>：从后往前，<strong>不推迟工程完成时间的前提下，事件发生的最迟时间</strong>。计算在逆拓扑排序的基础上进行，增加一个栈记录拓扑序列，拓扑排序结束后从栈顶到栈底就是逆拓扑排列序列。初始时<em>vl</em>的值和计算后的<em>ve</em>相同，排序完成后直接出栈顶点j，计算其前驱顶点k的最迟发生时间，如果j的最迟发生时间减去j前驱边的边权比k的最迟发生长度小，那么就更新<em>vl(k)</em>。</li>
+</ul>
+<blockquote>
+<p>人话：从最后一个点往前看，找这个点为起点的边，取其中终点的ve(i)减去边权为最小值的</p>
+</blockquote>
+<ul>
+<li>活动最早开始时间<em>e(i)</em>：活动弧的<strong>起点事件的最早发生时间</strong>；</li>
+</ul>
+<blockquote>
+<p>人话：边的起点的ve(i)</p>
+</blockquote>
+<ul>
+<li>活动最迟开始时间<em>l(i)</em>：活动弧的<strong>终点事件的最迟发生时间与该活动所需时间之差</strong>；</li>
+</ul>
+<blockquote>
+<p>人话：边的终点的vl(i)减去这条边的权重</p>
+</blockquote>
+<ul>
+<li>活动最迟开始时间和最早开始时间的差额<em>d(i)</em>：活动完成的余量时间，为零说明活动必须如期完成；所以<em>d(i)</em>为零的活动就是关键活动。</li>
+</ul>
+<p>算法步骤：<br><img src="/2022/08/07/DA-5/24.jpg" alt="场景"></p>
+<p><img src="/2022/08/07/DA-5/25.jpg" alt="场景"></p>
+<blockquote>
+<p>缩短关键活动可以加快工期，但是缩短到关键活动与其他活动进度相同时，就不能再缩短了；网络中的关键路径也不是唯一的，对于多条关键路径的网络，缩短只在一条路径上的关键活动不能缩短整个工期，只有缩短包含在全部关键路径中的关键活动才能达到目的。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Data-Structure-and-Algorithm/" rel="tag"># Data Structure and Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/08/05/DA-4/" rel="prev" title="数据结构与算法复习（5）树与二叉树">
+                  <i class="fa fa-angle-left"></i> 数据结构与算法复习（5）树与二叉树
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/08/15/DA-6/" rel="next" title="数据结构与算法复习（7）查找">
+                  数据结构与算法复习（7）查找 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言本章着重排序算法，重点是排序算法，插入排序，交换排序，选择排序，归并排序，基数排序，熟悉排序过程，掌握时间复杂度、稳定性、适用性、初态影响，从而选择最好的排序算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构与算法复习（8）排序">
+<meta property="og:url" content="https://ankiima.github.io/2022/08/19/DA-7/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言本章着重排序算法，重点是排序算法，插入排序，交换排序，选择排序，归并排序，基数排序，熟悉排序过程，掌握时间复杂度、稳定性、适用性、初态影响，从而选择最好的排序算法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/1.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/3.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/4.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/5.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/6.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/7.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/8.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/9.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/10.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/11.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/12.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/13.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/14.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/15.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/16.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/17.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/18.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/19.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/20.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/21.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/23.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/24.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/25.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/26.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/27.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/28.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/19/DA-7/29.jpg">
+<meta property="article:published_time" content="2022-08-19T11:54:06.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:40.866Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="Data Structure and Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2022/08/19/DA-7/1.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/08/19/DA-7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/08/19/DA-7/","path":"2022/08/19/DA-7/","title":"数据结构与算法复习（8）排序"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据结构与算法复习（8）排序 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">插入排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-number">3.1.</span> <span class="nav-text">直接插入排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-number">3.2.</span> <span class="nav-text">折半插入排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F"><span class="nav-number">3.3.</span> <span class="nav-text">希尔排序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%8E%92%E5%BA%8F"><span class="nav-number">4.</span> <span class="nav-text">交换排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F"><span class="nav-number">4.1.</span> <span class="nav-text">冒泡排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F"><span class="nav-number">4.2.</span> <span class="nav-text">快速排序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-number">5.</span> <span class="nav-text">选择排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-number">5.1.</span> <span class="nav-text">简单选择排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="nav-number">5.2.</span> <span class="nav-text">堆排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86"><span class="nav-number">5.2.1.</span> <span class="nav-text">堆</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">5.2.1.1.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%85%83%E7%B4%A0%E5%90%8E%E8%B0%83%E6%95%B4"><span class="nav-number">5.2.1.2.</span> <span class="nav-text">输出元素后调整</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">5.2.2.</span> <span class="nav-text">排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5"><span class="nav-number">5.2.3.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9"><span class="nav-number">5.2.4.</span> <span class="nav-text">修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.2.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%E5%92%8C%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F"><span class="nav-number">6.</span> <span class="nav-text">归并排序和基数排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="nav-number">6.1.</span> <span class="nav-text">归并排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F"><span class="nav-number">6.2.</span> <span class="nav-text">基数排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LSD"><span class="nav-number">6.2.1.</span> <span class="nav-text">LSD</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E6%8E%92%E5%BA%8F"><span class="nav-number">7.</span> <span class="nav-text">外部排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">7.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">7.2.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%B9%B3%E8%A1%A1%E5%BD%92%E5%B9%B6%E4%B8%8E%E8%B4%A5%E8%80%85%E6%A0%91"><span class="nav-number">7.2.1.</span> <span class="nav-text">多路平衡归并与败者树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%AE%E6%8D%A2%E2%80%94%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-number">7.2.2.</span> <span class="nav-text">置换—选择排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E4%BD%B3%E5%BD%92%E5%B9%B6%E6%A0%91"><span class="nav-number">7.2.3.</span> <span class="nav-text">最佳归并树</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/08/19/DA-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据结构与算法复习（8）排序 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据结构与算法复习（8）排序
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-19 19:54:06" itemprop="dateCreated datePublished" datetime="2022-08-19T19:54:06+08:00">2022-08-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/408/" itemprop="url" rel="index"><span itemprop="name">408</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本章着重排序算法，重点是排序算法，插入排序，交换排序，选择排序，归并排序，基数排序，熟悉排序过程，掌握时间复杂度、稳定性、适用性、初态影响，从而选择最好的排序算法。<br><img src="/2022/08/19/DA-7/1.jpg" alt="场景"><br><span id="more"></span></p>
+<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><ul>
+<li>排序，重新排列表中的元素，使关键字有序的过程；</li>
+<li>算法的稳定性，表中有两个元素a1和a2的关键字相同，且a1在a2的前面，如果使用某个排序算法后，a1仍然在a2前面，则该算法是稳定的；否则算法是不稳定的；</li>
+<li>内部排序，在排序期间元素全部存放在内存中的排序；</li>
+<li>外部排序，在排序期间元素不能全部存放在内存中，必须要在内存和外存之间移动的排序。</li>
+</ul>
+<h1 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h1><p>基本思想是，每次将一个待排序的记录按照关键字大小插入前面已经排好的子序列中，找到全部记录完成排序。</p>
+<h2 id="直接插入排序"><a href="#直接插入排序" class="headerlink" title="直接插入排序"></a>直接插入排序</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">void InsertSort(ElemType A[], int n)</span><br><span class="line">&#123;</span><br><span class="line">    int i, j;</span><br><span class="line">    for (i = 2; i &lt;= n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        if(A[i] &lt; A[i-1])</span><br><span class="line">        &#123;</span><br><span class="line">            A[0] = A[i];</span><br><span class="line">            for (j = i-1; A[0] &lt; A[j]; j--)</span><br><span class="line">            &#123;</span><br><span class="line">                A[j+1] = A[j];</span><br><span class="line">            &#125;</span><br><span class="line">            A[j+1] = A[0];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最简单的插入排序，以升序为例，从头往后遍历，如果当前元素小于前一个元素，就将当前元素保存到哨兵A[0]中，并再次遍历前面排序完成的部分，从当前元素的位置-1往前遍历，如果该位置大于要插入的元素，就把这个位置的元素后移，直到找到要插入元素的位置，插入即可。<br><img src="/2022/08/19/DA-7/2.jpg" alt="场景"><br><img src="/2022/08/19/DA-7/3.jpg" alt="场景"><br>括号中的是有序序列。</p>
+<p>空间效率：O(1)；<br>时间效率：最好情况O(n)，平均O(n^2)；<br>稳定性：稳定（如上图中的49）；<br>适用性：顺序存储和链式存储的线性表，链式存储要求能从后往前查找元素。</p>
+<h2 id="折半插入排序"><a href="#折半插入排序" class="headerlink" title="折半插入排序"></a>折半插入排序</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">void InsertSort(ElemType A[], int n)</span><br><span class="line">&#123;</span><br><span class="line">    int i, j, low, high, mid;</span><br><span class="line">    for (i = 2; i &lt;= n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        A[0] = A[i];</span><br><span class="line">        low = 1; high = i-1;</span><br><span class="line">        while(low &lt;= high)</span><br><span class="line">        &#123;</span><br><span class="line">            mid = (low + high) / 2;</span><br><span class="line">            if(A[mid] &gt; A[0]) high = mid - 1;</span><br><span class="line">            else low = mid + 1;</span><br><span class="line">        &#125;</span><br><span class="line">        for (j = i - 1; j &gt;= high; j--)</span><br><span class="line">        &#123;</span><br><span class="line">            A[j+1] = A[j];</span><br><span class="line">        &#125;</span><br><span class="line">        A[high+1] = A[0];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先折半查找元素的待插入位置，然后统一移动待插入位置之后的所有元素。折半查找的时候，high总是指向待插入位置的前一个位置，low和mid总是指向待插入位置，所以high+1，low，mid都是待插入位置。</p>
+<p>空间效率：O(1)；<br>时间效率：O(n^2)，减少了比较的次数；<br>稳定性：稳定；<br>适用性：顺序存储的线性表，链式存储无法进行折半查找。</p>
+<h2 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h2><p>每累计d个位置的增量取一个元素，将表分成d个子表，每个子表分别进行直接插入排序，然后逐步减小d，直到d等于1，对整体进行插入排序。<br><img src="/2022/08/19/DA-7/4.jpg" alt="场景"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">//升序排列</span><br><span class="line">void ShellSort(ElemType A[], int n)</span><br><span class="line">&#123;</span><br><span class="line">    for (int dk = n/2; dk &gt;= 1; dk = dk/2)</span><br><span class="line">    &#123;</span><br><span class="line">        for (int i = dk + 1; i &lt;= n; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            if(A[i] &lt; A[i-dk])</span><br><span class="line">            &#123;</span><br><span class="line">                A[0] = A[i];</span><br><span class="line">                for (int j = i - dk; j &gt; 0 &amp;&amp; A[0] &lt; A[j]; j = j - dk)</span><br><span class="line">                &#123;</span><br><span class="line">                    A[j + dk] = A[j];</span><br><span class="line">                &#125;</span><br><span class="line">                A[j + dk] = A[0];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>空间效率：O(1)；<br>时间效率：最坏O(n^2)；<br>稳定性：不稳定（如图中49）；<br>适用性：顺序存储的线性表。</p>
+<h1 id="交换排序"><a href="#交换排序" class="headerlink" title="交换排序"></a>交换排序</h1><p>根据序列中两个关键字的大小进行对换。</p>
+<h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><p>从头遍历元素，比较相邻两个元素的大小，如果不满足排序要求，就交换。这样经过第一次遍历后，最大或者最小（取决于排序要求）会被排到最前或者最后面，此时确定这个元素的位置，对剩下的元素进行下一趟排序，n个元素最多经过n-1次排序就能排好。<br><img src="/2022/08/19/DA-7/5.jpg" alt="场景"><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//升序排列</span><br><span class="line">void BubbleSort(ElemType A[], int n)</span><br><span class="line">&#123;</span><br><span class="line">    for (int i = 0; i &lt; n-1; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        flag = false;</span><br><span class="line">        for (int j = n - 1; j &gt; 1; j--)</span><br><span class="line">        &#123;</span><br><span class="line">            if(A[j-1] &gt; A[j])</span><br><span class="line">            &#123;</span><br><span class="line">                swap(A[j-1], A[j]);</span><br><span class="line">                flag = true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if(flag == false)//如果一次排序中没有发生交换，说明已经有序。</span><br><span class="line">            return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>空间效率：O(1)；<br>时间效率：最坏O(n^2)， 最好O(n)；<br>稳定性：稳定，元素相等时不交换；<br>适用性：顺序存储和链式存储的线性表；</p>
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><p>在待排序表中取一个基准元素（一般取首元素），让小于该元素的所有元素排在基准元素左边，大于该元素的所有元素排在基准元素右边，然后递归地对两边的子表进行相同操作，直到每个子表只有一个元素。</p>
+<p>设置两个指针i，j来标记，i从左边开始搜索，j从右边开始搜索，也就是说i负责管理小于基准的元素，j负责管理大于基准的元素，如果j先开始搜索，找到一个小于基准的元素，就要先把他放到i指向的位置（在第一轮中，i初始时指向基准元素，基准元素被中间值保存，直接替换），空出j此时的位置；i开始从作左半边寻找填补空白的元素，搜索到的元素大于基准元素，就应该将这个元素交换到j指向的空位。一直重复这样的操作，直到i和j相等，当然还是空位，所以将之前中间值存放的基准元素填补到这里，就完成了一轮操作。<br><img src="/2022/08/19/DA-7/6.jpg" alt="场景"><br><img src="/2022/08/19/DA-7/7.jpg" alt="场景"><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">//递归方法</span><br><span class="line">void QSort(ElemType A[], int low, int high)</span><br><span class="line">&#123;</span><br><span class="line">    if(low &lt; high)</span><br><span class="line">    &#123;</span><br><span class="line">        int pivotpos = Partition(A, low, high);</span><br><span class="line">        QSort(A,low,pivotpos-1);</span><br><span class="line">        QSort(A,pivotpos+1,high);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//划分操作以第一个元素作为基准，升序排列</span><br><span class="line">int Partition(ElemType A[], int low, int high)</span><br><span class="line">&#123;</span><br><span class="line">    ElemType pivot = A[low];</span><br><span class="line">    while(low &lt; high)</span><br><span class="line">    &#123;</span><br><span class="line">        while(low &lt; high &amp;&amp; A[high] &gt;= pivot) high--;</span><br><span class="line">        A[low] = A[high];</span><br><span class="line">        while(low &lt; high &amp;&amp; A[low] &lt;= pivot) low++;</span><br><span class="line">        A[high] = A[low];</span><br><span class="line">    &#125;</span><br><span class="line">    A[low] = pivot;</span><br><span class="line">    return low;//返回存放基准位置的地方</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>空间效率：平均O(log(n))，最坏O(n)，借助了栈；<br>时间效率：最坏O(n^2)，基准选择好，理想情况O(n*log(n))；一般情况下都和理想情况比较接近，快排是内部排序算法中性能最好的算法；<br>稳定性：不稳定；<br>适用性：顺序存储的线性表。</p>
+<h1 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h1><p>遍历待排序元素，每次找到最小或最大的元素，然后依次存放，直到遍历了n-1次。</p>
+<h2 id="简单选择排序"><a href="#简单选择排序" class="headerlink" title="简单选择排序"></a>简单选择排序</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">void SelectSort(ElemType A[], int n)</span><br><span class="line">&#123;</span><br><span class="line">    for (int i = 0; i &lt; n-1; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        min = i;</span><br><span class="line">        for (int j = i+1; j &lt; n; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            if(A[j] &lt; A[min])</span><br><span class="line">            &#123;</span><br><span class="line">                min = j;</span><br><span class="line">            &#125;</span><br><span class="line">            if(min != i)</span><br><span class="line">            &#123;</span><br><span class="line">                swap(A[i], A[min]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>空间效率：O(1)；<br>时间效率：始终是O(n^2)；<br>稳定性：不稳定；<br>适用性：顺序存储。</p>
+<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><p>遍历找到最值不方便，采用堆来维护。</p>
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>如果n个关键字序列满足：<br><img src="/2022/08/19/DA-7/8.jpg" alt="场景"><br>上述关系是完全二叉树的位置关系，满足第一个条件的是大顶堆（根结点最大），满足第二个条件是小顶堆（根结点最小）。不同于排序二叉树，堆不要求左右子树区分大小，只要求根结点大于子树结点。</p>
+<h4 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h4><p>元素不必实际存入二叉树，可以根据下标进行调整。从最后一个叶子结点开始，以它的双亲结点开始，如果结点小于孩子，就同孩子中较大的值进行交换，使这个根结点构成的子树称为一个堆，然后慢慢往前重复，直到找到整个树的根结点。<br><img src="/2022/08/19/DA-7/9.jpg" alt="场景"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">void BuildMaxHeap(ElemType A[], int len)</span><br><span class="line">&#123;</span><br><span class="line">    for (int i = len / 2; i &gt; 0; i--)</span><br><span class="line">    &#123;</span><br><span class="line">        HeadAdjust(A, i, len);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="输出元素后调整"><a href="#输出元素后调整" class="headerlink" title="输出元素后调整"></a>输出元素后调整</h4><p>选择排序取走堆顶后，需要继续调整。将最后一个元素和堆顶交换，显然最后一个元素很小，所以要从堆顶开始，交换成孩子中的较大值，交换后破坏了被交换孩子的堆性质，再次重复，直到完成调整。<br><img src="/2022/08/19/DA-7/10.jpg" alt="场景"><br>上面的堆输出87后调整过程如上图。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void HeadAdjust(ElemType A[], int len)</span><br><span class="line">&#123;</span><br><span class="line">    for(i = 2*k; i &lt;= len; i = i*2)</span><br><span class="line">    &#123;</span><br><span class="line">        if(i &lt; len &amp;&amp; A[i+1]) i++;</span><br><span class="line">        if(A[0] &gt;= A[i]) break;</span><br><span class="line">        else&#123;</span><br><span class="line">            A[k] = A[i];</span><br><span class="line">            k = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    A[k] = A[0];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">void HeapSort(ElemType A[], int len)</span><br><span class="line">&#123;</span><br><span class="line">    BuildMaxHeap(A, len);</span><br><span class="line">    for(int i = len; i &gt; 1; i--)</span><br><span class="line">    &#123;</span><br><span class="line">        Swap(A[i], A[1]);</span><br><span class="line">        HeapAdjust(A, 1, i-1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>排序在堆的基础上进行，构建好堆以后，从堆顶开始输出最大的元素，输出后交换堆顶（空）和最后一个元素，调整剩下的i-1个元素，重复操作直到堆中只剩下一个元素，输出，就完成了堆排序。</p>
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>堆还支持插入的操作，新增最后一个结点，然后往上调整即可。<br><img src="/2022/08/19/DA-7/11.jpg" alt="场景"></p>
+<h3 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h3><p>堆也支持修改元素值的操作，根据修改元素位置的不同，操作方法也不同。如果是修改叶子结点，那么按照插入一个值的方法进行相同调整，从下往上；如果修改内部结点，可以按照排序的方法重新排序，也可以根据修改结点大小与其双亲和孩子结点的大小关系，在大顶堆中，小于孩子就往下调整，大于双亲就往上调整，否则不调整。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>空间效率：O(1)；<br>时间效率：均为O(n*log(n))；<br>稳定性：不稳定；<br>适用性：顺序存储的线性表。</p>
+<h1 id="归并排序和基数排序"><a href="#归并排序和基数排序" class="headerlink" title="归并排序和基数排序"></a>归并排序和基数排序</h1><h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>归并指的是将两个或两个以上的有序表合并成一个有序表，对于n个元素的序列，可以视为n个有序的子表，然后两两合并，直到合并成一个长度为n的有序表为止，也就是二路归并排序。<br><img src="/2022/08/19/DA-7/12.jpg" alt="场景"><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">//合并两个相邻的有序子表，在数组中标记为low-mid，mid+1-high</span><br><span class="line">ElemType *B = (ElemType *)malloc(siezof(ElemType) * (n+1));</span><br><span class="line"></span><br><span class="line">void Merge(ElemType A[], int low, int mid, int high)</span><br><span class="line">&#123;</span><br><span class="line">    //辅助数组复制</span><br><span class="line">    for(int k = low; k &lt;= high; k++)</span><br><span class="line">    &#123;</span><br><span class="line">        B[k] = A[k];    </span><br><span class="line">    &#125;</span><br><span class="line">    int i, j, k;</span><br><span class="line">    for(i = low, j = mid + 1, k = i; i &lt;= mid &amp;&amp; j &lt;=&gt;= high; k++)</span><br><span class="line">    &#123;</span><br><span class="line">        //比较两个子表的元素大小，进行复制</span><br><span class="line">        if(B[i] &lt;= B[j])</span><br><span class="line">        &#123;</span><br><span class="line">            A[k] = B[i];</span><br><span class="line">            //复制完成后要记得将指针位置移动到被复制数组的下一个位置</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            A[k] = B[j];</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    while(i &lt;= mid) A[k++] = B[i++];</span><br><span class="line">    while(j &lt;= high) A[k++] = B[j++];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>用辅助数组记录两个数组，每次从两个子表中分别取出一个关键字，比较大小，将较小的关键字放到原数组中子表开始的位置，然后被取出数组指向下一个位置的关键字继续比较，重复直到比较完一个表，然后根据此时指针指示的位置，检查另一个表是否有剩余关键字，如果有，就将他们按顺序全部复制到原来的表中。</p>
+<p>上面的算法将被用来对整个数组进行二路归并排序。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">void MergeSort(ElemType A[], int low, int high)</span><br><span class="line">&#123;</span><br><span class="line">    if(low &lt; high)//至少子表有两个元素时，进行下面的操作</span><br><span class="line">    &#123;</span><br><span class="line">        int mid = (low + high) / 2;</span><br><span class="line">        MergeSort(A,low,mid);//左子表递归归并</span><br><span class="line">        MergeSort(A,mid+1,high);//右子表递归归并</span><br><span class="line">        Merge(A,low,mid,high);//左右子表合并</span><br><span class="line">    &#125;</span><br><span class="line">    //return 返回上一层递归调用</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><img src="/2022/08/19/DA-7/13.jpg" alt="场景"></p>
+<p>空间效率：O(n)；<br>时间效率：O(n*log(n))；合并一次时间复杂度为O(n)，一共要合并log(n)取上界次；<br>稳定性：稳定；<br>适用性：顺序存储。</p>
+<h2 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h2><p>基于关键字的大小进行排序，借助多关键字逻辑对单逻辑关键字进行排序的方法。</p>
+<p>假设线性表中每个元素关键字由一个d元组构成，这个d元组左边是高位，右边是低位，且高位一定大于低位，不论该位上实际的大小情况；即d元组中左边的一定大于右边的。称最高位关键字是最主位关键字，最低为关键字是最次位关键字。基数r指的是d元组中每个关键字可能出现的情况种数。例如，d元组是一个十进制三维数，即d=3，r=10，百位就是最主位关键字，个位就是最次位关键字，每个位最多有r=10中情况，0~9。</p>
+<p>另外，多关键字排序有两种方法，最高位优先(MSD)按关键字权重递减划分子序列，最低位优先(LSD)按关键字递增划分子序列。</p>
+<h3 id="LSD"><a href="#LSD" class="headerlink" title="LSD"></a>LSD</h3><p>构建r个队列，分别对每个关键字的d元组的每个位进行一次分配，从最低位开始，如果该位等于某个小于r的值，就把他放进对应的队列中；分配完成后进行收集，将所有队列中的结点首尾相连，得到新的序列，组成新的线性表，就完成了第一次排序。<br><img src="/2022/08/19/DA-7/14.jpg" alt="场景"><br>之后重复这项操作，直到查看完最主位关键字。<br><img src="/2022/08/19/DA-7/15.jpg" alt="场景"><br><img src="/2022/08/19/DA-7/16.jpg" alt="场景"></p>
+<p>空间效率：O(r)；需要r个指向队列的头指针和r个尾指针；<br>时间效率：O(d(n+r))；d次排序，每次需要O(n)的分配和O(r)的收集，和初始状态无关；<br>稳定性：稳定；<br>适用性：链式存储的线性表。</p>
+<h1 id="外部排序"><a href="#外部排序" class="headerlink" title="外部排序"></a>外部排序</h1><p>外部排序在算法设计上比较复杂，不过可能会考相关概念方法。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>前面的排序方法都是在内存中进行，称为内部排序。而对于许多大文件，需要在排序时一部分一部分地将记录调入内存，需要进行内存和外存之间的交换，所以叫外部排序。</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>由于访问外存的速度远远小于访问内存，所以访问磁盘次数为主要的时间代价。</p>
+<p>通常采用归并排序，根据内存缓冲区大小，将外存的文件分为许多子文件，依次读入内存并采用内部排序方法排序，然后重新写回外存。这些有序子文件称为<strong>归并段</strong>或<strong>顺串</strong>。完成后对归并段进行归并，并使归并段逐渐从小到大，直到获得有序文件。</p>
+<p><img src="/2022/08/19/DA-7/17.jpg" alt="场景"><br>如图，缓冲区被分为输入和输出两块，输入区分别读取一段记录，归并后结果不断存放到输出区中，输出区写满就按顺序转移到输出归并段中，然后清空输出缓存继续存放。</p>
+<p>但是由于不可能一次读取完两个有序段同时保存排序结果，所以要不断和外存交换。<br><img src="/2022/08/19/DA-7/18.jpg" alt="场景"><br>外存信息读写时间远大于两外两项，所以要尽力减少读写次数。<br><img src="/2022/08/19/DA-7/19.jpg" alt="场景"></p>
+<h3 id="多路平衡归并与败者树"><a href="#多路平衡归并与败者树" class="headerlink" title="多路平衡归并与败者树"></a>多路平衡归并与败者树</h3><p>根据前面分析，S趟归并，内部排序采用选择排序（k个记录找最小要比较k-1次，每趟n个元素需要(n-1)(k-1)次比较），内部排序总共需要的比较次数是：<br><img src="/2022/08/19/DA-7/20.jpg" alt="场景"><br>如果为例提高外部排序速度增大k，内部排序会变慢，从上面的比较次数可以看出，会导致整个次数增加，因而不能适用普通的内部排序，引入败者树。</p>
+<p>败者树可以视为一棵完全二叉树，叶子结点存放归并段，规定两个数中大的为失败者，小的为胜利者，内部结点记录左右子树中的“失败者”序号，胜者继续往上比较，最后根结点就是最小的数。<br><img src="/2022/08/19/DA-7/21.jpg" alt="场景"></p>
+<p>败者树深度为log(k)向上取整，即k个记录中选择最小值的比较次数就是败者树的深度，上面的内部排序总比较次数变成下面的大小。<br><img src="/2022/08/19/DA-7/23.jpg" alt="场景"><br>所以采用败者树以后k就不会影响内部排序比较次数了，也就是说，在内存足够的情况下，增大k能减小归并树高度，让每次I/O尽可能多地读取，从而减少归并趟数而不改变内部排序比较次数，同时减少I/O次数（意味着归并趟数和I/O次数相关），提高外部排序速度。</p>
+<p>但是k也不是越大越好，增加k就要同时增加缓冲区个数，如果内存不够，就要减小每个缓冲区容量，所以k过大的时候虽然减少了归并趟数，但同时又增加了外存读写次数。</p>
+<h3 id="置换—选择排序"><a href="#置换—选择排序" class="headerlink" title="置换—选择排序"></a>置换—选择排序</h3><p>除了优化k以外，减小r也可以减少归并趟数S，所以要采用新的方法找到更长的初始归并段。<br><img src="/2022/08/19/DA-7/24.jpg" alt="场景"><br><img src="/2022/08/19/DA-7/25.jpg" alt="场景"><br><img src="/2022/08/19/DA-7/26.jpg" alt="场景"></p>
+<p>上面的过程中，选择MINIMAX要借助败者树完成。</p>
+<h3 id="最佳归并树"><a href="#最佳归并树" class="headerlink" title="最佳归并树"></a>最佳归并树</h3><p>采用置换选择排序后，得到的是不同长度的归并段，所以要再找方法组织不同长度的归并段，使得I/O次数最少。</p>
+<p>假设置换-选择排序得到下面的初始段，并画出三路归并的归并树：<br><img src="/2022/08/19/DA-7/27.jpg" alt="场景"><br>其中叶子结点标识初始归并段，其余结点的权值表示子树片段的长度和。叶子结点到根的路径长度（也就是前面的深度-1）表示参加归并的趟数，根结点表示最终生成的归并段。</p>
+<p>树的带权路径长度WPL就是归并过程的读取次数了，上面的树WPL为242，则I/O次数为两倍，484。所以可以用哈夫曼树推广到m叉树来优化，让记录数少的初始归并段最先归并，记录数多的初始归并段最后归并，让WPL达到最小，这棵树就称为最佳归并树。上面例子的最佳归并树如下：<br><img src="/2022/08/19/DA-7/28.jpg" alt="场景"></p>
+<p>步骤：如果初始段不能像上面一样构成一棵严格的k叉树（不能保证除叶子结点外的每个结点出度为k），需要添加长度为0的“虚段”，而且权为0的叶子应该离树根最远。将上面例子中长度为30的段删除，再次构建最佳归并树如下：<br><img src="/2022/08/19/DA-7/29.jpg" alt="场景"></p>
+<p>虚段数目的确定：<br>假设度为0的结点有n0个，度为k的结点有nk个，严格二叉树中应该有n0==(k-1)nk + 1，即nk==(n0-1)/(k-1)。</p>
+<ul>
+<li>如果(n0-1)%(k-1)==0，说明是严格二叉树；</li>
+<li>如果(n0-1)%(k-1)==u，说明对于n0个叶子结点，其中u个是多余的，所以应该增加一个内部结点。内部结点在归并树中占据了一个叶子结点的位置，此时有u+1个叶子结点在外部没有被接纳，所以还需要k-(u+1)个空归并段同u+1个（不存在u+1=k的情况，因为取余的时候u取值最大就是k-2）多余的叶子结点作为兄弟，存储在归并树中。</li>
+</ul>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>直接插入排序，冒泡排序，简单选择排序是基本排序方法，用于元素个数不是特别大的情况(n&lt;10000)。<blockquote>
+<p>直接插入排序复杂度和初始序列有关，线性表有序，n-1次比较就完成排序，最差和平均情况是O(n^2)；<br>冒泡排序情况和直接插入排序相同；<br>简单选择排序复杂度中，比较次数和初始序列无关，比较次数总是O(n^2)，但元素移动次数和初始序列有关，最好情况不移动，最坏不超过3(n-1)次。</p>
+</blockquote>
+</li>
+<li>希尔排序，用于元素个数处于中等规模的情况(n&lt;=1000)。<blockquote>
+<p>随着希尔排序对每个组的处理，记录的比较和移动越来越少，其总比较次数要比直接插入排序少得多，而且不需要额外内存，缺点是希尔排序并不稳定。</p>
+</blockquote>
+</li>
+<li><p>快排，堆排，基数排序，可以用于n特别大的情况，快排和堆排都是不稳定的，归并和基数排序是稳定的。</p>
+<blockquote>
+<p>快排是最通用的高效内部排序算法，平均情况时间复杂度O(nlog(n))，空间复杂度O(log(n))，最坏情况（元素已经有序）时间复杂度O(n^2)和空间复杂度O(n)，但是已经有了优化的办法，即“三者取中”；<br>堆排序也是重要的高效排序算法，时间复杂度是O(nlog(n))，一般不会产生最坏情况，也不需要额外空间，但是一般比快排慢；<br>归并排序也是重要的高效排序算法，性能与输入元素序列无关，时间复杂度总是O(nlog(n))，缺点是空间复杂度O(n)；<br>基数排序相对特殊，虽然时间复杂度O(d(n+r))线性增长，但是并不会比快排好很多，而且d元组的关键字抽取很多时候不方便，适应性比较差，况且还需要基数规模的一系列桶和与待排序元素规模相同的存储空间。</p>
+</blockquote>
+</li>
+<li><p>混合使用使用不同的排序算法，达到更好的性能。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Data-Structure-and-Algorithm/" rel="tag"># Data Structure and Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/08/15/DA-6/" rel="prev" title="数据结构与算法复习（7）查找">
+                  <i class="fa fa-angle-left"></i> 数据结构与算法复习（7）查找
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/08/24/games1/" rel="next" title="games101系列(1) 变换与投影">
+                  games101系列(1) 变换与投影 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

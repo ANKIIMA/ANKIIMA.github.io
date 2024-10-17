@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言图作为重要的数据结构，可以表示物体与物体之间的关系，这里总结一下图的深度学习中经常提到的图嵌入（图表示学习&#x2F;Network Embedding&#x2F;Graph Embedding）和图神经网络（GNN）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图嵌入和图神经网络">
+<meta property="og:url" content="https://ankiima.github.io/2022/07/22/graph-embedding/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言图作为重要的数据结构，可以表示物体与物体之间的关系，这里总结一下图的深度学习中经常提到的图嵌入（图表示学习&#x2F;Network Embedding&#x2F;Graph Embedding）和图神经网络（GNN）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/22/graph-embedding/4.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/22/graph-embedding/5.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/22/graph-embedding/6.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/22/graph-embedding/7.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/22/graph-embedding/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/22/graph-embedding/1.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/22/graph-embedding/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/22/graph-embedding/3.jpg">
+<meta property="article:published_time" content="2022-07-22T12:50:07.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.290Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="Graph Embedding">
+<meta property="article:tag" content="Graph Neural Network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2022/07/22/graph-embedding/4.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/07/22/graph-embedding/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/07/22/graph-embedding/","path":"2022/07/22/graph-embedding/","title":"图嵌入和图神经网络"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>图嵌入和图神经网络 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE%E5%B5%8C%E5%85%A5"><span class="nav-number">2.</span> <span class="nav-text">图嵌入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Matrix-Factorization-%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3"><span class="nav-number">2.1.</span> <span class="nav-text">Matrix Factorization 矩阵分解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Random-Walk-%E9%9A%8F%E6%9C%BA%E6%B8%B8%E8%B5%B0"><span class="nav-number">2.2.</span> <span class="nav-text">Random Walk 随机游走</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PageRank"><span class="nav-number">2.2.1.</span> <span class="nav-text">PageRank</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DeepWalk"><span class="nav-number">2.2.2.</span> <span class="nav-text">DeepWalk</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deep-Learning"><span class="nav-number">2.3.</span> <span class="nav-text">Deep Learning</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C-GNN"><span class="nav-number">3.</span> <span class="nav-text">图神经网络(GNN)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%ACGNN-GCN"><span class="nav-number">3.1.</span> <span class="nav-text">一般GNN(GCN)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%B7%B3%E9%82%BB%E5%B1%85%E7%9A%84GNN"><span class="nav-number">3.2.</span> <span class="nav-text">多跳邻居的GNN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DGCNN"><span class="nav-number">3.2.1.</span> <span class="nav-text">DGCNN</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/07/22/graph-embedding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="图嵌入和图神经网络 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          图嵌入和图神经网络
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-22 20:50:07" itemprop="dateCreated datePublished" datetime="2022-07-22T20:50:07+08:00">2022-07-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/Deep-Learning/Graph/" itemprop="url" rel="index"><span itemprop="name">Graph</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>图作为重要的数据结构，可以表示物体与物体之间的关系，这里总结一下图的深度学习中经常提到的图嵌入（图表示学习/Network Embedding/Graph Embedding）和图神经网络（GNN）。<br><span id="more"></span><br>图嵌入和图神经网络是有交集的两个研究领域，并且密切相关。其中图神经网络是随深度学习发展提出的用于处理图数据的神经网络结构，而图嵌入旨在将图的节点表示成低维向量空间，同时保留图的拓扑结构和节点信息，便于用简单的机器学习算法处理。图神经网络又同时可以支持图嵌入的工作，即图嵌入的深度学习方法。  </p>
+<p>本文中会介绍图嵌入的常见算法，以及图神经网络的结构。</p>
+<h1 id="图嵌入"><a href="#图嵌入" class="headerlink" title="图嵌入"></a>图嵌入</h1><p>在研究社交网络这样比较稀疏的图时，如果直接使用邻接矩阵花费|<em>V</em>|<em>|</em>V*|的存储空间，显然会造成浪费，数据的稀疏使得邻接矩阵的信息很难得到利用。</p>
+<p>因此图嵌入用来学习得到网络中节点的低维向量表示，即图嵌入对每个节点<em>v</em>进行学习，得到一个向量<em>R</em>，然后提供给其他方法对数据进行处理。</p>
+<p>一般图嵌入的方法可以大致分为三类，(1)Matrix Factorization，(2)Random Walk，(3)Deep Learning。这里着重写一下基于第二种方法的Node2vec算法。</p>
+<h2 id="Matrix-Factorization-矩阵分解"><a href="#Matrix-Factorization-矩阵分解" class="headerlink" title="Matrix Factorization 矩阵分解"></a>Matrix Factorization 矩阵分解</h2><p>通过矩阵分解的方式得到每个结点的低维向量表示。</p>
+<h2 id="Random-Walk-随机游走"><a href="#Random-Walk-随机游走" class="headerlink" title="Random Walk 随机游走"></a>Random Walk 随机游走</h2><p>这种方法通过在图上的短距离游走，使得共现的节点具有相似的表示方式，从而优化节点的嵌入。</p>
+<h3 id="PageRank"><a href="#PageRank" class="headerlink" title="PageRank"></a>PageRank</h3><p>该算法作为评价互联网网页重要性的算法，对每个代表一个网页的结点给出一个正实数值，作为排序的依据。这实际上是通过在图上定义一阶的马尔可夫链实现的，因为马尔可夫链的状态转移矩阵具有很好的性质，可以找到一个平稳的分布，平稳分布的概率值就是网页的排序依据。<br>以下图为例，在PageRank中假设一个点转移到与他相邻的结点的概率相等，也就是说一个点转移到任何一个邻居的概率都是这个结点的度的倒数。因此结点j到邻居结点i的概率为1/n，n为i的度；如果一个结点没有出度，那么这个结点的转移概率为0。通过这样的方式定义一个状态转移矩阵M，M[i][j]代表结点j转移到结点i的概率，举例如下：<br><img src="/2022/07/22/graph-embedding/4.jpg" alt="场景"><br><img src="/2022/07/22/graph-embedding/5.jpg" alt="场景"><br>在t时刻每个结点的概率分布用一个列向量R表示，那么R的更新如下：<br><img src="/2022/07/22/graph-embedding/6.jpg" alt="场景"><br>当达到平稳分布R的时候，R满足MR=R，这个平稳分布R就是PageRank的值。这就是PageRank的基本定义，但是其实这样的马尔可夫链不一定具有平稳分布，根据定理有强连通且非周期的有向图上定义的随机游走模型，在时间t趋于无穷的时候分布收敛到唯一分布，所以进一步推广。<br>如果导入平滑项，就是PageRank的一般定义了，可以证明得以下形式的马尔可夫链具有唯一分布：<br><img src="/2022/07/22/graph-embedding/7.jpg" alt="场景"><br>其中，阻尼因子d越接近1，越按照转移矩阵进行；越接近0，随机游走越以等概率访问各个结点。1是全1的n维矩阵。这意味着，浏览者以概率d跳转到当前网页连接的其他网页；以概率1-d跳转到完全随机的其他网页(不一定连接到当前网页)，这可以保证平稳分布。</p>
+<p>具体计算可以直接按照上式，等R的更新幅度很小，就可以停止迭代了。</p>
+<h3 id="DeepWalk"><a href="#DeepWalk" class="headerlink" title="DeepWalk"></a>DeepWalk</h3><h2 id="Deep-Learning"><a href="#Deep-Learning" class="headerlink" title="Deep Learning"></a>Deep Learning</h2><h1 id="图神经网络-GNN"><a href="#图神经网络-GNN" class="headerlink" title="图神经网络(GNN)"></a>图神经网络(GNN)</h1><p>前面说到，深度学习在发展中才提出了GNN，那是什么导致GNN的出现和发展呢？答案是图这种结构的特殊性。不同于规整的图像等数据，一个图的结构往往是不规则的，并且不同节点之间还有关联，使得以往的深度学习方法没办法很好地用到图上，因此图神经网络应运而生。<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_44186838/article/details/109378474?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522166323184816782395396213%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=166323184816782395396213&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-109378474-null-null.142^v47^pc_rank_34_default_23,201^v3^control_2&amp;utm_term=GNN&amp;spm=1018.2226.3001.4187">这篇文章</a>很好地解释了GNN的计算过程，方便理解。</p>
+<h2 id="一般GNN-GCN"><a href="#一般GNN-GCN" class="headerlink" title="一般GNN(GCN)"></a>一般GNN(GCN)</h2><p>GNN的输入一般是图的邻接矩阵A，以及结点的特征矩阵X。现在我们假设要对样本G进行计算，图G并不存在边特征，是一个无向图，要求进行训练并实现图分类。那么使用最简单的GNN，可以用三层网络结构描述，输入层，隐层，输出层，其中输入我们知道是(A,X)，经过隐层计算后输出，现在看看隐层计算什么以及如何计算。</p>
+<p>在图神经网络中，对一个结点的更新定义聚合操作，也就是将这个顶点的邻居的特征向量以某种方式汇聚到这个顶点的特征向量上，方法就是使用邻接矩阵A左乘特征矩阵X，并且X还使用了训练参数W进行调整:Z=AXW，相比原始的神经网络，只不过多加了一个邻接矩阵。</p>
+<p>此时有两个问题需要解决，一是这样更新以后结点自身的特征向量被忽略了，因此要为邻接矩阵A中的结点增加自环；二是度越大的结点汇聚的特征越多，导致这个值越大，最好进行归一化避免，将特征平均到每个度上，所以还要将每个结点的特征向量除以结点的度。</p>
+<p>现在，就得到了隐层的完整计算，Z=inv(D)A’XW，其中inv(D)表示度对角矩阵的逆，A’表示增加了自环的邻接矩阵，X是结点信息矩阵，W是权重矩阵。每次，通过这样的方式前向，并后向传播使用SGD更新权重参数，最后完成网络的训练。当然，结点更新后生成的仍然是和X相同维度的N*M维的结点特征矩阵，其中N是结点数量，M是结点特征的维度。结合前面的嵌入，自然可以想到结点的嵌入向量实际上就在这里用作特征向量。而在实际的工作中，我们把嵌入的向量(Embeedings)称为隐式特征Implicit Feature，如果数据中结点还带有具体的属性(Attributes)，又把这部分叫做Explicit Feature，可以对这两部分特征都进行更新。</p>
+<p>那应该如何从特征向量矩阵得到最后需要的任务目标？用全连接神经网络即可，称为局部输出函数，用这个结果来确定误差并反向传播。而反向传播的过程与一般神经网络也类似，但是因为不动点理论和压缩映射，训练目标不是简单的梯度下降算法，理解上不造成影响。</p>
+<p><img src="/2022/07/22/graph-embedding/1.png" alt="场景"></p>
+<h2 id="多跳邻居的GNN"><a href="#多跳邻居的GNN" class="headerlink" title="多跳邻居的GNN"></a>多跳邻居的GNN</h2><p>一般的GNN也可以说是采用直接邻居的GNN，在 <em>Representation Learning on Graphs with Jumping Knowledge Networks</em> 一文中，作者将GCN的汇聚范围同Random Walk做对比，说明了GCN的每层网络汇聚就相当于Random Walk多走一步，也就是说一个结点在GNN中进行汇聚，每汇聚一次得到的全局信息就越多。但是这其实有一定缺陷，因为某些结点并不在中心结点的位置，因此它汇聚完成后的特征表示也不应该具有过多的全局信息，而是应该更多保留自身的特征，多层的GNN有可能破坏这样的特征，所以许多人提出了新的方案处理这个问题，本质上就是将每层的信息通过某种方式保留，到训练完成后再选择需要哪层汇聚的信息。</p>
+<h3 id="DGCNN"><a href="#DGCNN" class="headerlink" title="DGCNN"></a>DGCNN</h3><p>DGCNN在一般GCN的基础上，加入SrotPooling层依照特征向量对结点进行排序，提取出汇聚信息最多的一部分重要的结点，解决处理图数据时为统一图大小而需要截断邻接矩阵的问题。<br><img src="/2022/07/22/graph-embedding/1.jpg" alt="场景"><br>输入：邻接矩阵A和信息矩阵X；</p>
+<p>卷积层：<br><img src="/2022/07/22/graph-embedding/2.jpg" alt="场景"></p>
+<p>拼接：将每次Zt的结果按行拼接起来。每行是结点的特征描述，每列是一个通道。<br><img src="/2022/07/22/graph-embedding/3.jpg" alt="场景"></p>
+<p>排序池化层：从最后一列往前，降序排列前K个大的顶点信息，并输出K个结点的特征描述矩阵。由于是从后往前排序，所以在这个过程中可以将损失梯度传回到前一层的训练，让前一层的参数可以进行训练。作者说这可以类比WL的颜色排序，得到结点的排序和统一大小的卷积后的信息矩阵。在这一层实现了不同层汇聚信息的选择，作者按照降序排列，且论文中设置的最后一层的通道数为1，也就是说作者选择了汇聚信息最多的重要的k个结点的特征进行后面的处理。</p>
+<p>CNNs：<br>将前面得到的矩阵展成一列，也就是将每行拼接起来转置。用一维的CNN训练(为了学习结点的信息维度添加了一些)，结果用全连接层激活进行分类。</p>
+<p>贡献：实现了图端到端的分类，处理不规则的图，让CNN能直接应用在图上，并且让结点有一定的顺序让CNN读取，得到更好的结果。作者认为WLNM中为了应用神经网络直接将邻接矩阵截断再训练，可能导致信息丢失，所以通过降序排序池化的方式进行截断，在一定程度上降低了信息的丢失。</p>
+<p>作者直接按照每个通道中的大小排序，用WL解释个人感觉比较牵强，实际上就是哪个结点汇聚的更多就提取哪个结点，如果能在卷积或者池化的同时进一步增强这种“重要性”，结果可能会得到提升。后来本人找到一些关于这种思路的论文，为子图赋权或者开发某种衡量结点重要性的指标。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Graph-Embedding/" rel="tag"># Graph Embedding</a>
+              <a href="/tags/Graph-Neural-Network/" rel="tag"># Graph Neural Network</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/06/food-in-ChengDu/" rel="prev" title="食店记录">
+                  <i class="fa fa-angle-left"></i> 食店记录
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/26/link-prediction/" rel="next" title="鲁棒主成分分析与GNN社交网络链路预测方法">
+                  鲁棒主成分分析与GNN社交网络链路预测方法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

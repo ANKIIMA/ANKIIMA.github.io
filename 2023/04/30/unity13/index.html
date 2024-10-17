@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="做好了角色控制器以后，是时候进一步填充游戏内容了，我们接下来还是学习动画，Animation Layer可以帮助我们在角色上播放不同的动画，让角色持有武器并移动的动作通过移动和握持两个动画来实现；更进一步的IK则会帮助角色适应不同地形。除了前面实现角色基本移动功能的状态机，root motion等，这两个功能都很有必要学习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unity入门(十三)-动画系统(三)">
+<meta property="og:url" content="https://ankiima.github.io/2023/04/30/unity13/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="做好了角色控制器以后，是时候进一步填充游戏内容了，我们接下来还是学习动画，Animation Layer可以帮助我们在角色上播放不同的动画，让角色持有武器并移动的动作通过移动和握持两个动画来实现；更进一步的IK则会帮助角色适应不同地形。除了前面实现角色基本移动功能的状态机，root motion等，这两个功能都很有必要学习。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/5.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/7.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/8.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/9.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/10.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/11.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/12.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/13.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/14.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/30/unity13/15.png">
+<meta property="article:published_time" content="2023-04-30T12:48:29.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.555Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/04/30/unity13/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/04/30/unity13/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/04/30/unity13/","path":"2023/04/30/unity13/","title":"unity入门(十三)-动画系统(三)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>unity入门(十三)-动画系统(三) | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Animation-Layer"><span class="nav-number">1.</span> <span class="nav-text">Animation Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Additive%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">Additive模式的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">同步的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layer%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">1.3.</span> <span class="nav-text">Layer优先级</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Inverse-kinematic-Goal"><span class="nav-number">2.</span> <span class="nav-text">Inverse kinematic Goal</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Animation-Rigging"><span class="nav-number">3.</span> <span class="nav-text">Animation Rigging</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/04/30/unity13/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="unity入门(十三)-动画系统(三) | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          unity入门(十三)-动画系统(三)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-04-30 20:48:29" itemprop="dateCreated datePublished" datetime="2023-04-30T20:48:29+08:00">2023-04-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>做好了角色控制器以后，是时候进一步填充游戏内容了，我们接下来还是学习动画，Animation Layer可以帮助我们在角色上播放不同的动画，让角色持有武器并移动的动作通过移动和握持两个动画来实现；更进一步的IK则会帮助角色适应不同地形。除了前面实现角色基本移动功能的状态机，root motion等，这两个功能都很有必要学习。</p>
+<span id="more"></span>
+<h1 id="Animation-Layer"><a href="#Animation-Layer" class="headerlink" title="Animation Layer"></a>Animation Layer</h1><p>使用Animation Layer可以管理不同身体部分的复杂状态机，骨骼蒙版就是来控制使用哪些骨骼的：</p>
+<p><img src="/2023/04/30/unity13/1.png" alt></p>
+<p>创建完成后我们选择手臂及其IK Goal，代表选择的是手臂、手掌和两个IK：</p>
+<p><img src="/2023/04/30/unity13/2.png" alt></p>
+<p>接着回到状态机中，将我们创建的这个Avatar Mask赋值给新建的Arms Layer：</p>
+<p><img src="/2023/04/30/unity13/3.png" alt></p>
+<p>可以看到出现了M字样作为标记，表示这个Layer使用了Avatar Mask。在Layer的设置中，还有以下几项：</p>
+<ul>
+<li>Weight：当前Layer影响动画的权重；</li>
+<li>Mask：使用的Avatar Mask；</li>
+<li>Blending：和上层动画的混合方式，Override为取代，Additive为正常混合；</li>
+<li>Sync：选择是否和其他层级同步；</li>
+<li>IK Pass：是否使用IK；</li>
+</ul>
+<p>然后我们找到一个持枪动画，按照之前讲解的方法修改必要的地方，添加进状态机中的Arms层，用一个bool变量来控制当前是否持枪，得到效果就是角色在bool变量为真时双手抬起，并且可以行走，不会影响手部的动作。</p>
+<p><img src="/2023/04/30/unity13/4.png" alt></p>
+<h2 id="Additive模式的使用"><a href="#Additive模式的使用" class="headerlink" title="Additive模式的使用"></a>Additive模式的使用</h2><p>上面我们用override覆盖了原本的手臂动画，现在我们使用Additive模式为角色添加疲劳感。找到一个喘气的动画，添加到新建的状态机层中即可。接着打开Layer的设置，创建一个只影响头部和驱赶的Avatar Mask给这个层：</p>
+<p><img src="/2023/04/30/unity13/5.png" alt></p>
+<p>这样一来，层中只有一个状态，也就是说只要Weight变大，那么这个层的状态就会附加到原本的状态上做一个混合，达到角色喘气、疲劳的感觉。</p>
+<p><img src="/2023/04/30/unity13/6.png" alt></p>
+<p>我们下面修改脚本，用脚本来控制角色的疲劳值，将代码修改成下面这样：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.InputSystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">QinController</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> RotateSpeed = <span class="number">1000f</span>;</span><br><span class="line"></span><br><span class="line">    Transform Playertransform;</span><br><span class="line">    Animator animator;</span><br><span class="line">    Vector2 playerInput;</span><br><span class="line">    <span class="built_in">bool</span> isRunning;</span><br><span class="line">    Vector3 playermovement;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">float</span> currentSpeed;</span><br><span class="line">    <span class="built_in">float</span> targetSpeed;</span><br><span class="line">    <span class="built_in">float</span> WalkingSpeed = <span class="number">1.5f</span>;</span><br><span class="line">    <span class="built_in">float</span> RunSpeed = <span class="number">3.3f</span>;</span><br><span class="line">    <span class="built_in">bool</span> armedRifle = <span class="literal">false</span>;</span><br><span class="line">    <span class="built_in">float</span> currentFatigue;</span><br><span class="line">    <span class="built_in">float</span> minFatigue = <span class="number">0f</span>;</span><br><span class="line">    <span class="built_in">float</span> maxFatigue = <span class="number">10f</span>;</span><br><span class="line">    <span class="built_in">int</span> FatigueLayerIndex;</span><br><span class="line">    <span class="comment">// Start is called before the first frame update</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        animator = GetComponent&lt;Animator&gt;();</span><br><span class="line">        Playertransform = GetComponent&lt;Transform&gt;();</span><br><span class="line">        FatigueLayerIndex = animator.GetLayerIndex(<span class="string">&quot;Fatigue&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update is called once per frame</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        PlayerRotate();</span><br><span class="line">        PlayerMove();</span><br><span class="line">        CaculateFatigue();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GetPlayerMoveInput</span>(<span class="params">InputAction.CallbackContext callbackContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        playerInput = callbackContext.ReadValue&lt;Vector2&gt;();</span><br><span class="line">        Debug.Log(playerInput);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GetPlayerRunInput</span>(<span class="params">InputAction.CallbackContext callbackContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        isRunning = callbackContext.ReadValue&lt;<span class="built_in">float</span>&gt;() &gt; <span class="number">0</span> ? <span class="literal">true</span> : <span class="literal">false</span>;</span><br><span class="line">        Debug.Log(isRunning);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">PlayerRotate</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (playerInput.Equals(Vector2.zero)) <span class="keyword">return</span>;</span><br><span class="line">        playermovement.x = playerInput.x;</span><br><span class="line">        playermovement.z = playerInput.y;</span><br><span class="line"></span><br><span class="line">        Quaternion targetRotation = Quaternion.LookRotation(playermovement, Vector3.up);</span><br><span class="line">        Playertransform.rotation = Quaternion.RotateTowards(Playertransform.rotation, targetRotation, RotateSpeed * Time.deltaTime);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">PlayerMove</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        targetSpeed = isRunning ? RunSpeed : WalkingSpeed;</span><br><span class="line">        targetSpeed *= playerInput.magnitude;</span><br><span class="line">        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, <span class="number">0.5f</span>);</span><br><span class="line">        animator.SetFloat(<span class="string">&quot;VerticalSpeed&quot;</span>, currentSpeed);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GetArmedRifleInput</span>(<span class="params">InputAction.CallbackContext callback</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(callback.ReadValue&lt;<span class="built_in">float</span>&gt;() == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            armedRifle = !armedRifle;</span><br><span class="line">            animator.SetBool(<span class="string">&quot;Rifle&quot;</span>, armedRifle);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">CaculateFatigue</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (currentSpeed &lt; <span class="number">1f</span> &amp;&amp; currentFatigue &gt;= <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            currentFatigue -= Time.deltaTime;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (currentSpeed &gt; <span class="number">2f</span> &amp;&amp; currentFatigue &lt;= <span class="number">10</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            currentFatigue += Time.deltaTime;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        currentFatigue = Mathf.Clamp(currentFatigue, minFatigue, maxFatigue);</span><br><span class="line">        animator.SetLayerWeight(FatigueLayerIndex, currentFatigue / <span class="number">10f</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>进入游戏，可以看到状态机中Fatigue层的weight随着角色移动而更改，这就是Additive模式的基本用法了。</p>
+<p>了解之后我们不妨进一步思考原理，之前说动画其实就是对游戏对象的一系列的变换，那么Additive模式含义就是，让当前层动画的变化施加到游戏对象上，让游戏对象乘以变换矩阵。那么问题来了，如果一个动画并没有包含任何变换，或者说Curves，例如持枪动画中，角色的双手从头到尾是静止的，因此将持枪动画的层级修改为Additive时，角色的动作就不会被这个动画影响，因为乘以的变换矩阵为单位矩阵，我们才只能使用override模式让变换强制执行，一如root motion。</p>
+<h2 id="同步的使用"><a href="#同步的使用" class="headerlink" title="同步的使用"></a>同步的使用</h2><p>Sync是Unity提供的同步功能，在开发中有时我们希望能使用角色原来的状态机，但是播放和原来不同的动画，例如角色受伤以后的动画，那么就可以使用Sync进行同步，所谓同步其实仅仅是同步动画状态和状态转换关系，因此对于其中播放什么动画、Blend Tree的内容都不会同步，这样就可以重新添加了。</p>
+<p>值得说明的是，如果两个动画状态通过Exit time进行转换，并且这两个动画不一样长，原本的动画可能播放2s后转换，结果现在需要同步的动画只有1s，Unity就会将1s的动画同步缩放到2s，从而保证转换状态不变。</p>
+<p><img src="/2023/04/30/unity13/7.png" alt></p>
+<p>但是如果希望用1s的动画作为基准，将基准层的2s动画缩放到1s呢？这就是使用Timing选项的作用，注意只有当使用override模式时Timing才是可选的。Timing会根据两个层的权重来对动画时间的缩放进行计算，设置当前层的权重为1，那么自然2s的动画就会被缩小到1s了。</p>
+<h2 id="Layer优先级"><a href="#Layer优先级" class="headerlink" title="Layer优先级"></a>Layer优先级</h2><p>你可能发现，在添加了injured层之后角色的Fatigue层和Amrs层就失效了，因为在Unity种位于下面的Layer拥有更高的优先级，因此injured代替了上层的所有动画，为了不妨碍Fatigue生效，我们把injured层拖到这两个层上面即可：</p>
+<p><img src="/2023/04/30/unity13/8.png" alt></p>
+<p>通过合理使用Layer，可以制作精美的角色动画，包括面部表情，这是一个非常强大的功能。</p>
+<h1 id="Inverse-kinematic-Goal"><a href="#Inverse-kinematic-Goal" class="headerlink" title="Inverse kinematic Goal"></a>Inverse kinematic Goal</h1><p>为了让角色持枪的动作更贴合模型，我们可以用IK Goal来实现，前面我们已经使用过了。在勾选Layer中的IK Pass后，代表你开启了IK计算，系统将会每帧回调OnAnimatorIK方法。</p>
+<p><img src="/2023/04/30/unity13/9.png" alt></p>
+<p>根据反向动力学，Unity会计算将目标骨骼移动到对应位置后角色身体其他部分的变化，因此可以用IK Goal来移动角色四肢，这里持枪姿态就是将角色的双手移动到枪身上面。但是直接在代码中移动IK Goal又看不见，我们很难用调整代码的方式来调整IK Goal位置，因此通常的做法是建立一个空对象代表IK Goal，然后运行后调整这个空对象的位置，就能看到角色四肢的移动效果了。</p>
+<p>我们这里可以给角色的左右手分别创建一个枪支的空子对象，然后在代码中让Avatar左右手的位置、朝向都和空对象统一，接着就可以调整空对象的位置，进而调整手的位置了。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnAnimatorIK</span>(<span class="params"><span class="built_in">int</span> layerIndex</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    animator.SetIKPosition(AvatarIKGoal.RightHand, righthandposition.position);</span><br><span class="line">    animator.SetIKRotation(AvatarIKGoal.RightHand, righthandposition.rotation);</span><br><span class="line"></span><br><span class="line">    animator.SetIKPosition(AvatarIKGoal.LeftHand, lefthandposition.position);</span><br><span class="line">    animator.SetIKRotation(AvatarIKGoal.LeftHand, lefthandposition.rotation);</span><br><span class="line"></span><br><span class="line">    animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, <span class="number">1f</span>);</span><br><span class="line">    animator.SetIKPositionWeight(AvatarIKGoal.RightHand, <span class="number">1f</span>);</span><br><span class="line">    animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, <span class="number">1f</span>);</span><br><span class="line">    animator.SetIKRotationWeight(AvatarIKGoal.RightHand, <span class="number">1f</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如何在游戏运行的时候保存属性？点击Transform组件右上角的三个点，展开后可以看到Copy Component选项，点击后结束游戏，再打开选择Paste Component Values即可粘贴调整好的值。</p>
+<p>另外还有一个重要的地方，由于我们计算IK时对整个骨骼都会有影响，导致设置IK Goal后可能会发现右手位置对了，左手却偏移了，这就是左手的IK Goal受到了右手IK计算的影响。IK效果并不会立即被体现出来，导致一方对另一方绑定位置的影响具有滞后性，导致后绑定的一方绑定位置出错，也就是左手。</p>
+<p>因此我们可以创建一个新的Layer，勾选IK Pass用于逻辑运行，并采用形参LayerIndex作为逻辑分支，在不同的层逻辑中进行不同的处理，就可以解决问题了。</p>
+<p>我们这里可以直接开启两个层的IK Pass，左右手也不会发生偏移，因为每更新帧中对每个层调用一次OnAnimatorIK和WriteTransform，也就是说给两个层都执行了相同的内容，第一次调用时左手绑定Goal的代码在右手后面，导致绑定出错，第二次调用以后右手绑定位置已经ok了，所以左手重新调整到正确的位置了。</p>
+<h1 id="Animation-Rigging"><a href="#Animation-Rigging" class="headerlink" title="Animation Rigging"></a>Animation Rigging</h1><p>Animation Rigging是unity推出的简化动画系统的框架，可以使用一系列的组件将骨骼摆动到正确的位置上。我们这里使用最简单的Two Bone Contrains来进行手部持枪动画的绑定。</p>
+<p>首先在Packge Manager中导入Animation Rigging，然后看到顶部菜单栏多出来一个Animation Rigging的选项。然后我们可以先使用Bone Renderer Setup来给角色添加骨骼渲染，之后就可以通过点击场景的方式来选择需要哪个骨骼：</p>
+<p><img src="/2023/04/30/unity13/10.png" alt></p>
+<p>然后就是rig的使用，rig就相当于一个变换骨骼的操作，一个角色可以拥有多个rig，它们统一被Rig Builder组件管理；每个rig下也可以有多个Constrains，相当于更详细的骨骼变换操作描述，那么我们要使用rig将手部放到合适的位置，就不用像之前那样通过代码慢慢调整。</p>
+<p>先给角色添加Rig Builder组件，它自动给角色创建一个名为Rig1的子对象(Rig Builder中也可以点击加号添加新的Rig)，将其重命名为Two Hands Rig，可以看到这个对象已经添加了Rig组件，管理两个手的骨骼变换；再给Rig然后添加两个子对象Right Hand Constrain，Left Hand Constrain，这两个约束详细描述了游戏中角色的手应该如何摆放，就像IK Goal一样，所以我们还是建立空子对象作为Target。</p>
+<p>不过这里引入了Animation Rigging，有比较快的方法，原来播放的持枪动画基本OK，所以我们给Chest建立空的子对象作为右手的Target，开始游戏并让角色持枪，然后同时选中此时角色大概正确的手腕骨骼，和我们的target，点击顶部Animation Rigging中的Align Position，就可以让Target的位移同此时手腕相同，方便了我们后面调整。</p>
+<p><img src="/2023/04/30/unity13/11.png" alt></p>
+<p>接着给两个Constrain添加Two Bone Constrains组件：</p>
+<p><img src="/2023/04/30/unity13/12.png" alt></p>
+<p>Two Bone Constrains实际上就是通过旋转root、mid两根骨骼，把tip这个骨骼放到target位置上。Maintain Target Offset代表是否保持tip和target之间的位移差。那么手腕Wrist的父节点分别是elbow和arm骨骼，所以就将它们拖进去，下面Target则是刚才对齐的子对象，配置好之后就可以开始游戏了，此时看到右手已经绑定在位置上了。接着你要做的就是调整Target的位置，让右手摆放到合适的位置。</p>
+<p>用相同的办法调整左手位置，完成后你应该分别给左右手创建了一个对其的空游戏对象。</p>
+<p>接着完成对Aiming Idle动画的调整，完成后一共有四个空游戏对象了。</p>
+<p>完成后我们得到了调整后的持枪Idle和瞄准Idle，为了使用这两个动画，我们得让它们切换的同时，Constrains中的Target也一同切换，这当然可以通过代码实现，但是我们有更简单的方法，依然是动画的本质。</p>
+<p><img src="/2023/04/30/unity13/13.png" alt></p>
+<p>众所周知，动画通过对一层一层游戏子对象的名称来辨别并施加变换，此时我们设置了一个Target子对象作为手移动的对象，那么它自然也可以通过动画访问到，因此我们完全可以添加一个Animation Clip，让这个Clip来对该Target进行变换，从而让这个Target在持枪Idle的时候就保持持枪时Target的值，在瞄准Idle的时候就保持瞄准时Target的值，也就是说左右手各使用一个Target即可，就没必要通过代码进行切换了。</p>
+<p>那么打开角色的Animation窗口，新建一个Clip，存入持枪Idle时调整好的左右手Target的Rotation和Position；再新建另一个Clip，这时由于已经有了持枪Idle时Target的位置，所以把瞄准Idle时Target的Transform组件值拷贝到持枪Idle时Target的Transform组件，再次添加持枪Idle时左右手Target的Rotation和Position。</p>
+<p><img src="/2023/04/30/unity13/14.png" alt></p>
+<p>也就是说，我们两个动画Clip里存的就是对左手Target和右手Target的变换，并且它们具有不同的值，接下来应该如何使用呢？</p>
+<p>我们知道，动画Clip会让对应的游戏对象进行变换，这里的变换则是对Target的旋转、位移变换，规定播放该Clip时让Target旋转、移动到固定的位置；又因为我们的Constraints约束了手的位置，所以手就会被带动到Target的位置。我们只需要让状态机中条件发生转换的时候，播放对应动画并override到下层动画上即可。</p>
+<p><img src="/2023/04/30/unity13/15.png" alt></p>
+<p>所以我们在最下面新建一个Layer层，当isAiming为true的时候播放瞄准Idle的动画Clip，false的时候播放持枪Idle的动画Clip，就实现了Constrains中Target的改变。多余的那个Target就可以删除了。这样我们瞄准动画就修改好了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/04/27/unity12/" rel="prev" title="unity入门(十二)-Root Motion和Character Controller">
+                  <i class="fa fa-angle-left"></i> unity入门(十二)-Root Motion和Character Controller
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/05/04/unity14/" rel="next" title="unity入门(十四)-Animation系统(四)">
+                  unity入门(十四)-Animation系统(四) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

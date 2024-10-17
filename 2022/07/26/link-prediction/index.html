@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言这篇博客将会聚焦社交网络中的链路预测问题，导读 Link prediction via matrix completion 和 Link Prediction Based on Graph Neural Networks 两篇文章中的工作和贡献。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="鲁棒主成分分析与GNN社交网络链路预测方法">
+<meta property="og:url" content="https://ankiima.github.io/2022/07/26/link-prediction/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言这篇博客将会聚焦社交网络中的链路预测问题，导读 Link prediction via matrix completion 和 Link Prediction Based on Graph Neural Networks 两篇文章中的工作和贡献。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/26/link-prediction/1.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/26/link-prediction/3.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/26/link-prediction/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/26/link-prediction/4.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/26/link-prediction/6.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/07/26/link-prediction/7.jpg">
+<meta property="article:published_time" content="2022-07-26T13:06:11.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.329Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="GNN">
+<meta property="article:tag" content="Link Prediction">
+<meta property="article:tag" content="SEAL">
+<meta property="article:tag" content="RPCA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2022/07/26/link-prediction/1.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/07/26/link-prediction/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/07/26/link-prediction/","path":"2022/07/26/link-prediction/","title":"鲁棒主成分分析与GNN社交网络链路预测方法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>鲁棒主成分分析与GNN社交网络链路预测方法 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Link-Prediction-via-Matrix-Comletion"><span class="nav-number">2.</span> <span class="nav-text">Link Prediction via Matrix Comletion</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A1%E7%8C%AE"><span class="nav-number">2.1.</span> <span class="nav-text">贡献</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E8%AE%BA%E5%92%8C%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">理论和方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.3.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BF%E7%9C%9F"><span class="nav-number">2.4.</span> <span class="nav-text">仿真</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA%E4%B8%8E%E8%AE%A8%E8%AE%BA"><span class="nav-number">2.5.</span> <span class="nav-text">结论与讨论</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Link-Prediction-Based-on-Graph-Neural-Networks"><span class="nav-number">3.</span> <span class="nav-text">Link Prediction Based on Graph Neural Networks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A1%E7%8C%AE-1"><span class="nav-number">3.1.</span> <span class="nav-text">贡献</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-number">3.2.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8F%91%E5%BC%8F%E6%96%B9%E6%B3%95%E7%9A%84%E7%BB%9F%E4%B8%80%E7%90%86%E8%AE%BA"><span class="nav-number">3.3.</span> <span class="nav-text">启发式方法的统一理论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SEAL%E6%A1%86%E6%9E%B6"><span class="nav-number">3.4.</span> <span class="nav-text">SEAL框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E5%AD%90%E5%9B%BE"><span class="nav-number">3.4.1.</span> <span class="nav-text">提取子图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E7%9F%A9%E9%98%B5"><span class="nav-number">3.4.2.</span> <span class="nav-text">信息矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GNN%E5%AD%A6%E4%B9%A0"><span class="nav-number">3.4.3.</span> <span class="nav-text">GNN学习</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BF%E7%9C%9F-1"><span class="nav-number">3.5.</span> <span class="nav-text">仿真</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">3.6.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">3.7.</span> <span class="nav-text">思考</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E7%82%B9%E9%87%8D%E8%A6%81%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">结点重要性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E9%A2%84%E6%B5%8B%E8%AF%84%E4%BB%B7"><span class="nav-number">5.</span> <span class="nav-text">链路预测评价</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E7%A1%AE%E7%8E%87"><span class="nav-number">5.1.</span> <span class="nav-text">准确率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AUC-metric"><span class="nav-number">5.2.</span> <span class="nav-text">AUC metric</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/07/26/link-prediction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="鲁棒主成分分析与GNN社交网络链路预测方法 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          鲁棒主成分分析与GNN社交网络链路预测方法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-26 21:06:11" itemprop="dateCreated datePublished" datetime="2022-07-26T21:06:11+08:00">2022-07-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/Deep-Learning/Graph/" itemprop="url" rel="index"><span itemprop="name">Graph</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这篇博客将会聚焦社交网络中的链路预测问题，导读 <em>Link prediction via matrix completion</em> 和 <em>Link Prediction Based on Graph Neural Networks</em> 两篇文章中的工作和贡献。<br><span id="more"></span></p>
+<h1 id="Link-Prediction-via-Matrix-Comletion"><a href="#Link-Prediction-via-Matrix-Comletion" class="headerlink" title="Link Prediction via Matrix Comletion"></a><em>Link Prediction via Matrix Comletion</em></h1><h2 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h2><p>将鲁棒主成分分析法引入到社交网络链路预测中，利用矩阵的稀疏性质和低秩性质，只要社交网络连接地足够紧密（对相对紧密的真实社交网络，对比完全图也是很稀疏的），那么通过RPCA就可以达到较好的预测效果，且对有权和无权网络都适用。</p>
+<h2 id="理论和方法"><a href="#理论和方法" class="headerlink" title="理论和方法"></a>理论和方法</h2><p>对一个社交网络的邻接矩阵 <em>G</em> ，提取一定百分比的边作为训练集，剩下的边作为验证集。然后根据RPCA的理论，假设邻接矩阵由两部分组成，一部分是冗余的噪声 <em>E</em> ，其中的正项是网络中虚假的连接，负项表示出现在信息矩阵中的缺失连接（通过后面的方法部分会更理解这里）；另一部分是矩阵中鲁棒的信息矩阵 <em>X*</em> ，包含着整个邻接矩阵的构成信息，并且这部分信息矩阵应该是低秩并且稀疏的（思考一个棋盘格图像，只需要一个秩为2的信息矩阵就能构建任意大小的棋盘格图像）。</p>
+<p>因此，社交网络的邻接矩阵 <em>G</em> 就可以通过 <em>E+X</em> 来表示，如果 <em>G</em> 中有缺失的连接，那么它也应当符合信息矩阵传达的矩阵结构，即缺失的连接应该会出现在 <em>X** 中。然后我们当然就可以通过找到网络的信息矩阵 </em>X<strong> ，并提取其中新出现的连接 <em>X</em>（即预测的链路）来构建一个理想的恢复矩阵 *G</strong> ,表示成 <em>X+G</em>。</p>
+<p>这几个矩阵之间的关系可以用下图来表示：<br><img src="/2022/07/26/link-prediction/1.jpg" alt="场景"><br>（其中观察矩阵A就是上面说的邻接矩阵G，信息矩阵即骨干矩阵<em>X**，恢复的矩阵G在上面是</em>G**）</p>
+<p>这样一来，只要能够找到从邻接矩阵 G 中提取信息矩阵 <em>X** 的方法，就能完成链路预测了。这里文中就引入了RPCA方法（不使用PCA是因为文中说PCA面对严重破坏的数据表现不好），由于 </em>G = E + X<strong> ，并假设 <em>E</em> 是稀疏的（稀疏的社交网络中的噪声必然更加稀疏），且 *X</strong> 是低秩的（类比棋盘格图像的信息矩阵，因为包含规整的结构信息并去除了不规整的噪声所以是低秩的），所以将这个问题转化成一个双目标优化问题，目标是在前面等式约束条件下找到参与 <em>G</em> 表示的最稀疏的矩阵 <em>E</em> 和最低秩的矩阵 <em>X*</em>。其中参数lamda用来平衡矩阵构成的稀疏性和低秩性。</p>
+<p><img src="/2022/07/26/link-prediction/3.jpg" alt="场景"></p>
+<p>其中“最稀疏的”用零范数量化，“最低秩的”用矩阵的秩计算来量化。但是由于这个优化问题是NP难且非凸的，所以要进一步松弛零范数为一范数，矩阵的秩计算松弛为核范数，从而得到问题的松弛解。这部分在论文 <em>鲁棒主成分分析及其应用</em> 中有更详细的数学理论支持。</p>
+<p><img src="/2022/07/26/link-prediction/2.jpg" alt="场景"></p>
+<p>找到信息矩阵后，对照原矩阵 <em>G</em> 确认多出来的链路，添加到 <em>G</em> 上，就恢复得到与原本真实网络足够接近的矩阵 <em>G*</em> 了，从而完成了链路预测。</p>
+<p>值得注意的是，文中还给出了验证预测正确率的方法。恢复完成后的矩阵每项值为邻接矩阵中该项代表的链路产生连接的可能性，由于先前抹去了网络中一定数量的 <em>L</em> 个链路作为测试集，所以这里也将所有的链路（可以从恢复的矩阵 <em>G** 中选也可以单独从预测的链路 </em>X<em> 中选择）按照降序排列，验证前 </em>L* 个链路中有多少个正确的预测，作为预测的正确率。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>介绍完方法后，文中引用了论文论证使用该方法能预测何种程度的链路缺失。虽然由于网络的稀疏，一般不能满足完全预测恢复的条件，但是所幸社交网络的链路预测并不需要完全精准地恢复矩阵中的所有非零项，因为其中很大一部分仍然是空连接，只有一小部分才是缺失的连接，所以在这种程度上可以忽略（这里不是很明白，原文中说的也比较简略）。</p>
+<p>然后提及优化问题中需要确定的超参数lamda，可以通过实验确定，不同的网络会有不同的超参数。</p>
+<p>另外，文中还说明了链路预测的时间复杂度为 <em>O(kn^2)</em>, <em>k</em> 是矩阵的估计秩，且得益于稀疏性，<em>k</em> 要比 <em>n</em> (矩阵规模)小很多，体现了算法效率的优越性。</p>
+<p>最后，文中还给出”global structure”的定义和计算方式，作为一个衡量网络的指标，并说明全局预测方法应当和这个数值g有关。</p>
+<h2 id="仿真"><a href="#仿真" class="headerlink" title="仿真"></a>仿真</h2><p>在不同的真实社交网络上进行对比，得到的结果和其他链路预测方法对比，并计算网络的各种指标，得到了较好的结果。</p>
+<h2 id="结论与讨论"><a href="#结论与讨论" class="headerlink" title="结论与讨论"></a>结论与讨论</h2><p>使用RPCA完成链路预测是比较好的方法，但是该方法有一定缺陷。对于超参数lamda，可以通过实验确定，对于任何网络都可以将其分成测试集和训练集，反复实验确定最好的超参数后再进行链路预测即可。展望后续工作。</p>
+<h1 id="Link-Prediction-Based-on-Graph-Neural-Networks"><a href="#Link-Prediction-Based-on-Graph-Neural-Networks" class="headerlink" title="Link Prediction Based on Graph Neural Networks"></a><em>Link Prediction Based on Graph Neural Networks</em></h1><h2 id="贡献-1"><a href="#贡献-1" class="headerlink" title="贡献"></a>贡献</h2><p>指出启发式预测方法的假设问题，研究一种根据网络自动学习启发式的链路预测方法。首先提出 <em>γ-decaying</em> 理论合并所有的启发式方法统一形式，并证明所有启发式计算可以从局部子图近似得到；然后基于该理论支持完成使用 <em>GNN</em> 从局部子图学习启发式的方法，结果表明这种方法有很好的链路预测效果。</p>
+<h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>首先介绍启发式链路预测方法，这类方法通过计算结点相似性来作为链路预测的依据，并根据计算方法的最大邻居“跳数”（<em>hop of neighbors</em>）可以分为一阶、二阶等。因此定义 <em>h</em> 阶的启发式方法为需要得到 <em>h</em> 跳邻居信息的方法。高阶的启发式方法或许需要知道整个图的信息。</p>
+<p>然后指出这类启发式方法的局限，由于假设性太强，所以某种方法往往只适合某一类网络，不够鲁棒。所以实际上这类方式都属于一种更一般化的类别，图结构特征（<em>graph structure features</em>）。这种特征指位于观测的结点和边结构中的特征，能够直接从图中计算出来。所以启发式方法可以看作预先定义的图结构特征，自然会想到能不能自动从网络中学习。前面有人研究过这个问题，也就是 <em>WLNM</em> 方法，用全连接神经网络学习节点对，以节点对的 <em>h</em> 跳子图作为输入，预测是否会产生连接。</p>
+<p>再定义“一跳”的封闭子图，即包含一对结点及其一跳范围内邻居的子图，其包含的信息非常丰富，一阶启发式需要的信息都可以通过这个子图计算。不过对于一些高阶的启发式，看起来似乎需要使用非常高的跳数 <em>h</em>，几乎要使用整个网络作为输入。所以通过第一个理论的构建，首先可以证明大多数启发式方法可以用这个理论统一，而且即便是小的 <em>h</em> 也能支持计算高阶特征信息，而不用使用庞大的网络。</p>
+<p>除此外，还会提出SEAL框架，从封闭子图中学习一般的图的结构特征。这种框架改进了WLNM的缺陷，首先 <em>GNN</em> （使用的是卷积图神经网络）代替 <em>WLNM</em> 使用的全连接神经网络，改进图特征的获取能力；除此之外，SEAL还允许学习除子图结构外的显式、隐式的结点特征，结合了多种信息。</p>
+<h2 id="启发式方法的统一理论"><a href="#启发式方法的统一理论" class="headerlink" title="启发式方法的统一理论"></a>启发式方法的统一理论</h2><p>所有启发式方法的计算都可以归纳成下面的公式框架：<br><img src="/2022/07/26/link-prediction/4.jpg" alt="场景"><br>其中要公式满足：<br><img src="/2022/07/26/link-prediction/6.jpg" alt="场景"><br>那么就可以通过第一个公式进行高阶启发式的近似计算（低阶的能直接计算当然不用管）。</p>
+<p>接着论证了三种启发式方法都满足这个框架。</p>
+<p>这样统一的理论结果框架说明封闭子图中包含的信息已经足够进行近似计算了，因为它表明在好的启发式方法中或许较远的图结构实际上对链路存在的贡献比较小。链路预测中也应当给离目标较远的结构以较小的权重。</p>
+<p>综上，只要提取较小的封闭子图，就能精准计算一阶、二阶启发式信息，并近似得到高阶信息。</p>
+<h2 id="SEAL框架"><a href="#SEAL框架" class="headerlink" title="SEAL框架"></a>SEAL框架</h2><p>SEAL不限制学习到的特征是某种特定形式，而是直接学习链路预测的一般图结构特征。</p>
+<p>步骤是：提取封闭子图；构建信息矩阵；GNN学习。</p>
+<h3 id="提取子图"><a href="#提取子图" class="headerlink" title="提取子图"></a>提取子图</h3><p>信息矩阵是对整体网络结点构建的，对网络中每个边，分为train和test边，对训练的边采用用户定义的h跳数提取子图，边存在则将子图标记为1，否则0，同时提取信息矩阵，将对应结点的信息向量提取出来按列拼接。</p>
+<h3 id="信息矩阵"><a href="#信息矩阵" class="headerlink" title="信息矩阵"></a>信息矩阵</h3><p>关键是构建结点信息矩阵，包含三部分：结构标签(Structural Lable)、点的嵌入(Embeeding)、点的属性(Attributes)。</p>
+<ul>
+<li><p>点的结构标签通过提出的 <em>DRNL</em> 算法完成，给子图中每个点不同的整数标签值。</p>
+</li>
+<li><p>点嵌入旨在得到点的低维向量表示，使用node2vec算法来获得全图中每个结点的嵌入，然后在提取子图的时候将子图中结点的嵌入向量提取出来。</p>
+</li>
+<li><p>点的显式显式特征向量，可以在数据中给出，并通过独热编码 (<em>one-hot encoding</em>) 得到唯一向量表示。</p>
+</li>
+</ul>
+<p>然后将点的隐式特征（Embeedings），显示特征（Attributes），拼接起来（按行拼接，每行是一个结点的信息向量），就得到了信息矩阵。而结构标签可以让GNN分辨哪个是要判断存在性的边。</p>
+<h3 id="GNN学习"><a href="#GNN学习" class="headerlink" title="GNN学习"></a>GNN学习</h3><p>使用DGCNN训练，得到分类结果。<br>作者指出，<em>DGGNN</em> （一种图神经网络，SEAL也可使用其他GNN）由于会仅通过拟合结点嵌入中包含的链路存在信息进行快速优化，也就是过拟合，导致泛化性不好，所以通过“负注入”来使 <em>DGGNN</em> 不能只拟合这部分信息来分类，在图中加入负连接得到新的图，然后根据新的图再生成嵌入向量，就相当于隐藏了这部分信息，从而提高泛用性。（学习图嵌入可以更好地理解）</p>
+<h2 id="仿真-1"><a href="#仿真-1" class="headerlink" title="仿真"></a>仿真</h2><p>在多个网络上进行实验，并同其他方法对比，取得良好结果。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>自动学习合适的启发式是一个新领域的研究，通过这篇文章提出的理论，首先统一了启发式形式，然后还提出了性能领先的SEAL框架，作者希望SEAL不仅仅在链路预测上有突破，在其他问题上一样能得到应用和推广。</p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><ul>
+<li>为什么使用GNN：因为我们将每个子图作为样本进行二分类，子图大小总是不一样，如果使用一般的神经网络需要截断子图的邻接矩阵，可能导致信息丢失；</li>
+<li>使用负注入：核心是避免过拟合，从而提升泛化性。</li>
+</ul>
+<h1 id="结点重要性"><a href="#结点重要性" class="headerlink" title="结点重要性"></a>结点重要性</h1><p>DGCNN中直接对结点信息通道降序排序，能不能说明汇聚信息更多，或者自身信息较大的结点更重要，如果能在卷积的同时增加这种重要性，就能进一步帮助排序结点。</p>
+<p>另外的论文中提到，三阶邻接矩阵包含了大部分二阶的邻接矩阵信息，同时二阶的邻接矩阵在一些情况下又比一阶的邻接矩阵信息多，既然用一阶的矩阵汇聚得到邻居的信息，那么用三阶邻接矩阵进行汇聚，显然包含了一阶汇聚的信息，同时还有更多的连接权重，能不能将这部分作为汇聚的参考，可能需要进一步验证。</p>
+<p>另外，子图最大规模是两跳，三阶的邻接矩阵应该会比较符合文中说明的意思，五跳的信息中会有很多冗余，代表紧密的局部连接。如果子图是一跳的，三跳信息就已经比较冗余了。<br><img src="/2022/07/26/link-prediction/7.jpg" alt="场景"><br>经过验证以后，这样汇聚的结果还是不理想，比原来的结果低1%左右，原因需要进一步分析，也许使用PageRank等方法对结点排序更有说服力。</p>
+<h1 id="链路预测评价"><a href="#链路预测评价" class="headerlink" title="链路预测评价"></a>链路预测评价</h1><h2 id="准确率"><a href="#准确率" class="headerlink" title="准确率"></a>准确率</h2><p>计算链路预测正确的比例，直观反应方法性能。</p>
+<h2 id="AUC-metric"><a href="#AUC-metric" class="headerlink" title="AUC metric"></a><em>AUC metric</em></h2><p>用于衡量一种方法预测存在连接和非存在连接的性能。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/GNN/" rel="tag"># GNN</a>
+              <a href="/tags/Link-Prediction/" rel="tag"># Link Prediction</a>
+              <a href="/tags/SEAL/" rel="tag"># SEAL</a>
+              <a href="/tags/RPCA/" rel="tag"># RPCA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/22/graph-embedding/" rel="prev" title="图嵌入和图神经网络">
+                  <i class="fa fa-angle-left"></i> 图嵌入和图神经网络
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/08/01/DA-0/" rel="next" title="数据结构与算法复习（1）概述">
+                  数据结构与算法复习（1）概述 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

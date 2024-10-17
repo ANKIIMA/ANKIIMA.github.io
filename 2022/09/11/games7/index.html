@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言光线追踪的效果很不错，但是有一个细节上的假设，光线在到达光滑物体点上的时候，总是发生反射或折射(或者一起发生)；但是如果物体材质是漫反射材质，那么光线就不再进行反射和折射。这其实是错误的做法，在Phong光照反射模型中，漫反射也是一种光，现在我们要通过更科学的方式解释这种现象，也就是通过辐射度量学推导出的渲染方程，并且还将介绍应用渲染方程的高级光线追踪——路径追踪算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="games101系列(7) 路径追踪">
+<meta property="og:url" content="https://ankiima.github.io/2022/09/11/games7/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言光线追踪的效果很不错，但是有一个细节上的假设，光线在到达光滑物体点上的时候，总是发生反射或折射(或者一起发生)；但是如果物体材质是漫反射材质，那么光线就不再进行反射和折射。这其实是错误的做法，在Phong光照反射模型中，漫反射也是一种光，现在我们要通过更科学的方式解释这种现象，也就是通过辐射度量学推导出的渲染方程，并且还将介绍应用渲染方程的高级光线追踪——路径追踪算法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/1.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/3.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/4.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/5.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/6.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/7.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/8.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/9.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/10.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/11.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/12.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/13.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/14.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/15.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/16.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/17.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/18.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/19.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/20.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/21.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/23.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/09/11/games7/22.jpg">
+<meta property="article:published_time" content="2022-09-11T07:55:23.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.272Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="gmaes101">
+<meta property="article:tag" content="Computer Graphics">
+<meta property="article:tag" content="Rsterization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2022/09/11/games7/1.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/09/11/games7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/09/11/games7/","path":"2022/09/11/games7/","title":"games101系列(7) 路径追踪"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>games101系列(7) 路径追踪 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">光线追踪的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BE%90%E5%B0%84%E5%BA%A6%E9%87%8F%E5%AD%A6"><span class="nav-number">3.</span> <span class="nav-text">辐射度量学</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%89%A9%E7%90%86%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text">基本物理量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bidirectional-Reflectance-Distribution-Function"><span class="nav-number">3.2.</span> <span class="nav-text">Bidirectional Reflectance Distribution Function</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E6%96%B9%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">渲染方程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E7%A7%AF%E5%88%86"><span class="nav-number">5.</span> <span class="nav-text">蒙特卡洛积分</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA"><span class="nav-number">6.</span> <span class="nav-text">路径追踪</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%AF%E5%88%86%E6%96%B9%E6%B3%95%E8%A7%A3%E6%B8%B2%E6%9F%93%E6%96%B9%E7%A8%8B"><span class="nav-number">6.1.</span> <span class="nav-text">积分方法解渲染方程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%8E%A8%E5%AF%BC"><span class="nav-number">6.2.</span> <span class="nav-text">算法推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E9%87%87%E6%A0%B7"><span class="nav-number">6.3.</span> <span class="nav-text">优化采样</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">7.</span> <span class="nav-text">作业</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/09/11/games7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="games101系列(7) 路径追踪 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          games101系列(7) 路径追踪
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-11 15:55:23" itemprop="dateCreated datePublished" datetime="2022-09-11T15:55:23+08:00">2022-09-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/games101/" itemprop="url" rel="index"><span itemprop="name">games101</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>光线追踪的效果很不错，但是有一个细节上的假设，光线在到达光滑物体点上的时候，总是发生反射或折射(或者一起发生)；但是如果物体材质是漫反射材质，那么光线就不再进行反射和折射。这其实是错误的做法，在Phong光照反射模型中，漫反射也是一种光，现在我们要通过更科学的方式解释这种现象，也就是通过辐射度量学推导出的渲染方程，并且还将介绍应用渲染方程的高级光线追踪——路径追踪算法。<br><span id="more"></span></p>
+<h1 id="光线追踪的问题"><a href="#光线追踪的问题" class="headerlink" title="光线追踪的问题"></a>光线追踪的问题</h1><p>重新看作业5的框架代码，你会发现我们之前确实是这样做的，对一条光线进行投射的时候，根据达到的点的材质进行不同的递归，如果反射和折射同时发生，那么同时对这两种光线进行递归投射；如果只发生了反射，只对反射光线发生递归；其他所有情况都不进行递归，而是直接计算着色情况并返回，作为递归的退出条件。下面茶壶与康奈尔盒的例子会更直观的指出这个问题：<br><img src="/2022/09/11/games7/1.jpg" alt="场景"><br><img src="/2022/09/11/games7/2.jpg" alt="场景"><br>第一，光线追踪对镜面材质效果是很不错的，但是对于漫反射材质不能很好地处理，例如上面的茶壶，右边的效果使用光线追踪很难得到；<br>第二，康奈尔盒中，左边是限制了直接光照的路径追踪，可以看作是用简单光线追踪得到的结果，光源没有直接照到的地方明显没有了亮度，这显然就是错误的，在这种场景全部是漫反射材质的时候，即使使用光线追踪得到的效果和直接光照的光栅化也没有多大区别，因为这时光线仅仅弹射了一次。</p>
+<p>这就是我们需要使用路径追踪的原因，路径追踪可以物理学地正确模拟任何光照结果。</p>
+<h1 id="辐射度量学"><a href="#辐射度量学" class="headerlink" title="辐射度量学"></a>辐射度量学</h1><h2 id="基本物理量"><a href="#基本物理量" class="headerlink" title="基本物理量"></a>基本物理量</h2><p>辐射度量学是渲染方程的基础，我们只需要掌握基本的定义，然后就能进行方程的推导了，这可能需要一些基本的物理知识。</p>
+<p>首先，我们将能量记为Q[J]，中括号中的是单位。同样，定义功率Radiant flux记为能量对时间求导dQ/dt[w][lm]，然后我们再定义下面三个物理量：<br><img src="/2022/09/11/games7/3.jpg" alt="场景"><br>Radiant Intensity，单位立体角上的功率；Irradiance，单位面机上的功率；Radiance，单位立体角到单位面积上的功率。</p>
+<p>在Radiant Intensity中(记为I)，关于立体角，就是球体上的一个单位面积除以球半径，可以推导出微分形式的表示，见上图；一个光源的所有功率就是所有立体角上的Radiant Intensity的积分，而且我们计算体积的二重积分时，由于只需要计算半个球体(另外一半可以通过对称得到结果)，所以只积分到PI而不是2*PI。Ω求出的就是球面上的单位立体角之和，那么自然得到Intensity为总功率除以总立体角和。</p>
+<p>在Irradiance中(记为E)，要注意这个单位面积也应该和光线方向垂直，所以通过cos计算投影面积。球面面积4ΠR^2，所以对一个球来说Irradiance就是总功率除以总面积，发现只有R这一项是变量，所以前面在Phong光照模型中假设光线能量与距离平方的倒数成反比是正确的。</p>
+<p>在Radiance中(记为L)，功率对方位角和单位面积同时微分，得到的就是某个方位角的Radiance到某个单位面积上的能量，与光线的传播就非常相似了。Radiance的物理意义也有两种如图：Incident Radiance和Exiting Radiance，与前面介绍的两种物理量就联系了起来。<br><img src="/2022/09/11/games7/4.jpg" alt="场景"></p>
+<h2 id="Bidirectional-Reflectance-Distribution-Function"><a href="#Bidirectional-Reflectance-Distribution-Function" class="headerlink" title="Bidirectional Reflectance Distribution Function"></a>Bidirectional Reflectance Distribution Function</h2><p>双向反射分布函数是一种用来决定材质的量，可以用之前的几种物理量推导，表示的就是反射光的如何进行反射。<br><img src="/2022/09/11/games7/5.jpg" alt="场景"><br>光线能量照到某个点上，可以用Irradiance表示，因为不管哪个方向的能量都算到这个点上；但是反射出去的时候应该是一个Exiting Radiance。我们将两个能量的比值定义出来，这就是BRDF，所以它其实不算一个函数，而是一种比例，确定有多少能量会被反射出去。<br><img src="/2022/09/11/games7/6.jpg" alt="场景"><br>这样，就可以建立一个反射方程了，还是以半球为基准，对Irradiance进行积分得到Exiting Radiance，而且可以定义入射光线和法线的夹角θi以及反射光线和法线的夹角θr，从而具体确定不同物体的反射方式。</p>
+<h1 id="渲染方程"><a href="#渲染方程" class="headerlink" title="渲染方程"></a>渲染方程</h1><p>通过上面的反射方程，现在要推导出渲染方程。首先要解决的问题是在光线渲染的过程中，第一次光线从光源弹射到物体表面求反射光线，决定于输入的光线是什么，但是输入的光线并不仅仅是光源的光线，还有其他物体可能发射到这个点上，除非限制光线只弹射一次。</p>
+<p>现在，先对反射方程处理以下，加上之前没有的自发光项Emission：<br><img src="/2022/09/11/games7/7.jpg" alt="场景"><br>这就是渲染方程，之前的问题影响的就是如何解出渲染方程，但是此时渲染方程的形式是没有问题的，还将反射方程中的cos值换成两个向量的点积。下面通过费雷德霍姆积分方程得到式1，再进一步转化为线性算子方程，得到式2，两边有相同的L，也就是Radiance。<br><img src="/2022/09/11/games7/8.jpg" alt="场景"><br><img src="/2022/09/11/games7/9.jpg" alt="场景"><br>合并L后，通过二项式定理得到最终形式。<br><img src="/2022/09/11/games7/10.jpg" alt="场景"><br>现在可以根据其统一的形式分析其物理意义了，K可以视作反射操作符，一个场景的反射光线由光源的发光E，以及经过K次反射后的E的能量，K操作一次时就是直接光照的结果，K操作两次即两次以上就是间接光照的结果，这三种能量就构成了全局光照。光栅化能模拟的，就是K至多操作一次的情况。</p>
+<h1 id="蒙特卡洛积分"><a href="#蒙特卡洛积分" class="headerlink" title="蒙特卡洛积分"></a>蒙特卡洛积分</h1><p>在渲染方程中，K算子含有积分运算，我们采用方便的蒙特卡洛积分来求解。蒙特卡洛积分可以看作通过多此采样得到的函数平均值进行积分，或者说对所有可能的函数值求平均。<br><img src="/2022/09/11/games7/11.jpg" alt="场景"><br>其中，H(x)是f(x)的积分，P是x的概率密度函数，g是f对P的期望值。如果P是常数，表面x所有值出现的概率相同。H(x)的期望就是对g的积分，通过对g的积分由式1可以推出，所以g再除以P就得到了H(x)的期望。可以理解成除以P进行一个概率上的平均。</p>
+<p>而对于这个变量的概率密度函数，也有很多取法，例如取常数等等，会造成不同的结果。</p>
+<h1 id="路径追踪"><a href="#路径追踪" class="headerlink" title="路径追踪"></a>路径追踪</h1><p>现在，通过蒙特卡洛积分和渲染方程的解法，可以试着编写路径追踪的算法了。这是一个递归的shader，决定光线Li从wi入射时到p点时，反射到wo立体角上光线有多少能量。</p>
+<h2 id="积分方法解渲染方程"><a href="#积分方法解渲染方程" class="headerlink" title="积分方法解渲染方程"></a>积分方法解渲染方程</h2><p>根据之前的知识，渲染方程中的L积分可以写成下面这样：<br><img src="/2022/09/11/games7/12.jpg" alt="场景"><br>其中，概率密度函数我们这里先选择均匀采样，因为积分是对立体角的积分，所以均匀采样得到的就是半球上的总面积除以半径平方，然后取倒数，也就是1/2Π。</p>
+<h2 id="算法推导"><a href="#算法推导" class="headerlink" title="算法推导"></a>算法推导</h2><p>如果还是按照光线追踪一样，递归光照结果作为新的光源重新计算：<br><img src="/2022/09/11/games7/13.jpg" alt="场景"><br>此时遇到第一个问题，这样会导致计算量太大，因为不同方向的反射光线会各自得到新的许多不同方向的反射光线，是幂函数的复杂度。<br><img src="/2022/09/11/games7/14.jpg" alt="场景"><br>所以每次选择只取一个方向进行模拟，并且取足够多的方向求平均值，像下面这样。<br><img src="/2022/09/11/games7/15.jpg" alt="场景"><br>当然这样会导致得到的结果很不准确，因为采样太少了，所以我们在更外层进行更多次的路径追踪即可，也就是对每个像素取不同的方向进行模拟，得到每个像素的颜色就不会有问题了。<br><img src="/2022/09/11/games7/16.jpg" alt="场景"></p>
+<p>第二个问题，在实际上，由于光线满足能量守恒，所以其实是一直在不断弹射的，但是我们现在必须要让光线能够停下，也就是没有递归停止的条件，所以采用轮盘赌的方法决定光线是否停下，如果光线停下了就返回0即可。<br><img src="/2022/09/11/games7/17.jpg" alt="场景"><br>P_RP是取到当前方向的概率，所以同样要作为概率密度除去。这是一个正确的路径追踪算法的伪代码。</p>
+<h2 id="优化采样"><a href="#优化采样" class="headerlink" title="优化采样"></a>优化采样</h2><p>现在得到的算法虽然正确，但是太慢了，原因是我们让打到光源的光线直接返回累计的结果这是能看到的光线；其他光线则一直弹射直到轮盘赌让他停止，如果还没有打到光线，那就只能返回0。所以导致如果对每个像素取样频率(Samples per pixel)不高，会造成很多黑点。<br><img src="/2022/09/11/games7/18.jpg" alt="场景"><br>也就是说，如果对半球进行均匀采样，会有很多路径不会打到光源，计算这些路径是无效的，所以我们必须改变采样频率，进一步分析哪些立体角上的光线会打到光源。</p>
+<p>现在假设光源总面积为A，取微分dA，只要找到dA对应哪些立体角dW，就可以知道哪些立体角是需要计算的了。根据立体角的定义，可以找到这个关系。<br><img src="/2022/09/11/games7/19.jpg" alt="场景"><br>这样，对立体角积分就变成了对光源面积的积分，我们在光源上均匀采样是没有任何问题的，只不过将这个采样变换到立体角上和之前是不同的。<br><img src="/2022/09/11/games7/20.jpg" alt="场景"><br>这是对光源的贡献的计算，就是直接光照；非光源贡献的计算和前面相同，就是间接光照。<br><img src="/2022/09/11/games7/21.jpg" alt="场景"><br>最终得到优化后的路径追踪算法。也就是说，我们对一个点的着色进行计算的时候，先看光源能不能直接照到这个点，这就是直接光照；然后选择反射方向再次追踪反射光线，如果反射光线又打到另一个非光源物体上，就可以开始递归了，直到光线什么都没打到或者打到了光源，已经因为轮盘赌概率停止。</p>
+<p>当然，路径追踪仍然有很多地方可以进一步优化，对不同的场景也应该有不同的方法，入门以后可以继续学习。</p>
+<h1 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h1><p>这将是本系列最后一个作业，课程后面的内容有机会再更新，因为后面是对材质(BRDF)先进研究的介绍，成像原理的科普，最后还有动画模拟，这部分内容也很多，但是基本的渲染方法我们已经了解了，作为本科学习来说，已经足够，但是GAMES101的课程还是偏理论，作为入门了解是够了，但是代码学习仍然重要。</p>
+<p>作业7就是实现路径追踪算法，沿用了前面作业的一些函数。伪代码在作业说明中更详细地给出了，符合框架，照着编写理解即可。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">Vector3f Scene::castRay(const Ray &amp;ray, int depth) const</span><br><span class="line">&#123;</span><br><span class="line">    Vector3f L_dir, L_indir;</span><br><span class="line">    // TODO Implement Path Tracing Algorithm here</span><br><span class="line">    // ray and scene intersect at p</span><br><span class="line">    //找到交点p</span><br><span class="line">    Intersection inter_p = intersect(ray);</span><br><span class="line">    //如果没有交点，返回空值</span><br><span class="line">    if (!inter_p.happened)</span><br><span class="line">    &#123;</span><br><span class="line">        return Vector3f();</span><br><span class="line">    &#125;</span><br><span class="line">    //如果打到光源，返回光源的能量，点亮光源</span><br><span class="line">    if (inter_p.m-&gt;hasEmission())</span><br><span class="line">    &#123;</span><br><span class="line">        return inter_p.m-&gt;getEmission();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //打到物体上</span><br><span class="line"></span><br><span class="line">    //交点p坐标</span><br><span class="line">    Vector3f&amp; p = inter_p.coords;</span><br><span class="line">    //交点p法线</span><br><span class="line">    Vector3f&amp; N = inter_p.normal;</span><br><span class="line">    //交点到光线起始位置的单位向量</span><br><span class="line">    Vector3f wo = (ray.origin - p).normalized();</span><br><span class="line">    //交点材质</span><br><span class="line">    Material* m = inter_p.m;</span><br><span class="line"></span><br><span class="line">    Intersection inter;</span><br><span class="line">    float pdf_light;</span><br><span class="line">    //对光源采样</span><br><span class="line">    sampleLight(inter, pdf_light);</span><br><span class="line">    // Get x, ws, NN, emit from inter</span><br><span class="line">    //光源坐标</span><br><span class="line">    Vector3f&amp; x = inter.coords;</span><br><span class="line">    //光源法线</span><br><span class="line">    Vector3f&amp; NN = inter.normal;</span><br><span class="line">    //光源能量</span><br><span class="line">    Vector3f&amp; emit = inter.emit;</span><br><span class="line">    //交点到光源的单位向量</span><br><span class="line">    Vector3f ws = (x - p).normalized();</span><br><span class="line">    //交点到光源的距离</span><br><span class="line">    float d = (x - p).norm();</span><br><span class="line"></span><br><span class="line">    // Shoot a ray from p to x</span><br><span class="line">    //计算直接光照</span><br><span class="line">    //从交点发射一条光线到光源</span><br><span class="line">    Ray r(p, ws);</span><br><span class="line">    //光线r最近交点在i中</span><br><span class="line">    Intersection i = intersect(r);</span><br><span class="line"></span><br><span class="line">    //如果这条光线没有被阻挡，那么i记录的distance应该等于d，为了判断相等，我们</span><br><span class="line">    //做差后将两个值的误差控制在绝对值0.001内，这个误差越小越可能导致横条出现</span><br><span class="line">    if (i.distance - d &gt; -0.001)</span><br><span class="line">    &#123;</span><br><span class="line">        L_dir = emit * m-&gt;eval(wo, ws, N) * dotProduct(ws, N) * </span><br><span class="line">            dotProduct(-ws, NN) / (d * d * pdf_light);</span><br><span class="line">    &#125;</span><br><span class="line">    //如果有阻挡当然直接光照的贡献为0</span><br><span class="line"></span><br><span class="line">    //计算间接光照</span><br><span class="line">    float f = get_random_float();</span><br><span class="line">    //轮盘赌</span><br><span class="line">    if (f &lt; RussianRoulette)</span><br><span class="line">    &#123;</span><br><span class="line">        //反射方向</span><br><span class="line">        Vector3f wi = m-&gt;sample(wo, N).normalized();</span><br><span class="line">        //追踪反射方向的光线</span><br><span class="line">        Ray r(p, wi);</span><br><span class="line">        Intersection i = intersect(r);</span><br><span class="line">        //打到物体上</span><br><span class="line">        if (i.happened &amp;&amp; !i.m-&gt;hasEmission())</span><br><span class="line">        &#123;</span><br><span class="line">            //递归开始</span><br><span class="line">            L_indir = castRay(r, depth + 1) * m-&gt;eval(wo, wi, N) *</span><br><span class="line">                dotProduct(wi, N) / m-&gt;pdf(wo, wi, N) / RussianRoulette;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return L_dir + L_indir;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure><br>代码注释详细写了算法具体过程。可以看到，除了后面实现的伪代码部分，前面还有一部分没有提到，我们让光线没有交点时不返回值，打到光源时返回光源的能量，这就是作业说明中最后光源全黑的原因，因为伪代码中并没有处理打到光源的光线。另外，作业说明中还提到pdf接近0的时候会导致噪点过多，采样光源时光线被挡会出现黑色横向条纹，在代码中对第二个问题进行了处理。代码来自<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42489848/article/details/125548847">博客</a>，里面讲的很清楚。<br><img src="/2022/09/11/games7/23.jpg" alt="场景"><br><img src="/2022/09/11/games7/22.jpg" alt="场景"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/gmaes101/" rel="tag"># gmaes101</a>
+              <a href="/tags/Computer-Graphics/" rel="tag"># Computer Graphics</a>
+              <a href="/tags/Rsterization/" rel="tag"># Rsterization</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/10/games6/" rel="prev" title="games101系列(6) 加速结构">
+                  <i class="fa fa-angle-left"></i> games101系列(6) 加速结构
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/04/GNN-improve/" rel="next" title="关于GNN的不同聚合方案带来的改进">
+                  关于GNN的不同聚合方案带来的改进 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

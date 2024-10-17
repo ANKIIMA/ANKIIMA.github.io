@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言链路预测作为图的基本问题，应用广泛。问题本身可以从几个方面来考虑，从图表示学习上，这是一个双节点表示问题，可以利用多节点表示的方法解决；从矩阵分解上，这是一个降维恢复的问题，分解得到网络的潜在特征和构成方式可以进一步帮助预测；从机器学习上，这是一个二分类问题，可以用各种已经存在的方法拟合；还有另外一些先验假设方法，计算连接产生的可能性。 现在，我们不考虑时间复杂度的情况，找到一种泛化性足够强的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="赋权网络对解决链路预测问题的帮助">
+<meta property="og:url" content="https://ankiima.github.io/2022/10/08/WSEAL/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言链路预测作为图的基本问题，应用广泛。问题本身可以从几个方面来考虑，从图表示学习上，这是一个双节点表示问题，可以利用多节点表示的方法解决；从矩阵分解上，这是一个降维恢复的问题，分解得到网络的潜在特征和构成方式可以进一步帮助预测；从机器学习上，这是一个二分类问题，可以用各种已经存在的方法拟合；还有另外一些先验假设方法，计算连接产生的可能性。 现在，我们不考虑时间复杂度的情况，找到一种泛化性足够强的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2022/10/08/WSEAL/1.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/10/08/WSEAL/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/10/08/WSEAL/3.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/10/08/WSEAL/4.jpg">
+<meta property="article:published_time" content="2022-10-08T07:15:34.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:40.919Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="GNN">
+<meta property="article:tag" content="Link Prediction">
+<meta property="article:tag" content="Weighted Subgraph">
+<meta property="article:tag" content="SEAL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2022/10/08/WSEAL/1.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/10/08/WSEAL/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/10/08/WSEAL/","path":"2022/10/08/WSEAL/","title":"赋权网络对解决链路预测问题的帮助"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>赋权网络对解决链路预测问题的帮助 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%BB%E6%89%BE%E6%9C%80%E5%A5%BD%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">寻找最好的方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GCN%E7%9A%84%E7%BC%BA%E9%99%B7%EF%BC%9A%E6%B7%BB%E5%8A%A0Labeling-Trick"><span class="nav-number">3.</span> <span class="nav-text">GCN的缺陷：添加Labeling Trick</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SEAL%E7%9A%84%E7%BC%BA%E9%99%B7"><span class="nav-number">4.</span> <span class="nav-text">SEAL的缺陷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%8B%E6%9D%83%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BC%BA%E9%99%B7"><span class="nav-number">5.</span> <span class="nav-text">赋权网络的缺陷</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/10/08/WSEAL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="赋权网络对解决链路预测问题的帮助 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          赋权网络对解决链路预测问题的帮助
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-10-08 15:15:34" itemprop="dateCreated datePublished" datetime="2022-10-08T15:15:34+08:00">2022-10-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/Deep-Learning/Graph/" itemprop="url" rel="index"><span itemprop="name">Graph</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>链路预测作为图的基本问题，应用广泛。问题本身可以从几个方面来考虑，从图表示学习上，这是一个双节点表示问题，可以利用多节点表示的方法解决；从矩阵分解上，这是一个降维恢复的问题，分解得到网络的潜在特征和构成方式可以进一步帮助预测；从机器学习上，这是一个二分类问题，可以用各种已经存在的方法拟合；还有另外一些先验假设方法，计算连接产生的可能性。</p>
+<p>现在，我们不考虑时间复杂度的情况，找到一种泛化性足够强的方法，开发一个链路预测框架。<br><span id="more"></span></p>
+<h1 id="寻找最好的方法"><a href="#寻找最好的方法" class="headerlink" title="寻找最好的方法"></a>寻找最好的方法</h1><p>以最新的调查为例，可以将上面讲的各种角度延伸出来的方法分成五类，如下图。<br><img src="/2022/10/08/WSEAL/1.jpg" alt="场景"><br>首先，基于相同邻居的方法和基于路径的方法可以统称为启发式方法，也就是预定义一个计算式来对网络中不同的连接进行预测，虽然时间复杂度方面具有优势，但是精度不高；基于统计的方法建立一个统计模型对网络进行预测，引入繁杂的参数，对大型网络不方便实施，而且也不容易解释其中的内核；作为一个二分类问题，机器学习中已有的许多分类器方法都可以直接应用到网络上，例如著名的K近邻算法等。但是，前面的方法都忽略了一个问题，即应该如何应对大型网络。一个大型的网络通常会有几万个结点，需要庞大的邻接矩阵进行描述，不管如何处理这个邻接矩阵都是难以接受的，这导致了空间和时间上的巨大花销，也就催生了图嵌入方法的产生。</p>
+<p>图嵌入，或者称为图表示学习，旨在将高维的图用低维的向量表示，并且在向量中尽可能保留图的拓扑信息，实现图的降维。从文章的统计来看，图嵌入已经成为链路预测问题中的主要方法了，部分传统方法得益于其方便的计算，通常作为一种比较方法存在。<br><img src="/2022/10/08/WSEAL/2.jpg" alt="场景"></p>
+<p>而图嵌入又可以分为多种方法。首先，矩阵分解将原先的邻接矩阵表示的网络分解为不同的“子”矩阵，可以是一些矩阵的乘积，也可以是一些矩阵的和或差，总之，矩阵分解得到了网络的低维表示，在这些低维的矩阵中，有的表示网络的潜在信息，有的描述了网络潜在信息之间的关联，在不同的分解方式也有不同的意义。但是矩阵分解只能简单利用网络最直接的拓扑结构，完全无法考虑两个结点之间多跳路径的信息，所以比较局限。</p>
+<p>随机游走作为另一类嵌入方法，弥补了矩阵分解在上下文方面的不足之处，对每个结点可以生成一个低维向量，包含结点的拓扑信息，两个结点如果多次出现在同一条随机游走序列中，那么他们的结点嵌入表示也应该是相似的。通过得到结点的嵌入表示，然后再利用传统的相似度计算方法，可以完成链路预测任务，不过这种方法一般效果不好，因为他们学习机制比较简单，难以改进，实际的拟合效果也一般，再通过简单的相似性计算显然不能得到精确的结果。</p>
+<p>由于图是非欧几里得空间的数据，完全不存在空间上的上下左右关系，而只有连接关系，所以用CNN等方法无法对这种数据完成很好的效果，因为不规整的图往往无法定义结点或边的顺序如何，况且想要让一般的神经网络处理图必须要让图的结构转化成规整的形式。也就是说，解决同构图问题也是对传统神经网络的一大挑战，CNN处理欧几里得空间的数据，具有平移不变性和旋转不变性；而GNN处理图，则需要具有置换不变性，也就是对具有某种特征的结点，标号顺序的不同将不会导致最终表示有所差别。如下图，使用CNN一样的方式对邻接矩阵进行卷积，得到的显然是不同的结果，但是这两个图除了标号外完全一样。<br><img src="/2022/10/08/WSEAL/3.jpg" alt="场景"></p>
+<p>GNN除了解决图同构的问题，保证了置换不变性，还可以进一步优化随机游走方法得到的表示。通过邻接矩阵和特征矩阵，GNN汇聚结点的邻居特征信息，可训练参数进行进一步调整，最终得到结点最有用的全局嵌入表示，用这些高质量的信息作为输入，分类器可以达到很好的效果。当然，普通的GNN在一些网络的上表现还不如传统方法，这就要提到GCN另一个问题了。</p>
+<p>总之，分析不同的预测方法后，结合实验结果，可以确定GNN是最有前景的一类方法了，但绝不是简单的GNN，还需要对GNN存在的问题再深入解决。</p>
+<h1 id="GCN的缺陷：添加Labeling-Trick"><a href="#GCN的缺陷：添加Labeling-Trick" class="headerlink" title="GCN的缺陷：添加Labeling Trick"></a>GCN的缺陷：添加Labeling Trick</h1><p>图具有置换不变性，设计的GCN围绕这一点实现了正确的结构，并不会因为邻接矩阵的不同导致不同的结果。但是，区分同构图仍热是具有挑战的问题。我们之前说，链路预测问题是一个双节点表示问题，前面著名的工作GAE训练得到结点的完整表示后，通过两个点的表示相似性来计算这两个结点产生连接的可能。而另一个著名的工作SEAL同样基于GNN，却实现了非常好的性能，这里有两个不同的地方，一个是SEAL使用了结构标签作为显式特征输入，GAE没有；另一个是GAE对链路连接性的评价方式很简单，聚合两个结点的表示并不能得到这条链路的表示，不足以支撑完成链路预测的任务。</p>
+<p>第一个问题就可以通过Labeling Trick的添加完成，对一组同构结点，GCN会给这两个结点以相同的结点表示，而且还不能区分这组结点与其他结点的结构表示，意味着对相同的一个结点，GCN会给这个结点与前面两个同构结点分别连接的链路以相同的链路表示，因为GCN简单地聚合两个结点的表示作为这条链路的表示。Labeling Trick通过对不同的链路附加一个标签，作为特征信息，可以让GCN拥有区分两个同构点对其他不同点的能力。直观表示如下：<br><img src="/2022/10/08/WSEAL/4.jpg" alt="场景"><br>v2和v3同构，但是(v1,v2)与(v1,v3)在GCN中会得到相同的表示；添加Labeling Trick后，v2,v3的表示不同，对两条链路的最终表示也就不同了。</p>
+<p>第二个问题可以通过网络自主学习完成，即收集所有结点的信息，用其他网络进行训练即可。</p>
+<p>这样一来，GCN既可以区分同构点的相对位置，同时也有办法聚合多个点的信息得到所有链路表示，就完成了预测任务。这就是SEAL。</p>
+<h1 id="SEAL的缺陷"><a href="#SEAL的缺陷" class="headerlink" title="SEAL的缺陷"></a>SEAL的缺陷</h1><p>相比于对图进行训练，子图显然信息有限，因为抓取子图以后，子图外面一些motif被断开了，导致在子图中，处于motif结构中的链路和不在motif中的链路表现出相同的拓扑结构，但是实际上处于motif中的链路显然是更重要的。因此，我们应该寻找一个办法探测这些处于motif中的链路，并在汇聚的同时给他们更高的权重。这样，一条motif链路连接的两个点就比其他点具有相对更高的重要性，相互汇聚的信息就会更多。</p>
+<p>关于如何探测这种motif链路，有文章提出一种Katz指数计算的方法，即以预测链路为准，目标链路和预测链路总共有四个结点，将这四个结点对应的四个链路的Katz指数求和，作为最终的链路分数，替换邻接矩阵供结点进行汇聚。这样，GCN汇聚的同时就是有偏的了。进一步的，可以尝试其他统计指标，用类似的方式为这些无权的边进行赋权，从而让子图能够对不同的边加以区别，重点要让motif中的边突出，将带来三个好处：</p>
+<ul>
+<li>GNN聚合过程中，节点可以区别对待联系紧密和不紧密的邻居节点，提高了学习能力；</li>
+<li>边权包含了全局信息，提供了子图中没有的信息；</li>
+<li>增加了GNN学习的信息，提高表达上限；</li>
+</ul>
+<h1 id="赋权网络的缺陷"><a href="#赋权网络的缺陷" class="headerlink" title="赋权网络的缺陷"></a>赋权网络的缺陷</h1><p>即便采用了上面的赋权方法，仍然有一个问题难以解决：泛化性。GNN作为泛化解决链路预测问题的范例，从聚合到读出都应该使用机器学习的方法，而使用上面根据某个指标进行赋权的方法显然不能达到泛化的要求，这正是启发式方法的缺点，如果有办法解决这个问题，GNN通过学习子图结构解决链路预测问题的方法应该可以得到提升。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/GNN/" rel="tag"># GNN</a>
+              <a href="/tags/Link-Prediction/" rel="tag"># Link Prediction</a>
+              <a href="/tags/Weighted-Subgraph/" rel="tag"># Weighted Subgraph</a>
+              <a href="/tags/SEAL/" rel="tag"># SEAL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/10/04/GNN-improve/" rel="prev" title="关于GNN的不同聚合方案带来的改进">
+                  <i class="fa fa-angle-left"></i> 关于GNN的不同聚合方案带来的改进
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/24/SE/" rel="next" title="软件工程总结">
+                  软件工程总结 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

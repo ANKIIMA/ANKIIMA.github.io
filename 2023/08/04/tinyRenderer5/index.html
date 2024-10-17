@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于软渲染器，框架已经差不多了，现在让我们进入新的内容，阴影。今天我们尝试给模型加上硬阴影，注意不是软阴影。这就是最后一节内容。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="五百行C++理解OpenGL机制(六)">
+<meta property="og:url" content="https://ankiima.github.io/2023/08/04/tinyRenderer5/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="关于软渲染器，框架已经差不多了，现在让我们进入新的内容，阴影。今天我们尝试给模型加上硬阴影，注意不是软阴影。这就是最后一节内容。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/04/tinyRenderer5/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/04/tinyRenderer5/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/04/tinyRenderer5/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/04/tinyRenderer5/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/08/04/tinyRenderer5/5.png">
+<meta property="article:published_time" content="2023-08-04T08:42:11.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.414Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="OpenGL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/08/04/tinyRenderer5/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/08/04/tinyRenderer5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/08/04/tinyRenderer5/","path":"2023/08/04/tinyRenderer5/","title":"五百行C++理解OpenGL机制(六)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>五百行C++理解OpenGL机制(六) | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lesson-7"><span class="nav-number">1.</span> <span class="nav-text">Lesson 7</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/08/04/tinyRenderer5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="五百行C++理解OpenGL机制(六) | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          五百行C++理解OpenGL机制(六)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-08-04 16:42:11" itemprop="dateCreated datePublished" datetime="2023-08-04T16:42:11+08:00">2023-08-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/" itemprop="url" rel="index"><span itemprop="name">Graphics API</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/OpenGL/" itemprop="url" rel="index"><span itemprop="name">OpenGL</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>关于软渲染器，框架已经差不多了，现在让我们进入新的内容，阴影。今天我们尝试给模型加上硬阴影，注意不是软阴影。这就是最后一节内容。</p>
+<span id="more"></span>
+<h1 id="Lesson-7"><a href="#Lesson-7" class="headerlink" title="Lesson 7"></a>Lesson 7</h1><p>即便Shader中阴影通常也不会放在基础部分，不过既然有现成的代码，我们也不客气了。作者给出一个使用Phong渲染后的图：</p>
+<p><img src="/2023/08/04/tinyRenderer5/1.png" alt></p>
+<p>观察一下可以发现，虽然Phong模型模拟了光照情况，但是没有模拟遮挡情况。上面的模型中，光源在右上角，那么右边肩膀上应该被挡住了才对。这就是为什么我们需要单独处理阴影。这里介绍一种最简单的思路，我们先把相机放到和光源相同的位置看模型，做一次深度测试渲染一个深度图，里面存储着从光源方向看哪些地方能够被照亮。然后我们在渲染一次，这次根据深度图的信息在给一次光照，就能得到正确的结果。这个信息实际上就是一个浮点数，我们通过将两个图中的片元匹配起来获得这个值，让最后的颜色乘以这个值，就能得到想要的结果。</p>
+<p>例如上面这个图，第一次渲染深度后得到图片：</p>
+<p><img src="/2023/08/04/tinyRenderer5/2.png" alt></p>
+<p>其中的颜色为(255,255,255,255)*Depth，然后我们再次渲染，光强乘以片元对应的Depth，得到下面的结果：</p>
+<p><img src="/2023/08/04/tinyRenderer5/3.png" alt></p>
+<p>我并没有在作者的项目中找到这个模型，后面我们用另一个给出的模型来观察效果。上面关键问题在于，如何让两个视角图中的像素匹配起来？我们仍然通过变换实现，在第二次渲染的Fragment着色器中，我们可以使用的是从光源位置渲染的图片的像素坐标和当前片元在屏幕上的像素坐标，目标是从后者找到前者的坐标，也就是从当前片元的屏幕坐标变换到深度图中的屏幕坐标。</p>
+<p>深度图中的像素坐标首先从模型空间开始，经过Model矩阵变换到位于光源的摄像机的空间，经过Projection变换到[-1,1]的标准坐标系，然后经过Viewport变换到最终的像素坐标。我们在第一次渲染的时候保存这个变换，因为第二次渲染需要重新初始化MVP矩阵。这下你可能知道怎么办了，我们先用当前的MVP矩阵还原现在的点，然后用第一次保存的大矩阵将它转换到深度图中，就得到了匹配的坐标。下面是代码。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;limits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;tgaimage.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;model.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;geometry.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;our_gl.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">Model *model        = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">float</span> *shadowbuffer = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> width  = <span class="number">800</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> height = <span class="number">800</span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Vec3f <span class="title">light_dir</span><span class="params">(<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function">Vec3f       <span class="title">eye</span><span class="params">(<span class="number">1</span>,<span class="number">1</span>,<span class="number">4</span>)</span></span>;</span><br><span class="line"><span class="function">Vec3f    <span class="title">center</span><span class="params">(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function">Vec3f        <span class="title">up</span><span class="params">(<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Shader</span> : <span class="keyword">public</span> IShader &#123;</span><br><span class="line">    mat&lt;<span class="number">4</span>,<span class="number">4</span>,<span class="type">float</span>&gt; uniform_M;   <span class="comment">//  Projection*ModelView</span></span><br><span class="line">    mat&lt;<span class="number">4</span>,<span class="number">4</span>,<span class="type">float</span>&gt; uniform_MIT; <span class="comment">// (Projection*ModelView).invert_transpose()</span></span><br><span class="line">    mat&lt;<span class="number">4</span>,<span class="number">4</span>,<span class="type">float</span>&gt; uniform_Mshadow; <span class="comment">// transform framebuffer screen coordinates to shadowbuffer screen coordinates</span></span><br><span class="line">    mat&lt;<span class="number">2</span>,<span class="number">3</span>,<span class="type">float</span>&gt; varying_uv;  <span class="comment">// triangle uv coordinates, written by the vertex shader, read by the fragment shader</span></span><br><span class="line">    mat&lt;<span class="number">3</span>,<span class="number">3</span>,<span class="type">float</span>&gt; varying_tri; <span class="comment">// triangle coordinates before Viewport transform, written by VS, read by FS</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">Shader</span>(Matrix M, Matrix MIT, Matrix MS) : <span class="built_in">uniform_M</span>(M), <span class="built_in">uniform_MIT</span>(MIT), <span class="built_in">uniform_Mshadow</span>(MS), <span class="built_in">varying_uv</span>(), <span class="built_in">varying_tri</span>() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> Vec4f <span class="title">vertex</span><span class="params">(<span class="type">int</span> iface, <span class="type">int</span> nthvert)</span> </span>&#123;</span><br><span class="line">        varying_uv.<span class="built_in">set_col</span>(nthvert, model-&gt;<span class="built_in">uv</span>(iface, nthvert));</span><br><span class="line">        Vec4f gl_Vertex = Viewport*Projection*ModelView*<span class="built_in">embed</span>&lt;<span class="number">4</span>&gt;(model-&gt;<span class="built_in">vert</span>(iface, nthvert));</span><br><span class="line">        varying_tri.<span class="built_in">set_col</span>(nthvert, <span class="built_in">proj</span>&lt;<span class="number">3</span>&gt;(gl_Vertex/gl_Vertex[<span class="number">3</span>]));</span><br><span class="line">        <span class="keyword">return</span> gl_Vertex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">bool</span> <span class="title">fragment</span><span class="params">(Vec3f bar, TGAColor &amp;color)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//插值得到像素的屏幕坐标，变换到深度图中</span></span><br><span class="line">        Vec4f sb_p = uniform_Mshadow*<span class="built_in">embed</span>&lt;<span class="number">4</span>&gt;(varying_tri*bar); <span class="comment">// corresponding point in the shadow buffer</span></span><br><span class="line">        <span class="comment">//齐次除法，虽然embed扩展后w=1，经过逆变换到深度图中w不等于1</span></span><br><span class="line">        sb_p = sb_p/sb_p[<span class="number">3</span>];</span><br><span class="line">        <span class="type">int</span> idx = <span class="built_in">int</span>(sb_p[<span class="number">0</span>]) + <span class="built_in">int</span>(sb_p[<span class="number">1</span>])*width; <span class="comment">// index in the shadowbuffer array</span></span><br><span class="line">        <span class="type">float</span> shadow = <span class="number">.3</span>+<span class="number">.7</span>*(shadowbuffer[idx]&lt;sb_p[<span class="number">2</span>]); <span class="comment">// magic coeff to avoid z-fighting</span></span><br><span class="line">        Vec2f uv = varying_uv*bar;                 <span class="comment">// interpolate uv for the current pixel</span></span><br><span class="line">        Vec3f n = <span class="built_in">proj</span>&lt;<span class="number">3</span>&gt;(uniform_MIT*<span class="built_in">embed</span>&lt;<span class="number">4</span>&gt;(model-&gt;<span class="built_in">normal</span>(uv))).<span class="built_in">normalize</span>(); <span class="comment">// normal</span></span><br><span class="line">        Vec3f l = <span class="built_in">proj</span>&lt;<span class="number">3</span>&gt;(uniform_M  *<span class="built_in">embed</span>&lt;<span class="number">4</span>&gt;(light_dir        )).<span class="built_in">normalize</span>(); <span class="comment">// light vector</span></span><br><span class="line">        Vec3f r = (n*(n*l*<span class="number">2.f</span>) - l).<span class="built_in">normalize</span>();   <span class="comment">// reflected light</span></span><br><span class="line">        <span class="type">float</span> spec = <span class="built_in">pow</span>(std::<span class="built_in">max</span>(r.z, <span class="number">0.0f</span>), model-&gt;<span class="built_in">specular</span>(uv));</span><br><span class="line">        <span class="type">float</span> diff = std::<span class="built_in">max</span>(<span class="number">0.f</span>, n*l);</span><br><span class="line">        TGAColor c = model-&gt;<span class="built_in">diffuse</span>(uv);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">3</span>; i++) color[i] = std::<span class="built_in">min</span>&lt;<span class="type">float</span>&gt;(<span class="number">20</span> + c[i]*shadow*(<span class="number">1.2</span>*diff + <span class="number">.6</span>*spec), <span class="number">255</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//将光源位置的摄像机深度信息存入图片中</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">DepthShader</span> : <span class="keyword">public</span> IShader &#123;</span><br><span class="line">    mat&lt;<span class="number">3</span>,<span class="number">3</span>,<span class="type">float</span>&gt; varying_tri;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">DepthShader</span>() : <span class="built_in">varying_tri</span>() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> Vec4f <span class="title">vertex</span><span class="params">(<span class="type">int</span> iface, <span class="type">int</span> nthvert)</span> </span>&#123;</span><br><span class="line">        Vec4f gl_Vertex = <span class="built_in">embed</span>&lt;<span class="number">4</span>&gt;(model-&gt;<span class="built_in">vert</span>(iface, nthvert)); <span class="comment">// read the vertex from .obj file</span></span><br><span class="line">        gl_Vertex = Viewport*Projection*ModelView*gl_Vertex;          <span class="comment">// transform it to screen coordinates</span></span><br><span class="line">        varying_tri.<span class="built_in">set_col</span>(nthvert, <span class="built_in">proj</span>&lt;<span class="number">3</span>&gt;(gl_Vertex/gl_Vertex[<span class="number">3</span>]));</span><br><span class="line">        <span class="keyword">return</span> gl_Vertex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">bool</span> <span class="title">fragment</span><span class="params">(Vec3f bar, TGAColor &amp;color)</span> </span>&#123;</span><br><span class="line">        Vec3f p = varying_tri*bar;</span><br><span class="line">        color = <span class="built_in">TGAColor</span>(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>)*(p.z/depth);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>** argv)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> *zbuffer = <span class="keyword">new</span> <span class="type">float</span>[width*height];</span><br><span class="line">    shadowbuffer   = <span class="keyword">new</span> <span class="type">float</span>[width*height];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=width*height; --i; ) &#123;</span><br><span class="line">        zbuffer[i] = shadowbuffer[i] = -std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">max</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    model = <span class="keyword">new</span> <span class="built_in">Model</span>(<span class="string">&quot;obj/diablo3_pose.obj&quot;</span>);</span><br><span class="line">    light_dir.<span class="built_in">normalize</span>();</span><br><span class="line"></span><br><span class="line">    &#123; <span class="comment">// rendering the shadow buffer</span></span><br><span class="line">        <span class="function">TGAImage <span class="title">depth</span><span class="params">(width, height, TGAImage::RGB)</span></span>;</span><br><span class="line">        <span class="built_in">lookat</span>(light_dir, center, up);</span><br><span class="line">        <span class="built_in">viewport</span>(width/<span class="number">8</span>, height/<span class="number">8</span>, width*<span class="number">3</span>/<span class="number">4</span>, height*<span class="number">3</span>/<span class="number">4</span>);</span><br><span class="line">        <span class="built_in">projection</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        DepthShader depthshader;</span><br><span class="line">        Vec4f screen_coords[<span class="number">3</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;model-&gt;<span class="built_in">nfaces</span>(); i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>; j&lt;<span class="number">3</span>; j++) &#123;</span><br><span class="line">                screen_coords[j] = depthshader.<span class="built_in">vertex</span>(i, j);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">triangle</span>(screen_coords, depthshader, depth, shadowbuffer);</span><br><span class="line">        &#125;</span><br><span class="line">        depth.<span class="built_in">flip_vertically</span>(); <span class="comment">// to place the origin in the bottom left corner of the image</span></span><br><span class="line">        depth.<span class="built_in">write_tga_file</span>(<span class="string">&quot;depth.tga&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//保存深度图使用的变换矩阵</span></span><br><span class="line">    Matrix M = Viewport*Projection*ModelView;</span><br><span class="line"></span><br><span class="line">    &#123; <span class="comment">// rendering the frame buffer</span></span><br><span class="line">        <span class="function">TGAImage <span class="title">frame</span><span class="params">(width, height, TGAImage::RGB)</span></span>;</span><br><span class="line">        <span class="built_in">lookat</span>(eye, center, up);</span><br><span class="line">        <span class="built_in">viewport</span>(width/<span class="number">8</span>, height/<span class="number">8</span>, width*<span class="number">3</span>/<span class="number">4</span>, height*<span class="number">3</span>/<span class="number">4</span>);</span><br><span class="line">        <span class="built_in">projection</span>(<span class="number">-1.f</span>/(eye-center).<span class="built_in">norm</span>());</span><br><span class="line"></span><br><span class="line">        <span class="function">Shader <span class="title">shader</span><span class="params">(ModelView, (Projection*ModelView).invert_transpose(), M*(Viewport*Projection*ModelView).invert())</span></span>;</span><br><span class="line">        Vec4f screen_coords[<span class="number">3</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;model-&gt;<span class="built_in">nfaces</span>(); i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>; j&lt;<span class="number">3</span>; j++) &#123;</span><br><span class="line">                screen_coords[j] = shader.<span class="built_in">vertex</span>(i, j);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">triangle</span>(screen_coords, shader, frame, zbuffer);</span><br><span class="line">        &#125;</span><br><span class="line">        frame.<span class="built_in">flip_vertically</span>(); <span class="comment">// to place the origin in the bottom left corner of the image</span></span><br><span class="line">        frame.<span class="built_in">write_tga_file</span>(<span class="string">&quot;framebuffer.tga&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">delete</span> model;</span><br><span class="line">    <span class="keyword">delete</span> [] zbuffer;</span><br><span class="line">    <span class="keyword">delete</span> [] shadowbuffer;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>理解代码后重新查看上面的渲染结果，发现出现了很多空洞，这被称为z-fighting，深度冲突。原理是在使用深度缓存比较深度值的时候，远离摄像机的地方因为透视投影，深度值被压缩到较小的一个范围，深度值不精确，导致比较可能出错，有的片元被保留，有的被抛弃了，就导致这样的结果。而靠近摄像机的地方深度值不会受到这样大的压缩影响，所以影响比较小。</p>
+<p>结合代码来看，回忆之前的光栅化，每个片元的深度值是对三角形三个顶点的插值，并且还要做齐次除法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Vec3f c = <span class="built_in">barycentric</span>(<span class="built_in">proj</span>&lt;<span class="number">2</span>&gt;(pts[<span class="number">0</span>]/pts[<span class="number">0</span>][<span class="number">3</span>]), <span class="built_in">proj</span>&lt;<span class="number">2</span>&gt;(pts[<span class="number">1</span>]/pts[<span class="number">1</span>][<span class="number">3</span>]), <span class="built_in">proj</span>&lt;<span class="number">2</span>&gt;(pts[<span class="number">2</span>]/pts[<span class="number">2</span>][<span class="number">3</span>]), <span class="built_in">proj</span>&lt;<span class="number">2</span>&gt;(P));</span><br><span class="line">         <span class="type">float</span> z = pts[<span class="number">0</span>][<span class="number">2</span>]*c.x + pts[<span class="number">1</span>][<span class="number">2</span>]*c.y + pts[<span class="number">2</span>][<span class="number">2</span>]*c.z;</span><br><span class="line">         <span class="type">float</span> w = pts[<span class="number">0</span>][<span class="number">3</span>]*c.x + pts[<span class="number">1</span>][<span class="number">3</span>]*c.y + pts[<span class="number">2</span>][<span class="number">3</span>]*c.z;</span><br><span class="line">         <span class="type">int</span> frag_depth = z/w;</span><br></pre></td></tr></table></figure>
+<p>注意我们这里原因是在于深度图的比较，而不是第二次渲染的空间中比较出现的问题。不过z-fighting是原理是类似的。我们用Shader中的这行代码来缓解问题：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// float shadow = .3+.7*(shadowbuffer[idx]&lt;sb_p[2]); // magic coeff to avoid z-fighting</span></span><br><span class="line"><span class="type">float</span> shadow = <span class="number">.3</span>+<span class="number">.7</span>*(shadowbuffer[idx]&lt;sb_p[<span class="number">2</span>]+<span class="number">43.34</span>); <span class="comment">// magic coeff to avoid z-fighting</span></span><br></pre></td></tr></table></figure>
+<p>原本当在深度图空间中，片元的z值大于深度图中存储的值，说明片元排在前面(不用等于是因为浮点数一般无法比较是否相等，这也是不精确的原因之一)，那么shadow就是0.3+0.7=1，不精确的比较导致后面这个0.7不一定加得上去。我们用自己的图片得到效果：</p>
+<p><img src="/2023/08/04/tinyRenderer5/4.png" alt></p>
+<p>尤其是左腿上，出现了很多抖动。更改代码，将阴影值直接加上某些值，看到明显的变化：</p>
+<p><img src="/2023/08/04/tinyRenderer5/5.png" alt></p>
+<p>腿部的渲染还是不尽人意，因为那里的模型凹凸不一，比较复杂，但是左手得到了极大改善。你可以尝试修改这个值观察效果。个人理解上面的代码就是简单地将一些可能会因为不准确的比较而被惩罚的像素救回来了，加上一个之让它有保底，或者另一种方法将后面两个值括起来：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> shadow = <span class="number">.3</span> + <span class="number">.7</span> * (shadowbuffer[idx] &lt; (sb_p[<span class="number">2</span>] + <span class="number">100</span>));</span><br></pre></td></tr></table></figure>
+<p>这样也是类似的，可能被抛弃的片元都会被保留下来，代价就是随着这个值的增大，也会导致非阴影的部分越来越多，与我们期望的结果稍有出入。总之这个方法显然不是根本的解决，Shader中写阴影有很多其他方案，以后再学习。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>作者后面还有两次课程，不过这两次我认为看一看就可以了，一次是关于全局光照环境光的介绍，一次是关于如何编写OpenGL应用的介绍，尤其全局光照不算基础内容了，先用高级语言实现它再回过来看也许会有其它理解，总之不必浪费时间在它们身上。这个项目最好的地方还是对光栅化的实现，并且还封装成Shader类似的样子，做完前六节课你会对基本的渲染管线有更深刻的理解，而不只是知道其中某个部分大致在干什么。</p>
+<p>接下来我们得停下来用虎书系统整理下图形学的基本知识，接着继续学习Unity Shader，做一些常见的视觉效果如水、雾、海量草等很重要的解决方案。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/08/03/tinyRenderer4/" rel="prev" title="五百行C++理解OpenGL机制(五)">
+                  <i class="fa fa-angle-left"></i> 五百行C++理解OpenGL机制(五)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/08/21/unity17/" rel="next" title="unity进阶(一)-数据存储和持久化">
+                  unity进阶(一)-数据存储和持久化 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

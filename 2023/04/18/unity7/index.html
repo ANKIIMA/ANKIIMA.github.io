@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="下面我们制作对话系统和音效。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unity入门(七)-制作一个2D游戏">
+<meta property="og:url" content="https://ankiima.github.io/2023/04/18/unity7/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="下面我们制作对话系统和音效。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/18/unity7/1.png">
+<meta property="article:published_time" content="2023-04-18T12:30:22.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.604Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/04/18/unity7/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/04/18/unity7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/04/18/unity7/","path":"2023/04/18/unity7/","title":"unity入门(七)-制作一个2D游戏"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>unity入门(七)-制作一个2D游戏 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.</span> <span class="nav-text">对话系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%AF%9D%E6%9D%A1%E4%BB%B6%E7%9A%84%E6%A3%80%E6%B5%8B"><span class="nav-number">1.1.</span> <span class="nav-text">对话条件的检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%AF%9DUI"><span class="nav-number">1.2.</span> <span class="nav-text">创建对话UI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%AF%B9%E8%AF%9DUI"><span class="nav-number">1.3.</span> <span class="nav-text">控制对话UI</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9F%B3%E6%95%88%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.</span> <span class="nav-text">音效系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E9%9F%B3%E4%B9%90"><span class="nav-number">2.1.</span> <span class="nav-text">背景音乐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E4%BA%92%E7%9A%84%E9%9F%B3%E6%95%88"><span class="nav-number">2.2.</span> <span class="nav-text">交互的音效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3D%E7%9A%84%E5%A3%B0%E9%9F%B3"><span class="nav-number">2.3.</span> <span class="nav-text">3D的声音</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/04/18/unity7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="unity入门(七)-制作一个2D游戏 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          unity入门(七)-制作一个2D游戏
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-04-18 20:30:22" itemprop="dateCreated datePublished" datetime="2023-04-18T20:30:22+08:00">2023-04-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>下面我们制作对话系统和音效。</p>
+<span id="more"></span>
+<h1 id="对话系统"><a href="#对话系统" class="headerlink" title="对话系统"></a>对话系统</h1><h2 id="对话条件的检测"><a href="#对话条件的检测" class="headerlink" title="对话条件的检测"></a>对话条件的检测</h2><p>角色要和青蛙对话，要求角色面朝青蛙并且距离在一定范围内，因此如果用一个Trigger来检测会不满足第一个条件，我们使用射线投射功能来进行检测，顾名思义，生成一条短直线来检测是否和青蛙碰撞。</p>
+<p>在RubyController中的Update方法添加代码：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (Input.GetKeyDown(KeyCode.X))</span><br><span class="line">&#123;</span><br><span class="line">    RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position + Vector2.up * <span class="number">0.2f</span>, lookDirection, <span class="number">1.5f</span>, LayerMask.GetMask(<span class="string">&quot;NPC&quot;</span>));</span><br><span class="line">    <span class="keyword">if</span> (hit.collider != <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Raycast has hit the object &quot;</span> + hit.collider.gameObject);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们使用新的API，Physics2D.Raycast：</p>
+<p><img src="/2023/04/18/unity7/1.png" alt></p>
+<p>从位置origin，朝direction方向发射一个长度为distance的直线，在包含待检测碰撞体的图层layerMask中进行碰撞检测，还可以设置仅检测深度值在(minDepth，maxDepth)之间的对象，2D中深度值指的是Transform.position的Z轴坐标，用来进行图片的排序。</p>
+<h2 id="创建对话UI"><a href="#创建对话UI" class="headerlink" title="创建对话UI"></a>创建对话UI</h2><p>和之前一样，我们选择青蛙给他添加一个Canvas子对象，然后将Render Mode设置为World Space，这样可以让UI不再以屏幕为标准，其大小和位置现在以世界坐标作为标准。然后修改Rect Transform中的值让画布调整到合适的大小。</p>
+<p>注意，调整大小需要采用缩放的方式，因为UI以像素为单位，如果采用修改width和height的方法来实现，会导致UI仅有几个像素大小，无法显示内容。因此我们采用缩放来进行改变。</p>
+<p>调整后为画布添加image子对象，锚点及位置对其四个顶点；将UIDialogueBox赋值给Image，然后再创建子对象UI- Text - TextMeshPro，添加后同样对齐四个点，输入想要显示的文字，就得到了对话框。</p>
+<h2 id="控制对话UI"><a href="#控制对话UI" class="headerlink" title="控制对话UI"></a>控制对话UI</h2><p>我们要让对话框在检测到的时候显示，直接调用对话框组件的setActive方法即可，这个实际上就是Inspector窗口最上面的勾选。给NPC创建脚本并添加代码：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">NonPlayerDialog</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> displaytime;</span><br><span class="line">    <span class="keyword">public</span> GameObject dialogbox;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> timerDisplay;</span><br><span class="line">    <span class="comment">// Start is called before the first frame update</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (dialogbox != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            dialogbox.SetActive(<span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        timerDisplay = <span class="number">-1.0f</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update is called once per frame</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (timerDisplay &gt;= <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            timerDisplay -= Time.deltaTime;</span><br><span class="line">            <span class="keyword">if</span> (timerDisplay &lt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span>(dialogbox != <span class="literal">null</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    dialogbox.SetActive(<span class="literal">false</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">DisplayDialog</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        timerDisplay = displaytime;</span><br><span class="line">        dialogbox.SetActive(<span class="literal">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后在刚才RubyController那里将输出改为调用这里最后一个方法即可。</p>
+<h1 id="音效系统"><a href="#音效系统" class="headerlink" title="音效系统"></a>音效系统</h1><p>Unity中的音频系统具有Audio Listener和Audio Source两种类，前者接受音频，后者发出音频，从而模拟位置音效。其中，Audio Mixer可以混合多种音频，应用效果，执行母带制作；Audio Clip可以制作音频文件添加到Audio Source中。</p>
+<h2 id="背景音乐"><a href="#背景音乐" class="headerlink" title="背景音乐"></a>背景音乐</h2><p>我们先用最简单的方式添加背景音乐，在这个素材中所有的Audio Clip都制作好了，所以可以直接使用。那么要播放背景音乐，我们创建一个空的游戏对象，然后添加Audio Listener组件，将素材2D MUSIC LOOP赋值给组件的Audio Clip属性即可，然后勾选loop，设置Spatial Blend为3d。</p>
+<h2 id="交互的音效"><a href="#交互的音效" class="headerlink" title="交互的音效"></a>交互的音效</h2><p>某些需要在特定状态下播放的音效就只能通过代码控制了，我们现在用一个Audio Source组件控制播放不同的Audio Clip， 那就在角色对象上添加Audio Source组件，然后Start中获取，接着新声明一个方法接受类型为Audio Clip的参数并调用AudioSource.PlayOneShot方法播放这个Clip。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Playsound</span>(<span class="params">AudioClip audioClip</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    audioSource.PlayOneShot(audioClip);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后将Clip作为其他游戏对象的属性，每当触发事件的时候就同时调用上面这个方法，即可播放声音。例如血瓶拾取的时候要播放音效，就让血瓶的音效作为血瓶的属性序列化出来，然后当血瓶判断可以加血的时候调用角色控制器来播放这个音频，就实现了播放效果，就和动画一样。</p>
+<h2 id="3D的声音"><a href="#3D的声音" class="headerlink" title="3D的声音"></a>3D的声音</h2><p>将Clip的Spatial Blend设置为3D即可，然后在Inspector下方有一个曲线，横轴代表距离，纵轴代表音量，拖动上面的点就可以设置衰减了。但是随意设置可能会导致挂在摄像机上的Listener听不到声音，因为摄像机和2D平面有一段距离，你的设置就可能超过这个距离。</p>
+<p>解决方法是，删除主摄像机上的Audio Listener，然后在虚拟摄像机上创建一个子对象，查看虚拟摄像机的位置，观察到它的z轴坐标为-10，而子对象以父对象为原点，因此我们设置其坐标为(0,0,10)，这样一来子对象就是父对象在2D平面上的投影，那么在这个子对象上挂接Audio Listener即可，并且虚拟摄像机会随着角色移动，因此这个接收器就能模拟音效的3D效果了。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>到这里我们的2D案例就完成了，教程中并没有全部制作一遍，但是方法都已经使用过了，有时间的话可以进一步自己制作。但是这个项目仍然还是一个很简单的教程项目，缺乏完整的系统，例如菜单，地图，任务，战斗，装备等，都需要进一步学习。不过基本的操作流程我们学会了，基础移动，如何检测攻击，动画系统，音效系统，UI的使用，TileMap，相信在将来的学习中这些会更加熟悉，哪怕是在3D游戏中也是类似的。</p>
+<p>因此现在可以体会到游戏制作中的难点了：</p>
+<ul>
+<li>复杂的逻辑</li>
+<li>资源的管理</li>
+<li><p>素材的质量</p>
+</li>
+<li><p>设计的好坏</p>
+</li>
+</ul>
+<p>还有很多要素会影响，对于个人来说要做出好的实例，要尽可能有清晰的设计思路，并且素材是个很大的问题，通常来说3D的话动画资源可以白嫖Adobe<a target="_blank" rel="noopener" href="https://www.mixamo.com/#/">旗下的网站</a>，模型可以去模之屋下pmx格式的，不过要用Blender和插件处理pmx，导出Unity能用的格式Fbx。下一篇博客中就会详细说明这些工具的使用。</p>
+<p>后面做一个ARPG项目demo，3D即时战斗游戏，Rougelike玩法，重点一是内容丰富，二是风格化美术效果。目前规划内容：</p>
+<ul>
+<li>角色移动控制：层次状态机规划的移动动画播放，包括闪避动画，障碍物跨越等；</li>
+<li>角色攻击系统：层次状态机规划角色的连招系统，技能系统；</li>
+<li>UI：尽量寻找风格化素材；</li>
+<li>场景：地形编辑，多个场景转换控制，可交互场景物体；</li>
+<li>敌人AI：决策行为树控制怪物的攻击，闪避，移动；</li>
+<li><p>敌人控制系统：提供控制攻击、闪避、移动的效果，并管理死亡动画；</p>
+</li>
+<li><p>特效：怪物、角色、场景中的特效，同样只能使用免费资源；</p>
+</li>
+<li>着色器：风格化的渲染效果，尽量能展示技术难点，例如云雾渲染，流体渲染等；</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/04/17/unity6/" rel="prev" title="unity入门(六)-制作一个2D游戏">
+                  <i class="fa fa-angle-left"></i> unity入门(六)-制作一个2D游戏
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/04/20/unity8/" rel="next" title="unity入门(八)-导入人物模型和绑定骨骼动画">
+                  unity入门(八)-导入人物模型和绑定骨骼动画 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

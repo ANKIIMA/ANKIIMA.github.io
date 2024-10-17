@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="2023.10.19面经整理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity面试问题整理">
+<meta property="og:url" content="https://ankiima.github.io/2023/10/18/unityInterview/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="2023.10.19面经整理。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/10/18/unityInterview/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/10/18/unityInterview/2.png">
+<meta property="article:published_time" content="2023-10-18T11:30:31.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.642Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Interview">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/10/18/unityInterview/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/10/18/unityInterview/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/10/18/unityInterview/","path":"2023/10/18/unityInterview/","title":"Unity面试问题整理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unity面试问题整理 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#C-%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">C#基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E4%B8%89%E5%A4%A7%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">面向对象三大特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E8%BD%BD%E5%92%8C%E9%87%8D%E5%86%99"><span class="nav-number">1.2.</span> <span class="nav-text">重载和重写</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%A4%9A%E6%80%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">静态多态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%A4%9A%E6%80%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">动态多态</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">值类型和引用类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Net-framework%E5%92%8C-Net-core%EF%BC%8CMono%EF%BC%8CXamarin%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">1.4.</span> <span class="nav-text">.Net framework和.Net core，Mono，Xamarin的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%8A%A0static%E6%8A%A5%E9%94%99"><span class="nav-number">1.5.</span> <span class="nav-text">类的构造函数加static报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1"><span class="nav-number">1.6.</span> <span class="nav-text">装箱和拆箱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84-Array-%E3%80%81List%E3%80%81ArrayList%E5%8C%BA%E5%88%AB"><span class="nav-number">1.7.</span> <span class="nav-text">数组(Array)、List、ArrayList区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E3%80%81%E7%B1%BB%E3%80%81%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.8.</span> <span class="nav-text">结构体、类、接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AD%E5%8C%85"><span class="nav-number">1.9.</span> <span class="nav-text">闭包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string%E5%92%8CstringBuider%EF%BC%8CstringBuffer"><span class="nav-number">1.10.</span> <span class="nav-text">string和stringBuider，stringBuffer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#static%E9%9D%99%E6%80%81"><span class="nav-number">1.11.</span> <span class="nav-text">static静态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GC"><span class="nav-number">1.12.</span> <span class="nav-text">GC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A0%86%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%92%8CGC%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.12.1.</span> <span class="nav-text">堆内存分配和GC步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GC%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.12.2.</span> <span class="nav-text">GC触发条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GC%E5%8F%AF%E8%83%BD%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.12.3.</span> <span class="nav-text">GC可能带来的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GC%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-number">1.12.4.</span> <span class="nav-text">GC优化方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lamda%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.13.</span> <span class="nav-text">Lamda表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%AE%B9%E5%99%A8%E7%B1%BB"><span class="nav-number">1.14.</span> <span class="nav-text">常用容器类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%84%E5%AE%B9%E5%99%A8%E5%92%8C%E6%B3%9B%E5%9E%8B%E5%AE%B9%E5%99%A8"><span class="nav-number">1.15.</span> <span class="nav-text">常规容器和泛型容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unsafe"><span class="nav-number">1.16.</span> <span class="nav-text">unsafe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ref%E5%92%8Cout"><span class="nav-number">1.17.</span> <span class="nav-text">ref和out</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for%E5%92%8Cforeach"><span class="nav-number">1.18.</span> <span class="nav-text">for和foreach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%91%E7%B9%81%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AF%B9%E8%B1%A1%EF%BC%8C%E6%80%8E%E4%B9%88%E5%87%8F%E5%B0%91%E5%BC%80%E9%94%80%EF%BC%9F"><span class="nav-number">1.19.</span> <span class="nav-text">频繁创建一个对象，怎么减少开销？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A7%94%E6%89%98%E5%92%8C%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.20.</span> <span class="nav-text">委托和事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#using%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.21.</span> <span class="nav-text">using的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%9B%E5%9E%8B"><span class="nav-number">1.22.</span> <span class="nav-text">泛型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8"><span class="nav-number">1.23.</span> <span class="nav-text">迭代器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#yield"><span class="nav-number">1.23.1.</span> <span class="nav-text">yield</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E6%89%A7%E8%A1%8C"><span class="nav-number">1.23.2.</span> <span class="nav-text">延迟执行</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unity%E8%84%9A%E6%9C%AC%E5%9F%BA%E7%A1%80"><span class="nav-number">2.</span> <span class="nav-text">Unity脚本基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">协程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.2.</span> <span class="nav-text">函数生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">资源加载方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%E7%89%A9%E4%BD%93%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.4.</span> <span class="nav-text">移动物体的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%BD%E5%8A%A0%E5%8A%9B%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.5.</span> <span class="nav-text">施加力的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%95%E4%B8%AD%E5%BF%83%E6%97%8B%E8%BD%AC%E5%92%8C%E7%BB%95%E6%9F%90%E7%82%B9%E6%97%8B%E8%BD%AC"><span class="nav-number">2.6.</span> <span class="nav-text">绕中心旋转和绕某点旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.7.</span> <span class="nav-text">存储数据的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LocalPosition%E5%92%8CPosition%E5%8C%BA%E5%88%AB"><span class="nav-number">2.8.</span> <span class="nav-text">LocalPosition和Position区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mathf%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">2.9.</span> <span class="nav-text">Mathf常用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Animation%E7%BB%84%E4%BB%B6%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">2.10.</span> <span class="nav-text">Animation组件常用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B"><span class="nav-number">2.11.</span> <span class="nav-text">碰撞检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Destroy%E5%92%8CDestroyImmediate"><span class="nav-number">2.12.</span> <span class="nav-text">Destroy和DestroyImmediate</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unity%E7%BC%96%E8%BE%91%E5%99%A8%E5%9F%BA%E7%A1%80"><span class="nav-number">3.</span> <span class="nav-text">Unity编辑器基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E7%94%BB%E5%8E%9F%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">动画原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Avatar"><span class="nav-number">3.2.</span> <span class="nav-text">Avatar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Animation-Layer"><span class="nav-number">3.3.</span> <span class="nav-text">Animation Layer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%BF%87%E7%9A%84%E6%8F%92%E4%BB%B6"><span class="nav-number">3.4.</span> <span class="nav-text">使用过的插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E6%8C%81UGUI%E4%BD%8D%E7%BD%AE%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">3.5.</span> <span class="nav-text">保持UGUI位置一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prefab"><span class="nav-number">3.6.</span> <span class="nav-text">Prefab</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E4%B8%8A%E5%AF%B9%E8%B1%A1%E5%8F%98%E6%88%90null%E6%98%AF%E4%B8%BA%E4%BB%80%E4%B9%88"><span class="nav-number">3.7.</span> <span class="nav-text">组件上对象变成null是为什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E9%80%9F%E5%AF%B9%E8%B1%A1%E7%A2%B0%E6%92%9E%E5%A4%A7%E4%BD%93%E7%A7%AF%E7%89%A9%E4%BD%93"><span class="nav-number">3.8.</span> <span class="nav-text">高速对象碰撞大体积物体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MeshRender%E7%BB%84%E4%BB%B6"><span class="nav-number">3.9.</span> <span class="nav-text">MeshRender组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CharacterController"><span class="nav-number">3.10.</span> <span class="nav-text">CharacterController</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%89%E6%BA%90%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.11.</span> <span class="nav-text">光源类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E9%87%8F%E8%AE%A1%E7%AE%97"><span class="nav-number">3.12.</span> <span class="nav-text">向量计算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#level-of-detail"><span class="nav-number">4.1.</span> <span class="nav-text">level of detail</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mipmap"><span class="nav-number">4.2.</span> <span class="nav-text">Mipmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F"><span class="nav-number">4.3.</span> <span class="nav-text">内存泄漏</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.1.</span> <span class="nav-text">单例模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.2.</span> <span class="nav-text">观察者模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC"><span class="nav-number">5.3.</span> <span class="nav-text">MVC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8E%86%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">简历相关问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E6%88%91%E4%BB%8B%E7%BB%8D"><span class="nav-number">6.1.</span> <span class="nav-text">自我介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E4%B8%AD%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%98%AF%E6%80%8E%E4%B9%88%E4%BD%BF%E7%94%A8%E7%9A%84"><span class="nav-number">6.2.</span> <span class="nav-text">项目中数据存储是怎么使用的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%A0%E7%94%A8%E4%BA%86%E4%B8%A4%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8B"><span class="nav-number">6.3.</span> <span class="nav-text">你用了两种设计模式介绍一下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8B%E4%BD%A0%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%B3%BB%E7%BB%9F"><span class="nav-number">6.4.</span> <span class="nav-text">介绍一下你实现的系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%B0%E4%BB%A3%E6%B8%B2%E6%9F%93%E6%B5%81%E6%B0%B4%E7%BA%BF%EF%BC%88%E5%85%89%E6%A0%85%E5%8C%96%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="nav-number">6.5.</span> <span class="nav-text">现代渲染流水线（光栅化为例）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA%E5%92%8C%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA"><span class="nav-number">6.6.</span> <span class="nav-text">光线追踪和路径追踪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%87%E5%88%B0%E8%BF%87%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">6.7.</span> <span class="nav-text">遇到过什么问题？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8EUI%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">6.8.</span> <span class="nav-text">举例说明UI怎么实现的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95"><span class="nav-number">7.</span> <span class="nav-text">数据结构和算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BB%E8%B7%AF%E7%AE%97%E6%B3%95"><span class="nav-number">7.1.</span> <span class="nav-text">寻路算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua%E5%92%8C%E7%83%AD%E6%9B%B4%E6%96%B0"><span class="nav-number">8.</span> <span class="nav-text">Lua和热更新</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/10/18/unityInterview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unity面试问题整理 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity面试问题整理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-18 19:30:31" itemprop="dateCreated datePublished" datetime="2023-10-18T19:30:31+08:00">2023-10-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>2023.10.19面经整理。</p>
+<span id="more"></span>
+<h2 id="C-基础"><a href="#C-基础" class="headerlink" title="C#基础"></a>C#基础</h2><h3 id="面向对象三大特性"><a href="#面向对象三大特性" class="headerlink" title="面向对象三大特性"></a>面向对象三大特性</h3><p><strong>继承</strong>：重用现有代码，提高重用度。继承的传递性，继承的单根性（一个类只能有一个父类）。</p>
+<p><strong>封装</strong>：隐藏对象属性，实现细节方法，对外提供方法接口。</p>
+<p><strong>多态</strong>：同名方法根据不同环境表现不同的逻辑，静态多态重载，动态多态重写。</p>
+<h3 id="重载和重写"><a href="#重载和重写" class="headerlink" title="重载和重写"></a>重载和重写</h3><h4 id="静态多态"><a href="#静态多态" class="headerlink" title="静态多态"></a>静态多态</h4><p>静态多态中，函数响应发生在编译阶段，C#提供两种方法实现该特性：</p>
+<ul>
+<li>函数重载：参数不同，不能只有返回值不同。</li>
+<li>运算符重载：</li>
+</ul>
+<p>重载定义在一个类中，使用不同参数以调用。</p>
+<h4 id="动态多态"><a href="#动态多态" class="headerlink" title="动态多态"></a>动态多态</h4><p>动态多态中，函数响应发生在运行阶段，C#使用抽象类和虚方法实现。这里可能问到抽象类、虚方法和接口的区别。</p>
+<p>访问public，使用abstract创建抽象类，抽象类包含抽象方法，抽象方法可以被派生类实现，使用override重写，没有方法体。但是抽象类无法被直接实例化，抽象类外部也不能声明抽象方法，不能用sealed声明抽象类。派生类必须使用override重写抽象属性和抽象方法，没有全部重写那么派生类就只能是抽象类。此外抽象方法声明不提供实现，因此没有方法体。</p>
+<p>访问public，虚方法使用virtual声明，使用override重写，必须有方法体。虚方法在任意类中都可以实现，在子类中可以重写也可以不重写，不能用sealed修饰，否则不能重写。虚方法已经提供了函数实现，不过允许在子类中覆盖。C#中给类进行赋值时使用的是引用类型，也就是说不论是什么类的实例，=赋值其实是让这个符号引用被赋值的对象，实际运行的时候调用的也是被赋值对象的方法。更深入一点可以将这个分为编译时类型和运行时类，前面说的就是虚方法调用的是运行时类的方法，非虚方法调用的是编译时类的方法。</p>
+<p>都不能使用其它的访问修饰符，protected也会因为不能访问其它文件而不方便。</p>
+<p>总的来说，抽象方法是只有定义，没有函数体的抽象类函数，必须在子类中重写；虚方法是有方法体的函数，并且允许在子类中重写。</p>
+<p>还有接口是一种特殊的抽象类，只包含常量和方法定义，没有实现，访问范围都是public，也需要实现全部接口。本来C#不支持多重继承，但是一个类可以继承多个接口。</p>
+<h3 id="值类型和引用类型"><a href="#值类型和引用类型" class="headerlink" title="值类型和引用类型"></a>值类型和引用类型</h3><p><strong>值类型</strong>：所有简单类型，int，float，bool，char，struct，enum，继承自System.ValueType，在结构中是堆栈分配的或内联分配的。</p>
+<p><strong>引用类型</strong>：string，object，class，interface，delegate，array，继承自System.Object，在结构中是堆分配的。</p>
+<p>分配内存的时候值类型只需要一段内存，存放在栈中即可；而引用类型需要两段内存，一段和值类型一样存储实际数据，不过存放在堆中，第二段是存放在栈中的，记录数据在堆中的地址。当调用Console.WriteLine输出，显示的都是栈中的数据。</p>
+<p>内存堆栈指内存中两个存储区（堆区，栈区）。栈内存不受我们和GC管理，这个托管堆受GC管理。</p>
+<h3 id="Net-framework和-Net-core，Mono，Xamarin的关系"><a href="#Net-framework和-Net-core，Mono，Xamarin的关系" class="headerlink" title=".Net framework和.Net core，Mono，Xamarin的关系"></a>.Net framework和.Net core，Mono，Xamarin的关系</h3><p>.Net是跨语言，跨平台的语言平台，Common Language Runtime是.Net的关键，类似于Java的虚拟机。而.Net framework和.Net core都是.Net的实现，前者在windows上运行，后者windows、linux、iOS上都能运行。而Mono是当年只有.Net framework时为了在Linux上运行推出的，集成并实现了.NET的编译器、CLR和基础类库，后来被微软收购了，就开始弄.Net core。    </p>
+<p>Xamarin是基于Mono的APP开发框架，弄好了安卓的可以转成ios，同样ios也可以转成安卓。</p>
+<h3 id="类的构造函数加static报错"><a href="#类的构造函数加static报错" class="headerlink" title="类的构造函数加static报错"></a>类的构造函数加static报错</h3><p>静态构造函数不允许添加访问修饰符，且必须无参数。静态构造函数在实例化之前调用。</p>
+<h3 id="装箱和拆箱"><a href="#装箱和拆箱" class="headerlink" title="装箱和拆箱"></a>装箱和拆箱</h3><p>装箱是将值类型转换为引用类型，分为三步：</p>
+<ul>
+<li>在托管堆中为引用对象分配内存；</li>
+<li>将值类型的数据复制到对应内存中，相当于使用副本，不会改变原来的值；</li>
+<li>返回堆中地址存入栈中。</li>
+</ul>
+<p>拆箱是将引用类型转换为值类型，分为两步：</p>
+<ul>
+<li>获取托管堆中的地址；</li>
+<li>将该地址的值拷贝到栈上。</li>
+</ul>
+<h3 id="数组-Array-、List、ArrayList区别"><a href="#数组-Array-、List、ArrayList区别" class="headerlink" title="数组(Array)、List、ArrayList区别"></a>数组(Array)、List、ArrayList区别</h3><p>三者都是引用类型，数组在内存中是连续的，造成一些不方便，因此提供了ArrayList对象，能够动态扩充和收缩空间，不需要指定长度。</p>
+<p>ArrayList将所有插入的数据作为object处理，如果有值类型的数据，需要装箱和拆箱，这些过程容易造成类型不匹配的问题，且消耗性能。于是推出了泛型List，和C++中的vector类似，提前指定其中的类型，不允许添加不同的类型。</p>
+<h3 id="结构体、类、接口"><a href="#结构体、类、接口" class="headerlink" title="结构体、类、接口"></a>结构体、类、接口</h3><p>结构体是值类型，类和接口都是引用类型。</p>
+<p><strong>【结构体和类的区别】</strong></p>
+<ol>
+<li><strong>结构体是值类型，类是引用类型</strong></li>
+<li><strong>结构体存在栈中，类存在堆中</strong></li>
+<li><strong>结构体成员不能使用protected访问修饰符，而类可以</strong></li>
+<li><strong>结构体成员变量申明不能指定初始值，而类可以</strong></li>
+<li><strong>结构体不能申明无参的构造函数，而类可以</strong></li>
+<li><strong>结构体申明有参构造函数后，无参构造不会被顶掉</strong></li>
+<li><strong>结构体不能申明析构函数，而类可以</strong></li>
+<li><strong>结构体不能被继承，而类可以</strong></li>
+<li><strong>结构体需要在构造函数中初始化所有成员变量，而类随意</strong></li>
+<li><strong>结构体不能被静态static修饰（不存在静态结构体），而类可以</strong></li>
+</ol>
+<p>接口是指定一组函数成员而不给出实现的引用类型。可定义属性，但是要在派生类中实现该属性。可定义事件、方法、索引器。方法声明不能写范围修饰符，默认为public。利用接口可以实现多重继承。</p>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>闭包是指有权访问另一个函数作用域中变量的函数：</p>
+<ul>
+<li>可以访问另一个函数局部变量；</li>
+<li>该函数用完的局部变量不会随函数结束而销毁；</li>
+</ul>
+<h3 id="string和stringBuider，stringBuffer"><a href="#string和stringBuider，stringBuffer" class="headerlink" title="string和stringBuider，stringBuffer"></a>string和stringBuider，stringBuffer</h3><p>string声明字符串后，作为引用变量需要在栈内存储堆地址，堆内存储字符串内容，而且字符不可变，每次对这个字符进行改变就要更改栈中的引用地址，如果字符串不存在于堆中就得申请一个堆内存，舍弃原来的内容。包括拼接字符串和重新赋值也是，频繁修改会导致无效引用变多，频繁GC。例如拼接字符串”hello”world”，那么需要分配三次空间，两个单词各一次，然后拼接起来还要一次。</p>
+<p>如果需要频繁变动字符串，那么就需要使用stringBuilder和stringBuffer，它们的内容可以多次修改，也不会产生新的对象。不过Builder不是线程安全的，Buffer是线程安全的。线程安全就是同时只有一个线程可以访问共享数据，防止不一致的问题。    </p>
+<p>速度方面stringBuilder最快，适合单线程，然后是stringBuffer，适合多线程，最后才是string，常量字符串。</p>
+<h3 id="static静态"><a href="#static静态" class="headerlink" title="static静态"></a>static静态</h3><p>static可以用来声明类、字段、属性和方法。用它声明的变量将静态执行，内存中只有一个，并且不用创建实例实行，直接使用类名就可以调用。</p>
+<ul>
+<li><p>静态类内部只能是静态字段方法，没有其它实例，它本身也不能通过new关键字来实例化，本质上是一个密封的抽象类，不能作为基类。</p>
+</li>
+<li><p>静态变量只能是成员变量而不能是方法的局部变量，类初始加载时具有局部值。</p>
+</li>
+<li><p>静态方法只能访问静态变量和静态方法，通过类名直接调用。Main方法是程序唯一出入口，用的就是static修饰。</p>
+</li>
+<li>静态构造函数不能添加其它修饰符，且必须没有参数，只会被执行一次，在实例化之前自动执行，比实例化后调用的构造函数快。</li>
+</ul>
+<h3 id="GC"><a href="#GC" class="headerlink" title="GC"></a><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zblade/p/6445578.html">GC</a></h3><p>垃圾回收机制，避免托管堆内存溢出，定期回收没有有效引用的内存对象。它由CLR实现，GC优化就是优化堆内存，减少堆内存，及时回收堆内存。</p>
+<h4 id="堆内存分配和GC步骤"><a href="#堆内存分配和GC步骤" class="headerlink" title="堆内存分配和GC步骤"></a>堆内存分配和GC步骤</h4><p>分配：</p>
+<ul>
+<li>检查堆内存是否可以分配，如果足够就先分配；</li>
+<li>内存不够，触发GC回收再检查分配；</li>
+<li>还是不够，将扩展使用的内存，分配对应大小的空间；</li>
+</ul>
+<p>需要减少第二和第三种情况发生的频率；</p>
+<p>回收：</p>
+<ul>
+<li>检查堆上的每个变量是否处于激活状态；</li>
+<li>没激活的标记为可回收；</li>
+<li>移除可回收变量，收回内存空间；</li>
+</ul>
+<p>堆上的变量越多，GC检查就越多，耗费时间边长。</p>
+<h4 id="GC触发条件"><a href="#GC触发条件" class="headerlink" title="GC触发条件"></a>GC触发条件</h4><ul>
+<li>按平台有不同的触发频率；</li>
+<li>申请内存时空间不足需要GC；</li>
+<li>可以主动强制GC；</li>
+</ul>
+<h4 id="GC可能带来的问题"><a href="#GC可能带来的问题" class="headerlink" title="GC可能带来的问题"></a>GC可能带来的问题</h4><ul>
+<li>堆内存碎片化：总的空间很大，但是连续的空间很小，难以找到合适的分配单元；这会导致游戏内存越来越大，GC越来越频繁；</li>
+<li>游戏帧率下降：GC操作代价大，关键时候会使得游戏运行缓慢；</li>
+</ul>
+<p>使用<a target="_blank" rel="noopener" href="https://unity3d.com/cn/learn/tutorials/topics/scripting/data-types">profile window</a>可以查看性能下降是不是由GC导致。</p>
+<h4 id="GC优化方法"><a href="#GC优化方法" class="headerlink" title="GC优化方法"></a>GC优化方法</h4><p>我们可以通过三类方法优化GC：</p>
+<ul>
+<li>减少GC次数；</li>
+<li>减少单次GC检查的时间；</li>
+<li>延迟GC时间，避免在关键时候触发；</li>
+</ul>
+<p>对应到游戏中，我们可以使用这些具体手段：</p>
+<ul>
+<li><p>定时强制GC，减少关键时候出事故的可能；</p>
+</li>
+<li><p>值类型变量使用后立即回收，引用型变量需要GC；</p>
+</li>
+<li>字符串拼接使用stringbuilder或者stringbuffer，而不是直接+=，字符串比较先定义变量存储；</li>
+<li>List和new的时候规定内存大小；</li>
+<li>射线检测，使用避免GC的NoAlloc函数；</li>
+<li>foreach迭代器容易导致GC（目前Unity5.5已修复），使用For循环；</li>
+<li>使用静态变量，GC不会回收存在的对象，但静态变量的引用对象可能被回收；</li>
+<li>使用枚举替代字符串变量；</li>
+<li>调用gameobject.tag==”XXX”就会新建字符串变量产生内存垃圾；那么采用GameObject.CompareTag()可以避免内存垃圾的产生：</li>
+<li>不要在频繁调用的函数中反复进行堆内存分配，比如OnTriggerXXX，Update等函数；</li>
+<li>在Update函数中，运行有规律的但不需要每一帧执行的代码，可以使用计时器，比如1秒执行一次某些代码。</li>
+</ul>
+<h3 id="Lamda表达式"><a href="#Lamda表达式" class="headerlink" title="Lamda表达式"></a>Lamda表达式</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(a,b) =&gt; &#123;return a+b;&#125;;</span><br><span class="line"></span><br><span class="line">//只有一个参数可以省略成这样：</span><br><span class="line">a =&gt; a*a;</span><br></pre></td></tr></table></figure>
+<h3 id="常用容器类"><a href="#常用容器类" class="headerlink" title="常用容器类"></a>常用容器类</h3><ul>
+<li>Stack：底层泛型数组实现，入栈动态扩容2倍；</li>
+<li>Queue：底层泛型数组实现，表头表尾指针，判空还是满通过size比较；</li>
+<li>Array：固定长度，类型不安全；</li>
+<li>ArrayList：动态数组，类型不安全；</li>
+<li>List：底层实现是泛型数组，动态扩容，类型安全；</li>
+<li>LinkedList：链表；</li>
+<li>HashTable哈希表（散列表）；</li>
+<li>Directionary：有序，泛型存储不需要进行类型装换（不需要装箱拆箱）</li>
+</ul>
+<p>插入性能： LinkedList &gt; Dictionary &gt; HashTable &gt; List<br>遍历性能：List &gt; LinkedList &gt; Dictionary &gt; HashTable<br>删除性能： Dictionary &gt; LinkedList &gt; HashTable &gt; List</p>
+<p>在修改较频繁，且查找和删除也较多时，首选LinkedList,<br>在主要以删除为主，插入为辅，且查找较少时，首选Dictionary，<br>在查找频繁，而又无需修改的情况下，则首选List。</p>
+<h3 id="常规容器和泛型容器"><a href="#常规容器和泛型容器" class="headerlink" title="常规容器和泛型容器"></a>常规容器和泛型容器</h3><p>常规容器有拆箱和装箱操作，速度慢，消耗性能，泛型容器效率更高。</p>
+<h3 id="unsafe"><a href="#unsafe" class="headerlink" title="unsafe"></a>unsafe</h3><p>unsafe 不安全代码，在不安全代码块中可以使用指针。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsafe</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span> number = <span class="number">10</span>;</span><br><span class="line">    <span class="built_in">int</span>* ptr = &amp;number; <span class="comment">// 声明一个指向整数的指针</span></span><br><span class="line">    Console.WriteLine(*ptr); <span class="comment">// 输出指针所指向的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果要指向堆中的托管对象，需要使用fixed，固定对象的地址防止GC回收。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsafe</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span>[] numbers = <span class="keyword">new</span> <span class="built_in">int</span>[<span class="number">5</span>] &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span> &#125;;</span><br><span class="line">    <span class="keyword">fixed</span> (<span class="built_in">int</span>* ptr = numbers)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 使用指针ptr来访问数组中的元素</span></span><br><span class="line">        Console.WriteLine(ptr[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>可以在栈上或者堆上分配内存：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsafe</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span> stackAllocated = <span class="keyword">stackalloc</span> <span class="built_in">int</span>[<span class="number">100</span>]; <span class="comment">// 在栈上分配内存</span></span><br><span class="line">    <span class="built_in">int</span>* heapAllocated = (<span class="built_in">int</span>*)malloc(<span class="keyword">sizeof</span>(<span class="built_in">int</span>) * <span class="number">100</span>); <span class="comment">// 在堆上分配内存，需要手动释放</span></span><br><span class="line">    <span class="comment">// 使用 stackAllocated 和 heapAllocated 操作内存</span></span><br><span class="line">    free(heapAllocated); <span class="comment">// 释放堆上分配的内存</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="ref和out"><a href="#ref和out" class="headerlink" title="ref和out"></a>ref和out</h3><p>ref可以传递值类型变量的引用版本，类似指针，out也一样。唯一的区别是ref需要已经初始化过具体值，out可以使用没赋值过的变量作为参数传递。底层上看，out在方法内部分配一次地址，将这个地址给引用的变量使用，而ref将被引用变量的地址传递过来。</p>
+<h3 id="for和foreach"><a href="#for和foreach" class="headerlink" title="for和foreach"></a>for和foreach</h3><p>for通过当前索引累加偏移量实现遍历，foreach主要通过指针偏移实现遍历，不过foreach要求对象实现了枚举接口，IEnumrable，而且会把对象的值复制到栈上面，效率比for低一些。</p>
+<p>foreach操作时不能删除对象中的元素，因为使用的是副本会导致不一致性，程序会抛出异常，可以自行记录要删除的元素序号，结束迭代后再删除。</p>
+<h3 id="频繁创建一个对象，怎么减少开销？"><a href="#频繁创建一个对象，怎么减少开销？" class="headerlink" title="频繁创建一个对象，怎么减少开销？"></a>频繁创建一个对象，怎么减少开销？</h3><p>需要初始化就对象池，不需要就单例模式一直用一份内存就行。</p>
+<h3 id="委托和事件"><a href="#委托和事件" class="headerlink" title="委托和事件"></a>委托和事件</h3><p>委托类似于一种函数指针，通过委托可以实现事件的订阅和发布；事件基于委托，将方法进行了封装，不能显示调用这些方法，提高了安全性。</p>
+<h3 id="using的使用"><a href="#using的使用" class="headerlink" title="using的使用"></a>using的使用</h3><p>用于资源管理和命名空间导入。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> (ResourceType resource = <span class="keyword">new</span> ResourceType())</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 使用资源</span></span><br><span class="line">    <span class="comment">// 资源会在这个块结束后自动被释放</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> System; <span class="comment">// 导入System命名空间</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">ExampleNamespace</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 可以直接使用System命名空间中的类型，而不需要写成System.Console</span></span><br><span class="line">            Console.WriteLine(<span class="string">&quot;Hello, World!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><p>定义时不指定具体的数据类型，在使用时再指定数据类型。</p>
+<ul>
+<li>提高代码复用：处理基本数据类型时用泛型一次性完成；</li>
+<li>类型安全：编译阶段提供类型安全检查，List和Dictionary都使用了泛型，确保不会出现类型不匹配的问题；</li>
+<li>性能优化：避免了装箱和拆箱，因为类型相同不会发生值类型和引用类型的转换；</li>
+</ul>
+<h3 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h3><p>迭代器可以遍历某个集合中的对象而不用关心其中对象的类型，C#中可迭代的对象需要继承IEnumrable接口，实现GetEnumrator方法，获得对象的迭代器，并且要求该迭代器继承IEnumrator接口，该接口提供MoveNext方法判断迭代是否继续，Reset方法重置迭代器，以及Current属性用于返回当前迭代器的值。此外IEnumrable和IEnumrator都有派生的泛型类。返回值为IEnumrable或者IEnumbrator的方法就是迭代器方法。</p>
+<p>可迭代对象就能用foreach来访问，foreach依次调用可迭代对象的上述几个方法，就实现了简单的迭代函数。foreach(Type value in IEnumerable)会将value强转成Type，因此Type如果是非泛型可能造成类型不安全。</p>
+<h4 id="yield"><a href="#yield" class="headerlink" title="yield"></a>yield</h4><p>为了进一步简化迭代器的使用，推出了yield关键字，用于迭代器方法内部。迭代器方法会自动生成一个迭代器，每个yield语句都表示一次暂停或中断，执行迭代器方法的时候程序会在yield return处暂停，并保存当前变量的值，下一次唤醒的时候回复变量，继续执行剩下的语句。yield break则会直接中断该方法，也就是让MoveNext方法返回false。</p>
+<p>因此使用yield关键字之后就不用再自行继承IEnumrable和IEnumrator接口并实现，直接用foreach就可以完成对全部元素的迭代。</p>
+<h4 id="延迟执行"><a href="#延迟执行" class="headerlink" title="延迟执行"></a>延迟执行</h4><p>C#的迭代器是延迟执行的，即只在需要的时候获取数据。实现方式就是yield return后保存当前状态，MoveNext判断是否继续，从而不会一次性申请很多空间来遍历整个集合。</p>
+<h2 id="Unity脚本基础"><a href="#Unity脚本基础" class="headerlink" title="Unity脚本基础"></a>Unity脚本基础</h2><h3 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h3><p>由于unity只能在主线程中获取对象的组件，所以一般不考虑多线程，而是采用协程来对任务进行分时并行处理。使用StartCoroutine来开启协程，依靠迭代器实现。</p>
+<p>首先用IEnumrator来定义一个需要执行的迭代器方法，每一帧将调用迭代器的MoveNext方法，当返回值为false结束该协程。可以使用yield和其它返回值的组合如wait<em>*</em>等来实现延时操作。这些等待方法是Unity函数生命周期中的一部分，定期执行，方便控制什么时候唤醒这些协程。</p>
+<p>应用：异步加载场景，字幕单个字符显示等。</p>
+<h3 id="函数生命周期"><a href="#函数生命周期" class="headerlink" title="函数生命周期"></a>函数生命周期</h3><p><img src="/2023/10/18/unityInterview/1.png" alt></p>
+<h3 id="资源加载方式"><a href="#资源加载方式" class="headerlink" title="资源加载方式"></a>资源加载方式</h3><p>Instantiate：实例化的方式直接加载出来；</p>
+<p>Assetbundle：资源打包成AB包，然后用www模块get下来，从其中加载某个对象；可以分成不同patch，按需使用。</p>
+<p>Resource.Load：直接load并返回某个类型的Object，前提是要把这个资源放在Resource命名的文件夹下，Unity不管有没有场景引用，都会将其全部打入到安装包中；这样会比较大。</p>
+<h3 id="移动物体的方式"><a href="#移动物体的方式" class="headerlink" title="移动物体的方式"></a>移动物体的方式</h3><ul>
+<li>Transform：直接修改物体的位置；</li>
+<li>CharacterController：不受物理引擎影响，需要自己实现物理模拟；</li>
+<li>Rigidbody：AddForce、velocity等方式。</li>
+</ul>
+<h3 id="施加力的方式"><a href="#施加力的方式" class="headerlink" title="施加力的方式"></a>施加力的方式</h3><p>需要rigidbody组件：</p>
+<p>AddForce、AddForceAtPosition、ConstantForce等。</p>
+<h3 id="绕中心旋转和绕某点旋转"><a href="#绕中心旋转和绕某点旋转" class="headerlink" title="绕中心旋转和绕某点旋转"></a>绕中心旋转和绕某点旋转</h3><p>transform.Rotate和transform.RotateAround。</p>
+<h3 id="存储数据的方式"><a href="#存储数据的方式" class="headerlink" title="存储数据的方式"></a>存储数据的方式</h3><ul>
+<li><p>ScriptableObject：在编辑器模式下可以实现数据持久化，自动序列化到属性面板中方便更改，但发布后数据不是持久化；</p>
+</li>
+<li><p>PlayerPref：以键值对的形式将数据保存在文件中，跟动画状态机的赋值有点像，支持Int、Float、String的读取和保存，常用于用户设置，具备持久化；</p>
+</li>
+<li>JSON：编写或者生成对应的实体类，如果有JSON的嵌套还要加一个Root类作为解析类，使用解析库例如newtonsoft来序列化和反序列化；</li>
+<li>XML：和JSON类似；</li>
+<li>其它文件类型；</li>
+</ul>
+<h3 id="LocalPosition和Position区别"><a href="#LocalPosition和Position区别" class="headerlink" title="LocalPosition和Position区别"></a>LocalPosition和Position区别</h3><p>LocalPosition相对于父对象的位置，Position是世界坐标系的位置。</p>
+<h3 id="Mathf常用方法"><a href="#Mathf常用方法" class="headerlink" title="Mathf常用方法"></a>Mathf常用方法</h3><ul>
+<li>Mathf.Round(float f)：四舍五入；</li>
+<li>Mathf.Clamp(float value, float min, float max)：截断；</li>
+<li>Mathf.Lerp(float a, float b, float t)：插值；</li>
+</ul>
+<h3 id="Animation组件常用方法"><a href="#Animation组件常用方法" class="headerlink" title="Animation组件常用方法"></a>Animation组件常用方法</h3><ul>
+<li>Animation.CorssFade(string animation, float time = 0.3f);</li>
+<li>Animation.isPlaying(string name);</li>
+</ul>
+<h3 id="碰撞检测"><a href="#碰撞检测" class="headerlink" title="碰撞检测"></a>碰撞检测</h3><p>需要两个物体都有Collider，其中一个拥有Rigidbody；或者一个拥有CharacterController，一个有Collider。用OnColliderEnter或者OnTriggerEnter方法。</p>
+<h3 id="Destroy和DestroyImmediate"><a href="#Destroy和DestroyImmediate" class="headerlink" title="Destroy和DestroyImmediate"></a>Destroy和DestroyImmediate</h3><p>Destroy销毁消息对象，内存中还是存在，只有内存不够才被清除释放内存；DestroyImmediate立即销毁对象，并释放内存。</p>
+<h2 id="Unity编辑器基础"><a href="#Unity编辑器基础" class="headerlink" title="Unity编辑器基础"></a>Unity编辑器基础</h2><h3 id="动画原理"><a href="#动画原理" class="headerlink" title="动画原理"></a>动画原理</h3><p>动画包含关键帧，记录顶点位移情况，中间通过插值得到流畅的动画效果。可以给一个物体创建Animation，添加关键帧让它根据动画自行运动起来。还可以给动画Clip添加事件，让动画播放到某一帧时回调动画事件。</p>
+<h3 id="Avatar"><a href="#Avatar" class="headerlink" title="Avatar"></a>Avatar</h3><p>为了实现动画复用提出了Avatar，通过骨骼名称进行匹配，让任意符合命名规范的模型骨骼同Unity的标准Avatar匹配，从而让动画能够通过映射的方法，运行在新的模型骨骼上面。</p>
+<ul>
+<li>Generic：普通模型，没有重定向功能；</li>
+<li>Humanoid：人型骨骼，可以重定向以进行动画复用；</li>
+</ul>
+<p>Avatar Mask可以在多层的动画控制器中控制仅播放某个部位的动画，有利于减少美术资源要求。IK反向动力学通过反向计算运动情况来实现从手、脚部位置控制上级关节动画。</p>
+<h3 id="Animation-Layer"><a href="#Animation-Layer" class="headerlink" title="Animation Layer"></a>Animation Layer</h3><p>动画分层，不同层动画控制角色的多种状态。下层状态可以覆盖或同上层动画混合，达到某些效果，同时节省资源，例如持枪动画不需要行走持枪和静止持枪两份，让上半身体持枪即可。或者疲劳的时候使用混合，让角色在其它动画中摇摆身体展示疲劳的效果。</p>
+<h3 id="使用过的插件"><a href="#使用过的插件" class="headerlink" title="使用过的插件"></a>使用过的插件</h3><ul>
+<li>Magica Cloth：布料模拟的插件；</li>
+<li>Cinemachine：快速制作相机系统，支持相机切换、轨迹设置等；</li>
+<li>Animation Rigging：骨骼渲染和选中，还能添加一些位置约束；将骨骼摆放到正确位置上；</li>
+<li>Input System：输入系统，将按键和变量绑定并自动生成输入类给出监听的方法，调用监听方法可以轻松实现设备输入。</li>
+</ul>
+<h3 id="保持UGUI位置一致性"><a href="#保持UGUI位置一致性" class="headerlink" title="保持UGUI位置一致性"></a>保持UGUI位置一致性</h3><ul>
+<li>分辨率模式设置为Scale with screen size，画布会随分辨率进行缩放；</li>
+<li>UI位置通过设置锚点保持相对不变，UI位置会保持和锚点的相对距离；</li>
+</ul>
+<h3 id="Prefab"><a href="#Prefab" class="headerlink" title="Prefab"></a>Prefab</h3><p>是已经设置好的游戏对象，已经被序列化为二进制文件，可以方便地进行实例化。创建方法是将场景中的物体直接拖进Resource文件夹，再拖进属性面板或者直接用Resource.Load即可实例化。</p>
+<h3 id="组件上对象变成null是为什么"><a href="#组件上对象变成null是为什么" class="headerlink" title="组件上对象变成null是为什么"></a>组件上对象变成null是为什么</h3><p>绑定的对象删除了，就没有引用了。</p>
+<h3 id="高速对象碰撞大体积物体"><a href="#高速对象碰撞大体积物体" class="headerlink" title="高速对象碰撞大体积物体"></a>高速对象碰撞大体积物体</h3><p>碰撞检测会失败，速度太快可能前后两帧里面都没有碰撞，把Collision Detection修改为Continuous Dynamic。包括角色动画也是，如果仅使用碰撞检测来触发是不行的。</p>
+<p>此外还可以设计一个自己的方法来检测有没有碰撞到，例如用射线探测，用球体在某一帧探测等。</p>
+<h3 id="MeshRender组件"><a href="#MeshRender组件" class="headerlink" title="MeshRender组件"></a>MeshRender组件</h3><ul>
+<li>sharedMaterial：公共的材质，修改的是材质源文件；</li>
+<li>material：该对象自己的材质。</li>
+</ul>
+<h3 id="CharacterController"><a href="#CharacterController" class="headerlink" title="CharacterController"></a>CharacterController</h3><p>继承自Collider，同时具有Rigidbody的一些属性，可以轻松设置角色的碰撞体、物理计算，使用CharacterController.Move。</p>
+<h3 id="光源类型"><a href="#光源类型" class="headerlink" title="光源类型"></a>光源类型</h3><ul>
+<li>Point：向四面八方发射光线；</li>
+<li>Direction：平行光；</li>
+<li>Spot：锥形聚光灯；</li>
+</ul>
+<h3 id="向量计算"><a href="#向量计算" class="headerlink" title="向量计算"></a>向量计算</h3><p>叉乘、点乘、Normalized、Project。</p>
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><h3 id="level-of-detail"><a href="#level-of-detail" class="headerlink" title="level of detail"></a>level of detail</h3><p>细节表现级别，根据距离动态变化，远离的时候丢失细节不影响表现效果，可以减少性能开销。</p>
+<h3 id="Mipmap"><a href="#Mipmap" class="headerlink" title="Mipmap"></a>Mipmap</h3><p>对纹理进行了lod处理，原理是当纹理分辨率大于模型表面时，查询一个纹理值可能对应多个像素点，可以采用Mipmap对纹理区域进行平均，缩小纹理分辨率，既不会浪费多余的像素，也不会造成视觉上的错误效果。</p>
+<h3 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h3><ul>
+<li>托管堆泄露：不安全代码块中申请后忘记释放。</li>
+<li>资源内存泄漏：申请资源后忘记释放。</li>
+<li>无效的堆内存：例如多此创建了字符串，导致内存碎片化。</li>
+</ul>
+<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><p>保证一个类只有一个实例，提供能全局访问该实例的方法。类内部创建自己的静态实例，然后写一个静态方法返回该实例。</p>
+<p>不会因为多次创建对象而导致冗余的变量副本，例如管理器脚本可以使用单例模式。</p>
+<h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>是一种行为设计模式，允许你定义一种订阅通知机制。分为下面几个角色：</p>
+<ul>
+<li>发布者：事件发生后向订阅的对象发送消息。具体为一个委托或者事件。</li>
+<li>观察者：监听该消息，发生事件时更新自己。将更新自己的方法添加到发布者的委托和事件中。</li>
+</ul>
+<h3 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h3><p>Model-View-Controller，Model封装对底层数据的操作，View根据数据情况控制界面显示，Controller处理逻辑业务和交互，调用数据和视图更改的接口。</p>
+<p><img src="/2023/10/18/unityInterview/2.png" alt></p>
+<h2 id="简历相关问题"><a href="#简历相关问题" class="headerlink" title="简历相关问题"></a>简历相关问题</h2><h3 id="自我介绍"><a href="#自我介绍" class="headerlink" title="自我介绍"></a>自我介绍</h3><p>面试官你好，我目前是本科大四的在校生，拟录取到软件学院，联系了梁老师想进入游戏开发的项目，明年9月份入学。我自己从今年四月份开始接触了游戏开发，用了四个月左右的事件学习Unity和Unity Shader，更早之前主要学的是图形学，了解基本的图形学原理。Unity这块lua和热更新还有网络编程暂时没有学习过，主要是写游戏逻辑做过自己的简单游戏demo，就是我简历里写的那个；Unity Shader是学过一些基本的图形学案例，了解语法。目前规划是继续学习，</p>
+<h3 id="项目中数据存储是怎么使用的"><a href="#项目中数据存储是怎么使用的" class="headerlink" title="项目中数据存储是怎么使用的"></a>项目中数据存储是怎么使用的</h3><p>EXCEL转JSON文件的脚本，然后JSON的序列化和反序列化来持久化存储，主要是怪物的属性，任务状态，还有背包信息用了这个存储，暂时没有太多要配置的数据。</p>
+<h3 id="你用了两种设计模式介绍一下"><a href="#你用了两种设计模式介绍一下" class="headerlink" title="你用了两种设计模式介绍一下"></a>你用了两种设计模式介绍一下</h3><p>观察者模式和单例模式，单例模式用在UI的管理器上面，用一个UI管理器保存了对其它UI的引用，方便获取并修改；观察者模式用在更新UI上面，发布者是角色和敌人的Controller，写了一个委托订阅者是UI管理器，血量改变时让管理器更新血条显示。攻击检测应该没用，攻击检测目前是直接拿过来调用，写的时候还没学到。</p>
+<p>三层架构MVC，用来同步UI，Model负责数据更改，项目中其实就是json存储，View就是UI的管理器，提供更新UI的接口，剩下的几乎都是Controller，处理游戏逻辑。 </p>
+<h3 id="介绍一下你实现的系统"><a href="#介绍一下你实现的系统" class="headerlink" title="介绍一下你实现的系统"></a>介绍一下你实现的系统</h3><ul>
+<li>战斗：核心系统，本来想做成ACT，不过现在完成度还不够，做了3C(Character、Camera、Controll)，角色做了两种武器的各一套普通攻击，可以循环，然后有翻滚和奔跑，以及不同方向的受击。攻击检测使用的是动画事件，设置一个攻击区域检测在动画的某一帧是否有敌人，打到了就播放音效，调用敌人的受击接口，敌人的受击接口也会调UI管理器更新血条，同时播放受击动画和音效。怪物写了一个简单的AI，锁定玩家后根据距离行动，靠近就释放技能（对象池的计时器）或者普攻，远离了靠近玩家，距离适中就左右随机移动。</li>
+<li>对话：txt存对话数据，协程让字符逐个显示填充到Text组件中，用一个变量标志当前迭代器方法是否执行完成，按下对话按键的时候开启协程，当角色远离了NPC或者播放完一句话后协程终止。</li>
+<li>任务：EXCEL记录当前任务状态，根据任务状态来显示对话文字，UI还没制作。</li>
+<li>副本：就是场景切换，走到一个位置后用LoadScene切换，不是异步加载。</li>
+<li>摄像机：带碰撞的摄像机，原理是用输入系统获取鼠标的移动插值，左右移动就让相机沿着圆形轨道移动并旋转指向角色某个身体部位，上下移动也一样。碰撞检测从角色往摄像机位置发射一条长度为两者间距离的射线，如果射线碰到了地形，就将距离设置为从出发点到相交点距离的0.9倍，否则让相机保持距离。</li>
+<li>背包系统：用Panel管理，将一个物品的UI显示格子创建成Prefab，Instantiate实例化添加到Panel的Grid中自动排列即可，json存储实现持久化。</li>
+</ul>
+<h3 id="现代渲染流水线（光栅化为例）"><a href="#现代渲染流水线（光栅化为例）" class="headerlink" title="现代渲染流水线（光栅化为例）"></a>现代渲染流水线（光栅化为例）</h3><ul>
+<li><p>CPU阶段（应用阶段）</p>
+<ul>
+<li>加载数据到显存中；</li>
+<li>设置渲染状态；</li>
+<li>DrawCall调用；</li>
+</ul>
+</li>
+<li><p>GPU阶段</p>
+<ul>
+<li>顶点数据传入</li>
+<li>几何阶段：顶点着色器、几何着色器、裁剪、屏幕映射；</li>
+<li>光栅化阶段：三角形组织，片元着色器，逐片元计算，得到屏幕像素。</li>
+</ul>
+</li>
+</ul>
+<h3 id="光线追踪和路径追踪"><a href="#光线追踪和路径追踪" class="headerlink" title="光线追踪和路径追踪"></a>光线追踪和路径追踪</h3><p>以Whited-style光线追踪为例，从摄像机发射一束光线，打到物体上进行反射，如果能打到光源上，那么这个点就是可见的；如果没有到达光源，那么这个点不可见。</p>
+<p>路径追踪可以看作优化的光线追踪，古典光线追踪仅仅反射一次，虽然解决了光栅化没有阴影的问题，但是光线只会在光滑表面上反射，忽略了漫反射，丢失了间接光照的细节。路径追踪发出很多条光线，通过渲染方程计算反射和折射光，反射光不再向一个方向反射，而是模拟真实物理情况，充分考虑了间接光照。</p>
+<h3 id="遇到过什么问题？"><a href="#遇到过什么问题？" class="headerlink" title="遇到过什么问题？"></a>遇到过什么问题？</h3><ul>
+<li>攻击输入：直接使用Trigger有问题，Animation系统的Trigger要求触发一次之后重置，但是这种游戏需要一直点鼠标，所以Trigger没等重置就触发了，这种情况需要对攻击输入进行限制，当角色攻击动画没结束时输入无效，否则会立即进入下一次攻击；同时要在两个时间重置Trigger，一个是Animation的OnStateEnter中，需要继承StateMachineBehaviour，一个是点击后重置或者让状态机不接受。</li>
+<li>攻击检测：直接使用碰撞检测失效，没有勾选continuous Dynamic；后面用动画事件检测的。</li>
+</ul>
+<h3 id="举例说明UI怎么实现的"><a href="#举例说明UI怎么实现的" class="headerlink" title="举例说明UI怎么实现的"></a>举例说明UI怎么实现的</h3><ul>
+<li>对话框：添加一个Panle，选一个背景图片，然后加一个文本框组件作为子对象，加一个Image作为人物头像展示即可。更新UI就只需要更新头像图片和文本内容。</li>
+</ul>
+<h2 id="数据结构和算法"><a href="#数据结构和算法" class="headerlink" title="数据结构和算法"></a>数据结构和算法</h2><h3 id="寻路算法"><a href="#寻路算法" class="headerlink" title="寻路算法"></a>寻路算法</h3><p>广度优先、Dijkastra、启发式方法、A star算法。</p>
+<h2 id="Lua和热更新"><a href="#Lua和热更新" class="headerlink" title="Lua和热更新"></a>Lua和热更新</h2>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Interview/" rel="tag"># Interview</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/16/pathsearch/" rel="prev" title="最短路径算法总结">
+                  <i class="fa fa-angle-left"></i> 最短路径算法总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/25/ugf1/" rel="next" title="Unity GameFramework框架笔记(一) Procedure是什么？">
+                  Unity GameFramework框架笔记(一) Procedure是什么？ <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

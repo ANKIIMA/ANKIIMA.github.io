@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言前面几章基本介绍完主要的数据结构，本章着重查找算法，以及一些排序算法用到的数据结构，在前面的基础上延伸。重点是顺序、折半、分块查找，二叉排序、二叉平衡树，红黑树，B树，B+树，散列表。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构与算法复习（7）查找">
+<meta property="og:url" content="https://ankiima.github.io/2022/08/15/DA-6/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言前面几章基本介绍完主要的数据结构，本章着重查找算法，以及一些排序算法用到的数据结构，在前面的基础上延伸。重点是顺序、折半、分块查找，二叉排序、二叉平衡树，红黑树，B树，B+树，散列表。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/1.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/3.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/4.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/5.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/3.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/6.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/7.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/8.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/9.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/10.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/11.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/12.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/13.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/14.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/15.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/16.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/17.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/18.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/19.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/20.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/21.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/22.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/23.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/24.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/25.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/26.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/27.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/28.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/29.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/30.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/31.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/32.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/33.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/34.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/36.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/35.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/37.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/38.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/39.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/40.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/41.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/42.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/43.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/44.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/45.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/46.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/47.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/15/DA-6/48.jpg">
+<meta property="article:published_time" content="2022-08-15T02:54:54.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:40.848Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="Data Structure and Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2022/08/15/DA-6/1.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/08/15/DA-6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/08/15/DA-6/","path":"2022/08/15/DA-6/","title":"数据结构与算法复习（7）查找"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据结构与算法复习（7）查找 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">查找基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E5%92%8C%E6%8A%98%E5%8D%8A%E6%9F%A5%E6%89%BE"><span class="nav-number">3.</span> <span class="nav-text">顺序和折半查找</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%9F%A5%E6%89%BEO-n"><span class="nav-number">3.1.</span> <span class="nav-text">顺序查找O(n)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E6%97%A0%E5%BA%8F"><span class="nav-number">3.1.1.</span> <span class="nav-text">一般无序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E8%A1%A8%E6%9F%A5%E6%89%BE"><span class="nav-number">3.1.2.</span> <span class="nav-text">有序表查找</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%98%E5%8D%8A%E6%9F%A5%E6%89%BE-O-log-2-n"><span class="nav-number">3.2.</span> <span class="nav-text">折半查找$O(log_2(n))$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%9D%97%E6%9F%A5%E6%89%BE"><span class="nav-number">3.3.</span> <span class="nav-text">分块查找</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%91%E5%9E%8B%E6%9F%A5%E6%89%BE"><span class="nav-number">4.</span> <span class="nav-text">树型查找</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91BST-O-log-2-n-O-n"><span class="nav-number">4.1.</span> <span class="nav-text">二叉排序树BST$O(log_2(n))-O(n)$</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">4.1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE"><span class="nav-number">4.1.2.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5"><span class="nav-number">4.1.3.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0"><span class="nav-number">4.1.4.</span> <span class="nav-text">构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">4.1.5.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B3%E5%9D%87%E6%9F%A5%E6%89%BE%E9%95%BF%E5%BA%A6"><span class="nav-number">4.1.6.</span> <span class="nav-text">平均查找长度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91-O-log-2-n"><span class="nav-number">4.2.</span> <span class="nav-text">平衡二叉树$O(log_2(n))$</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-1"><span class="nav-number">4.2.3.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE-1"><span class="nav-number">4.2.4.</span> <span class="nav-text">查找</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">4.3.</span> <span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5-2"><span class="nav-number">4.3.1.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-2"><span class="nav-number">4.3.2.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B%E6%A0%91"><span class="nav-number">4.4.</span> <span class="nav-text">B树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B%E6%A0%91%E9%AB%98%E5%BA%A6"><span class="nav-number">4.4.1.</span> <span class="nav-text">B树高度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE-2"><span class="nav-number">4.4.2.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5-3"><span class="nav-number">4.4.3.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-3"><span class="nav-number">4.4.4.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-%E6%A0%91"><span class="nav-number">4.5.</span> <span class="nav-text">B+树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E8%A1%A8"><span class="nav-number">5.</span> <span class="nav-text">散列表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">5.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E6%9E%84%E9%80%A0"><span class="nav-number">5.2.</span> <span class="nav-text">散列函数的构造</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E5%AE%9A%E5%9D%80%E6%B3%95"><span class="nav-number">5.2.1.</span> <span class="nav-text">直接定址法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%A4%E7%95%99%E4%BD%99%E6%95%B0%E6%B3%95"><span class="nav-number">5.2.2.</span> <span class="nav-text">除留余数法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E5%88%86%E6%9E%90%E6%B3%95"><span class="nav-number">5.2.3.</span> <span class="nav-text">数字分析法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B3%E6%96%B9%E5%8F%96%E4%B8%AD%E6%B3%95"><span class="nav-number">5.2.4.</span> <span class="nav-text">平方取中法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%B2%E7%AA%81%E5%A4%84%E7%90%86"><span class="nav-number">5.3.</span> <span class="nav-text">冲突处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%94%BE%E5%AF%BB%E5%9D%80%E6%B3%95"><span class="nav-number">5.3.1.</span> <span class="nav-text">开放寻址法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E9%93%BE%E6%B3%95"><span class="nav-number">5.3.2.</span> <span class="nav-text">拉链法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E6%9F%A5%E6%89%BE"><span class="nav-number">5.4.</span> <span class="nav-text">散列查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E5%9D%87%E6%9F%A5%E6%89%BE%E9%95%BF%E5%BA%A6-1"><span class="nav-number">5.5.</span> <span class="nav-text">平均查找长度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%A3%E5%88%97%E8%A1%A8%E6%80%BB%E7%BB%93"><span class="nav-number">5.6.</span> <span class="nav-text">散列表总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/08/15/DA-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据结构与算法复习（7）查找 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据结构与算法复习（7）查找
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-15 10:54:54" itemprop="dateCreated datePublished" datetime="2022-08-15T10:54:54+08:00">2022-08-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/408/" itemprop="url" rel="index"><span itemprop="name">408</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前面几章基本介绍完主要的数据结构，本章着重查找算法，以及一些排序算法用到的数据结构，在前面的基础上延伸。重点是顺序、折半、分块查找，二叉排序、二叉平衡树，红黑树，B树，B+树，散列表。<br><img src="/2022/08/15/DA-6/1.jpg" alt="场景"><br><span id="more"></span></p>
+<h1 id="查找基本概念"><a href="#查找基本概念" class="headerlink" title="查找基本概念"></a>查找基本概念</h1><ul>
+<li>查找：在数据集合中寻找某种满足条件的元素的过程；</li>
+<li>查找表（查找结构）：用于查找的数据集合，一般有四种操作，1）查询特定元素；2）检索特定元素属性；3）插入数据；4）删除数据；</li>
+<li>静态查找表：没有插入删除操作的查找表；</li>
+<li>动态查找表：需要动态插入删除操作的查找表；</li>
+<li>关键字：数据元素中唯一标识元素的某个数据项的值；</li>
+<li>平均查找长度(Average Search Length)：所有查找过程中进行关键字的比较次数的平均值；<br><img src="/2022/08/15/DA-6/2.jpg" alt="场景"></li>
+</ul>
+<h1 id="顺序和折半查找"><a href="#顺序和折半查找" class="headerlink" title="顺序和折半查找"></a>顺序和折半查找</h1><h2 id="顺序查找O-n"><a href="#顺序查找O-n" class="headerlink" title="顺序查找O(n)"></a>顺序查找O(n)</h2><p>又称线性查找，遍历每个元素进行查找。下面分为对一般无序线性表的查找和对关键字有序的线性表查找。</p>
+<h3 id="一般无序"><a href="#一般无序" class="headerlink" title="一般无序"></a>一般无序</h3><p>从线性表的一端开始，逐个检查关键字是否满足条件；如果查找到表的另一端还没有找到，那么查找失败。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">typedef struct&#123;</span><br><span class="line">    ElemType *elem;//下标0的元素留空</span><br><span class="line">    int TableLen;</span><br><span class="line">&#125;SSTable;</span><br><span class="line"></span><br><span class="line">int Search_Seq(SSTable ST, ElemType key)</span><br><span class="line">&#123;</span><br><span class="line">    ST.elem[0] = key;</span><br><span class="line">    for(int i = ST.TableLen; ST.elem[i] != key; i--);</span><br><span class="line">    return i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>需要说明的是，为了防止查找时数组越界，将查找表的0号下标元素留空，用来存放要查找的关键字值，并从后往前遍历查找表，这样当查找到0号元素时循环就会结束，此时i的值为0，表示查找失败。这里的ST.elem[0]被称为“哨兵”，很多时候可以避免不必要的判断语句，提高效率。</p>
+<blockquote>
+<p>笔者个人认为这里做适当处理即可，不一定采取这样的措施，因为查找表的长度已知，可以添加判断条件。不过采用“哨兵”的方法确实能避免添加的判断条件。</p>
+</blockquote>
+<p>所有元素查找成功概率相等，要查找的元素为第i个时，平均查找长度为：<br><img src="/2022/08/15/DA-6/3.jpg" alt="场景"><br>其中<em>p</em>值为<em>1/n</em>。</p>
+<p>查找失败时，平均查找长度为：<br><img src="/2022/08/15/DA-6/4.jpg" alt="场景"></p>
+<h3 id="有序表查找"><a href="#有序表查找" class="headerlink" title="有序表查找"></a>有序表查找</h3><p>假设有一个线性表的关键字从小到大排列，查找顺序从前往后，关键字值为key，只要当key的值介于两个元素关键字值之间，就可以判定查找失败。用下图理解查找过程：<br><img src="/2022/08/15/DA-6/5.jpg" alt="场景"><br>圆形内的是查找表的数据元素，矩形内是查找失败结点（n个结点对应n+1个失败结点），如果要匹配的关键字在任何一个矩形范围内，就说明匹配失败。</p>
+<p>查找成功时平均查找长度：<br><img src="/2022/08/15/DA-6/3.jpg" alt="场景"></p>
+<p>查找失败平均查找长度：<br><img src="/2022/08/15/DA-6/6.jpg" alt="场景"><br><em>q</em>是到第j个失败结点的概率，相等情况下为<em>1/n+1</em>；<em>l</em>是第j个失败结点所在的层数（注意这里的层数从2开始，在某层失败就要查找层数-1次；第7层有两个失败结点，因为最后一层只要不相等都查找失败），注意理解。</p>
+<h2 id="折半查找-O-log-2-n"><a href="#折半查找-O-log-2-n" class="headerlink" title="折半查找$O(log_2(n))$"></a>折半查找$O(log_2(n))$</h2><p>又称二分查找，用于查找有序线性表。基本思想是，将关键字key与中间元素关键字比较，相等则查找成功；不相等根据大小关系决定在中间值的左半边还是右半边比较，重复步骤直到查找成功或没有元素可以查找。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">int Binary_Search(SeqList L, ElemType key)</span><br><span class="line">&#123;</span><br><span class="line">    int low = 0, high = L.TableLem-1, mid;</span><br><span class="line">    while(low &lt;= high)</span><br><span class="line">    &#123;</span><br><span class="line">        mid = (low + high)/2;</span><br><span class="line">        if(L.elem[mid] == key)</span><br><span class="line">            return mid;</span><br><span class="line">        else if(L.elem[mid] &gt; key)</span><br><span class="line">            high = mid - 1;</span><br><span class="line">        else</span><br><span class="line">            low = mid + 1;</span><br><span class="line">    &#125;</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>折半查找过程可以用判定树描述：<br><img src="/2022/08/15/DA-6/7.jpg" alt="场景"><br>可以看出这是一棵平衡二叉树。查找成功的ASL就等于目标结点的层数；查找失败的ASL就等于目标失败结点的层数-1。</p>
+<p>查找成功平均查找长度：<br><img src="/2022/08/15/DA-6/8.jpg" alt="场景"><br>其中h是树的高度，n是结点数。1/n表示概率相等。就是结点的层数乘以该层结点数的和，然后乘以概率。</p>
+<p>查找失败平均查找长度：<br>暂时没有公式，其实也是失败结点层数乘以该层失败结点数的和，然后乘以概率。</p>
+<p>折半查找需要线性表能够随机存取且关键字有序，因此不适合链式存储。</p>
+<h2 id="分块查找"><a href="#分块查找" class="headerlink" title="分块查找"></a>分块查找</h2><p>又称索引顺序查找，基本思想是将查找表分为若干块，块内元素无序，块有序，建立一个索引表，每个元素包括块的最大关键字和块第一个元素的地址，然后按照关键字排列这个索引表。</p>
+<p>查找时，先通过顺序或折半查找索引表，得到目标块，然后在块内顺序查找。<br><img src="/2022/08/15/DA-6/9.jpg" alt="场景"></p>
+<p>分块查找的平均查找长度为索引查找和块内查找之和，如果都采用顺序查找O(n)：<br><img src="/2022/08/15/DA-6/10.jpg" alt="场景"><br>长度为n的线性表被分为b块，每块有s个记录。如果索引表采用折半查找$O(log_2(n))$：<br><img src="/2022/08/15/DA-6/11.jpg" alt="场景"></p>
+<h1 id="树型查找"><a href="#树型查找" class="headerlink" title="树型查找"></a>树型查找</h1><h2 id="二叉排序树BST-O-log-2-n-O-n"><a href="#二叉排序树BST-O-log-2-n-O-n" class="headerlink" title="二叉排序树BST$O(log_2(n))-O(n)$"></a>二叉排序树BST$O(log_2(n))-O(n)$</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>左子树上所有结点的值均小于根结点；右子树上所有结点的值均大于根结点；左右子树各是一棵二叉排序树。（可以是空树）</p>
+<h3 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h3><p>从根结点开始，如果小于根结点关键字，在左子树上查找；否则在右子树上查找，直到查找成功或查找了所有结点。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">//非递归算法</span><br><span class="line">BSTNode *BST_Search(BiTree T, ElemType key)</span><br><span class="line">&#123;</span><br><span class="line">    while(T != NULL &amp;&amp; key != T-&gt;data)</span><br><span class="line">    &#123;</span><br><span class="line">        if(key &lt; T-&gt;data)</span><br><span class="line">            T = T-&gt;lchild;</span><br><span class="line">        else</span><br><span class="line">            T = T-&gt;rchild;</span><br><span class="line">    &#125;</span><br><span class="line">    return T;</span><br><span class="line">&#125;</span><br><span class="line">//递归算法</span><br><span class="line">BSTNode *BST_Search(BiTree T, ElemType key)</span><br><span class="line">&#123;</span><br><span class="line">    if(T == NULL)</span><br><span class="line">        return false;</span><br><span class="line">    </span><br><span class="line">    if(key == T-&gt;data)</span><br><span class="line">        return T;</span><br><span class="line">    else if (key &lt; T-&gt;data)</span><br><span class="line">        return BST_Search(T-&gt;lchild, key);</span><br><span class="line">    else</span><br><span class="line">        return BST_Search(T-&gt;rchild, key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>如果树空，直接插入结点；非空，关键字k小于根结点，插入到左子树；否则插入到右子树。<strong>插入的结点一定是叶子结点</strong>。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">int BST_Insert(BiTree &amp;T, KeyType k)</span><br><span class="line">&#123;</span><br><span class="line">    if(T == NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        T = (BiTree)malloc(sizeof(BSTNode));</span><br><span class="line">        T-&gt;data = k;</span><br><span class="line">        T-&gt;lchild = T-&gt;rchild = NULL;</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line">    else if(T-&gt;data == k)</span><br><span class="line">    &#123;</span><br><span class="line">        return 0;//不能有相同值存在</span><br><span class="line">    &#125;</span><br><span class="line">    else if(T -&gt;data &gt; k)</span><br><span class="line">    &#123;</span><br><span class="line">        return BST_Insert(T-&gt;lchild, k);</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">        return BST_Insert(T-&gt;rchild, k);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h3><p>给定一个数组，用其中的元素构成一个二叉排序树。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">void Create_BST(BiTree &amp;T, KeyType str[], int n)</span><br><span class="line">&#123;</span><br><span class="line">    T = NULL;</span><br><span class="line">    int i = 0;</span><br><span class="line">    while(i &lt; n)</span><br><span class="line">    &#123;</span><br><span class="line">        BST(Insert(T, str[i]));</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>如果删除的结点不会破坏排序二叉树性质，则直接删除；如果删除的结点只有一棵左子树或右子树，则让子树根结点代替删除结点；如果有两棵子树，让结点中序遍历（<strong>BST的中序遍历是一个升序数组</strong>）的直接后继（或前驱）替代结点，然后直接删除这个重复的直接后继（或前驱），这是因为直接后继（或前驱）一定是前面两种情况之一。</p>
+<p>或者说用目标右子树中的最小值代替。</p>
+<p><img src="/2022/08/15/DA-6/12.jpg" alt="场景"><br>（图中是用后继代替的情况)</p>
+<h3 id="平均查找长度"><a href="#平均查找长度" class="headerlink" title="平均查找长度"></a>平均查找长度</h3><p>取决于树的形状，如果是平衡二叉树（左右子树高度相差最大为1），平均查找长度为O(log(n))，如果是倾斜的单支树，就和一般线性查找表没有区别，平均查找长度为O(n)。这取决于输入的元素序列。<br><img src="/2022/08/15/DA-6/13.jpg" alt="场景"></p>
+<p>当有序表是静态，选择顺序表进行存储并采用折半查找；当有序表是动态，选择BST作为逻辑结构。</p>
+<h2 id="平衡二叉树-O-log-2-n"><a href="#平衡二叉树-O-log-2-n" class="headerlink" title="平衡二叉树$O(log_2(n))$"></a>平衡二叉树$O(log_2(n))$</h2><h3 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h3><p>任意结点的<strong>左右子树高度相差不超过1</strong>，简称平衡树。左右子树的高度差为结点的<strong>平衡因子</strong>。平衡二叉树可以为空。</p>
+<p>平衡二叉树就是左右子树都是平衡二叉树，且左右子树平衡因子的绝对值不超过1。</p>
+<h3 id="插入-1"><a href="#插入-1" class="headerlink" title="插入"></a>插入</h3><p>每次插入结点时，检查是否导致不平衡，如果导致不平衡，找到插入路径上离插入结点最近的平衡因子的绝对值大于1的结点A，调整以A结点为根的子树（最小不平衡子树），在保证二叉排序树的前提下调整子树结点位置关系。<br><img src="/2022/08/15/DA-6/14.jpg" alt="场景"><br>位置调整可以归纳成四种操作：</p>
+<ul>
+<li><p>LL：在左孩子的左子树上插入新结点，断开A与左孩子B的连接，将B的右子树作为A的左子树，A作为B的右子树。右旋转。<br><img src="/2022/08/15/DA-6/15.jpg" alt="场景"></p>
+</li>
+<li><p>RR：在右孩子的右子树上插入新结点，断开A与右孩子B的连接，将B的左子树作为A的右孩子，A作为B的左子树。左旋转。<br><img src="/2022/08/15/DA-6/16.jpg" alt="场景"></p>
+</li>
+<li><p>LR：在左孩子的右子树上插入新结点，先对A的左孩子B进行左旋转；然后再对C进行右旋转；<br><img src="/2022/08/15/DA-6/17.jpg" alt="场景"></p>
+</li>
+<li><p>RL：在右孩子的左子树上插入新结点，先对A的右孩子B进行右旋转；然后再对C进行左旋转；<br><img src="/2022/08/15/DA-6/18.jpg" alt="场景"></p>
+</li>
+</ul>
+<h3 id="删除-1"><a href="#删除-1" class="headerlink" title="删除"></a>删除</h3><p>找到要删除的结点，向上回溯同样找到最小不平衡子树，设根结点为z，y是z两个孩子结点中高度最高的结点，x是结点y两个孩子结点中高度最高的结点。</p>
+<p>根据不平衡节点w和最高高度儿子y，最高高度孙子x的关系，可以分为四种类型：</p>
+<p><img src="/2022/08/15/DA-6/19.jpg" alt="场景"><br>（对x进行操作)<br>与插入不同的是，插入的调整只需要进行依一次，但是删除后检查原父结点是否失衡，调整后还要进一步回溯到父结点的父结点重新检查调整。</p>
+<h3 id="查找-1"><a href="#查找-1" class="headerlink" title="查找"></a>查找</h3><p>和排序二叉树相同，平均查找长度O(log(n))。</p>
+<p>n个结点的平衡二叉树最大深度为O(log(n))。</p>
+<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>由于AVL要频繁调整拓扑结构，所以引入红黑树，定义为满足一定红黑性质的二叉排序树：每个结点分为红色和黑色。其中根结点和叶结点是黑色，而且不会存在两个相邻的红色结点（红色结点的双亲和孩子都是黑色）；对每个结点，从该结点到任意叶结点的简单路径上，所含黑色结点的数量相同。</p>
+<p>从任意结点出发，到一个叶结点的任一简单路径上黑结点的总数称为该结点的黑高；根结点的黑高就是红黑树的黑高。</p>
+<ul>
+<li>从根结点到叶结点的最长路径不大于最短路径的两倍。当根到叶子的路径最短，必然都由黑结点构成；路径最长，路径必然由红黑结点相间构成，红黑结点数量相同。</li>
+<li>有n个内部结点的红黑树高度h&lt;=2log(n+1)。因为由上一条结论，从根到叶子结点至少有一半是黑结点，所以树的黑高至少为h/2，考虑结点最少的情况，就是结点全黑，那么高度就是黑高，所以结点数n&gt;=2^(h/2)-1（二叉树定理）。</li>
+</ul>
+<p>红黑树放宽了平衡的定义，只要求任意结点的左右子树高度差不超过两倍，从而降低调整频率。</p>
+<h3 id="插入-2"><a href="#插入-2" class="headerlink" title="插入"></a>插入</h3><p>按照排序二叉树的方式插入后，进行调整。</p>
+<p>新插入的结点，初始着色为红色，防止破坏黑高相等的性质。</p>
+<p>如果新结点的双亲是黑色的，无需调整。<br>如果新结点是作为根结点插入，将z调整为黑色。<br>如果新结点的双亲是红色的，分三种情况：1）(LRB)新结点z是右孩子，z的叔结点（双亲的兄弟结点）y是黑色的，对z先左旋，再右旋；2）(LLB)新结点z是左孩子，z的叔结点（双亲的兄弟结点）y是黑色的，对z的双亲结点右旋，交换z原双亲结点和爷结点的颜色；</p>
+<p><img src="/2022/08/15/DA-6/20.jpg" alt="场景"></p>
+<p>上面说的都是z的双亲为爷结点左孩子的情况，如果z的双亲是爷结点的右孩子，那么就是对称的情况：先右旋再左旋(RLB)和左单旋(RRB)。</p>
+<p>3）z的叔结点是红色。爷结点着色为红色，双亲和叔结点着色为黑色，然后将爷结点作为新的z来重复，也就是上移了两层。(LRR, LLR)</p>
+<p><img src="/2022/08/15/DA-6/21.jpg" alt="场景"></p>
+<p>如果双亲结点是右孩子，同样还有两种对称情况。</p>
+<p><img src="/2022/08/15/DA-6/22.jpg" alt="场景"></p>
+<h3 id="删除-2"><a href="#删除-2" class="headerlink" title="删除"></a>删除</h3><p>按照二叉排序树的方法进行删除，设替代删除结点的是x，其兄弟结点为w，下面是在已经删除好的结点上做调整的过程。</p>
+<blockquote>
+<p>如果待删除结点有两个孩子，不管是红色还是黑色，那么需要替换后（颜色也要替换）删除替换结点，该结点要么是叶子结点，要么只有一个孩子；如果待删除结点只有一个孩子，直接删除后用它的孩子替换（颜色变为和删除结点一致）。<br><img src="/2022/08/15/DA-6/23.jpg" alt="场景"></p>
+</blockquote>
+<p>如果待删除结点没有孩子，需要分颜色讨论；</p>
+<blockquote>
+<p>如果待删除结点是红色，可以直接删除；</p>
+<p>如果待删除结点是黑色，那么设待删除结点为y，x是用来替代它的结点，w是x的兄弟结点。进行删除后，为了保证所有路径上黑色结点数量相同，先将x着色为双重的黑色，问题就转化成将x变成正常结点。下面有四种情况。</p>
+<blockquote>
+<p>w是红色的。由于红黑树的性质，w的双亲和孩子一定是红色的，所以交换w和双亲结点的颜色，并对w做左旋，转换为其他情况；<br><img src="/2022/08/15/DA-6/24.jpg" alt="场景"><br>w是黑色，且w的左孩子是红色，右孩子是黑色。交换w和左孩子的颜色，对w的左孩子做右旋，作为新的w，转换为下一种情况；<br><img src="/2022/08/15/DA-6/25.jpg" alt="场景"><br>w是黑色的，w的右孩子是红色的。交换w和父结点的颜色，w的右孩子变为黑色，对w做左旋，并将x着色为单重黑色。<br><img src="/2022/08/15/DA-6/26.jpg" alt="场景"><br>w是黑色，且w两个孩子都是黑色。将x和w都去掉一层黑色，x由双重黑色变为黑色，w由黑色变为白色，在他们的双亲结点上加上一层黑色，并将这个双亲结点作为新的x循环；而且如果这个双亲结点是红色（情况一转化后变为这种情况），着一层黑色就变为黑色即可，终止循环。<br><img src="/2022/08/15/DA-6/27.jpg" alt="场景"></p>
+<blockquote>
+<p>以上仍然是x作为左孩子的情况，作为右孩子时也有对称的四种情况</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>上面框中的四种情况，只有情况四可能一直重复最多log(n)次（每次上升一层），前面三种情况最多三次旋转后就会停止。因为情况四是唯一能够将任务推给双亲结点的情况，其他三种情况因为w或者w的孩子中有红色，只能在以双亲为根的子树中调整。</p>
+<p><img src="/2022/08/15/DA-6/28.jpg" alt="场景"></p>
+<h2 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h2><p>多路平衡查找树，定义为满足如下特性的m叉树：</p>
+<ul>
+<li>每个结点至多有m棵子树，至多有m-1个关键字；</li>
+<li>如果根结点不是终端结点，至少有两棵子树；</li>
+<li>除根结点外的所有非叶子结点，至少有m/2取上界的子树，至少有m/2取上界-1的关键字；</li>
+<li>非叶子结点的结构如下：<br><img src="/2022/08/15/DA-6/29.jpg" alt="场景"><br>其中k是结点的关键字，按升序排列；p为指向子树根结点的指针，p[i-1]指向子树的关键字均小于k[i]；n是结点中关键字的个数。</li>
+<li>所有叶子结点在同一层次上，而且不带信息；</li>
+</ul>
+<p>B树是所有结点平衡因子都是0的多路平衡查找树。</p>
+<p><img src="/2022/08/15/DA-6/30.jpg" alt="场景"><br>上面的五阶B树有以下性质：</p>
+<ul>
+<li>结点孩子数等于关键字数+1；</li>
+<li>根结点没有关键字，树空；有关键字，子树必定大于等于两棵；</li>
+<li>除根结点外的非终端结点，至少有5(m)/2向上取整=3棵子树，至多有五棵子树；</li>
+<li>所有叶子结点都在第四层，代表查找失败结点。（虚构不存在）</li>
+</ul>
+<h3 id="B树高度"><a href="#B树高度" class="headerlink" title="B树高度"></a>B树高度</h3><p>B树高度不包括叶子结点一层。设一棵B树包含n个关键字，高度为h，阶数为m：</p>
+<ul>
+<li>每个结点最多有m棵子树，m-1个关键字，所以关键字个数n应该满足上界：<br><img src="/2022/08/15/DA-6/31.jpg" alt="场景"></li>
+<li>让每个结点的关键字数最少，可以找到关键字个数n的下界，第一层至少一个结点，第二次至少两个结点，除根结点外的每个非终端结点至少有m/2取上界棵子树，所以第三层至少2*(m/2)取上界个结点，第h+1层（叶子结点层）至少有结点数：<br>  <img src="/2022/08/15/DA-6/32.jpg" alt="场景"><br>  又因为查找不成功结点（叶子结点数）等于n+1，所以有：<br>  <img src="/2022/08/15/DA-6/33.jpg" alt="场景"><br>  得到h的上界。</li>
+</ul>
+<h3 id="查找-2"><a href="#查找-2" class="headerlink" title="查找"></a>查找</h3><p>与二叉查找树类似，只是子树有多路分支。B树存储在硬盘中，先找到目标结点读取到内存，然后在结点内使用顺序查找或者折半查找内存中的有序表，如果没找到，则去对应指针信息指向的子树中查找，直到找到失败结点。</p>
+<h3 id="插入-3"><a href="#插入-3" class="headerlink" title="插入"></a>插入</h3><p>1）定位，用前面查找的办法，会找到待插入结点对应的叶子结点（失败结点）和其对应的上一层，最底层非叶子结点；<br>2）插入，检查待插入结点的关键字个数，如果插入后关键字个数大于m-1，需要进行分裂；否则可以直接插入；<br>3）分裂，取一个新的结点，在插入关键字的后的原结点，从中间m/2取上界位置，分为两部分，左边部分放在原结点中，右边包含新关键字的部分放到新结点中，m/2取上界位置的结点插入原结点的父亲结点上，多出来的指针指向新结点作为原结点的兄弟存在；如果插入父亲结点又使得父亲结点关键字个数超过上限，则对父亲结点进行相同的分裂操作；<br>    <img src="/2022/08/15/DA-6/34.jpg" alt="场景"></p>
+<h3 id="删除-3"><a href="#删除-3" class="headerlink" title="删除"></a>删除</h3><p>与插入操作类似，不过要使得删除后的结点关键字个数大于下界，要采用合并操作。</p>
+<p>如果被删除关键字k不在终端结点（最底层非叶子结点），用k的前驱k’替代k，然后删除k’，因为k’一定在某个终端结点中，所以就转化成了删除k在终端结点中的情况；</p>
+<p>如果被删除关键字k在终端结点中，分三种情况：</p>
+<ul>
+<li><p>如果k所在结点关键字个数删除后仍然满足，可以直接删除；<br><img src="/2022/08/15/DA-6/36.jpg" alt="场景"></p>
+</li>
+<li><p>如果k所在结点关键字个数删除后不满足，但兄弟结点的的关键字个数足够，那么将父亲结点中相邻大小的关键字和兄弟结点相邻大小的关键字进行替换，父亲结点替换下来的关键字送给删除后不足够的结点；</p>
+</li>
+<li>如果k所在结点关键字个数删除后不满足，而且兄弟结点也能借走，就将关键字删除后与相邻兄弟结点以及双亲结点的关键字进行合并，让双亲结点的关键字移动到下层，和删除后剩下的关键字，以及兄弟结点的关键字，组成满足定义的新的结点。如果双亲结点是根结点，关键字个数合并后减1，变成0，直接删除，让合并后的新结点替代根结点的位置；如果双亲结点不是根结点，关键字个数又减少到不满足定义，就重复上面的合并操作，直到满足定义；<br><img src="/2022/08/15/DA-6/35.jpg" alt="场景"></li>
+</ul>
+<h2 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h2><p>B+树的要求比较低，掌握原理即可。B+树是一种B树的变形，满足以下条件：<br><img src="/2022/08/15/DA-6/37.jpg" alt="场景"><br><img src="/2022/08/15/DA-6/38.jpg" alt="场景"><br><img src="/2022/08/15/DA-6/39.jpg" alt="场景"></p>
+<p>由于B+树一个指针头指向关键字有序序列，可以用顺序查找（链表不方便用折半查找）；另一个指针头指向根结点，可以使用多路查找（类似B树）。B+树的插入删除也类似B树，但是在非叶子结点中找到记录时，还要继续下降到叶子结点中，所以每次查找都是一条从树根到叶子的路径。</p>
+<p>对比B树，B+树的优点是：</p>
+<ul>
+<li>层级更少，查询快速；</li>
+<li>非叶子节点仅做索引，关键字全部在叶子节点中，使得查询速度稳定；</li>
+<li>叶子节点顺序保存了所有关键字，方便查询，数据紧密性高；</li>
+<li>遍历全部数据只需要遍历叶子节点，有利于数据库全盘扫描。</li>
+</ul>
+<h1 id="散列表"><a href="#散列表" class="headerlink" title="散列表"></a>散列表</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>散列函数，把查找表中的关键字映射成该关键字对应的地址的函数，记为Hash(key)=Addr；<br>当散列函数把不同关键字映射到同一个地址，就是发生了冲突。</p>
+<p>散列表，根据关键字直接进行访问的数据结构，建立关键字和存储地址之间的一种直接映射关系；理想情况下散列表查找任何元素都是随机存取，即常数级时间复杂度。</p>
+<h2 id="散列函数的构造"><a href="#散列函数的构造" class="headerlink" title="散列函数的构造"></a>散列函数的构造</h2><p>散列函数的构造遵循几个规则：</p>
+<ul>
+<li>散列函数的定义域要包括全部关键字，值域取决于散列表大小；</li>
+<li>散列函数计算的地址应该尽可能均匀分布在空间中，减少冲突；</li>
+<li>散列函数应该尽量设计地简单计算；</li>
+</ul>
+<h3 id="直接定址法"><a href="#直接定址法" class="headerlink" title="直接定址法"></a>直接定址法</h3><p>直接取关键字的某个线性函数值为地址，散列函数形式为：<br><img src="/2022/08/15/DA-6/40.jpg" alt="场景"><br>适合关键字分布基本连续的情况，如果不连续会造成空间浪费。<strong>适合查找表较小</strong>且连续的情况。</p>
+<h3 id="除留余数法"><a href="#除留余数法" class="headerlink" title="除留余数法"></a>除留余数法</h3><p>散列表表长m，取一个不大于m但接近m的质数p，防止因为关键字可能得到相同的地址从而造成冲突。通过取模运算得到地址：<br><img src="/2022/08/15/DA-6/41.jpg" alt="场景"></p>
+<h3 id="数字分析法"><a href="#数字分析法" class="headerlink" title="数字分析法"></a>数字分析法</h3><p>设关键字是r进制，r个数码在各位上出现的频率不一定相同，选择其中的r个数字作为地址，关键字改变，要重新构造。<strong>适合</strong>处理知道<strong>关键字分布</strong>，且关键字<strong>位数比较大的情况</strong>。</p>
+<h3 id="平方取中法"><a href="#平方取中法" class="headerlink" title="平方取中法"></a>平方取中法</h3><p>取关键字平方的中间某几位作为散列地址，视情况而定。<strong>适合</strong>于<strong>不知道关键字的分布</strong>，而<strong>位数又不是很大</strong>的情况。</p>
+<h2 id="冲突处理"><a href="#冲突处理" class="headerlink" title="冲突处理"></a>冲突处理</h2><p>发生冲突时，应该考虑为冲突的关键字寻找到一个空的地址，用Hi表示处理冲突中第i次探测得到的散列地址，每次冲突就让i+1，寻找下一个不冲突的地址。</p>
+<h3 id="开放寻址法"><a href="#开放寻址法" class="headerlink" title="开放寻址法"></a>开放寻址法</h3><p><img src="/2022/08/15/DA-6/42.jpg" alt="场景"><br>增量序列有四种取法：<br>1）线性探测法，d从0开始依次+1，冲突发生的时候顺序查看表中下一个地址单元，当探测到表尾地址m-1，下一个地址单元是0，直到找到一个空闲的地址。这样可能使得关键字聚集在某个地方，降低查找效率。</p>
+<p>2）平方探测法，d取值如下：<br><img src="/2022/08/15/DA-6/43.jpg" alt="场景"><br>其中k&lt;=m/2，有<a target="_blank" rel="noopener" href="http://vlado.fmf.uni-lj.si/vlado/papers/QuadHash.pdf">定理</a>表明，散列表长度m能表示成4k+3的素数时，可以探测到所有单元。这样可以避免堆积的问题，但是如果不满足定理条件，则不能探测到所有散列表上的单元。</p>
+<p>3）双散列法，使用两个散列函数，第一个函数得到的地址冲突，再利用第二个函数计算地址增量。最多经过m-1次就会遍历整个表。<br><img src="/2022/08/15/DA-6/44.jpg" alt="场景"></p>
+<p>4）伪随机序列法，d取值伪随机序列。</p>
+<h3 id="拉链法"><a href="#拉链法" class="headerlink" title="拉链法"></a>拉链法</h3><p>把所有冲突的关键字存储到一个线性链表中，链表由散列地址唯一标识。<br><img src="/2022/08/15/DA-6/45.jpg" alt="场景"><br>适用于经常插入和删除表的情况。</p>
+<h2 id="散列查找"><a href="#散列查找" class="headerlink" title="散列查找"></a>散列查找</h2><p>查找方式就是根据关键字和函数映射，计算出散列地址Addr。<br>访问Addr，检查是否有记录，没有记录则查找失败；有记录则比较关键字是否相等，相等时查找成功，不相等可能是发生冲突被移动了，转到下一步。</p>
+<p>用给定的冲突处理方法找到下一个散列地址，转入上一步。</p>
+<h2 id="平均查找长度-1"><a href="#平均查找长度-1" class="headerlink" title="平均查找长度"></a>平均查找长度</h2><p>比较次数就是平均查找长度，不同的冲突处理方法得到的散列表不同，平均查找长度也不同。<br>以下面12个元素，线性探测和模13构造的散列表为例：<br><img src="/2022/08/15/DA-6/46.jpg" alt="场景"><br>查找84的过程为先计算散列地址84%13=6，查找地址6存储的元素19不等于84，找下一个线性探测的位置，m=16，(6+1)%16=7，7存储的元素20不等于84，找到下一个位置(6+2)%16=8，相等，查找成功，总共进行了3次比较。</p>
+<p>采用上面这样的方式得到下面各个关键字的比较次数：<br><img src="/2022/08/15/DA-6/47.jpg" alt="场景"><br>总共12个关键字，设查找每个关键字概率相等，统计所有比较此时并乘以访问概率：<br><img src="/2022/08/15/DA-6/48.jpg" alt="场景"></p>
+<h2 id="散列表总结"><a href="#散列表总结" class="headerlink" title="散列表总结"></a>散列表总结</h2><p>1）虽然存储位置和关键字能之间映射，但是仍然要通过比较的方式解决冲突问题，所以要以ASL为准；<br>2）散列表的查找效率取决于散列函数、处理冲突方法和装填因子。其中装填因子α=元素数n/散列表长度m。而散列表的ASL依赖于α，不直接依赖于n或m，α越大，越容易发生冲突，反之越不容易冲突。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Data-Structure-and-Algorithm/" rel="tag"># Data Structure and Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/08/07/DA-5/" rel="prev" title="数据结构与算法复习（6）图">
+                  <i class="fa fa-angle-left"></i> 数据结构与算法复习（6）图
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/08/19/DA-7/" rel="next" title="数据结构与算法复习（8）排序">
+                  数据结构与算法复习（8）排序 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

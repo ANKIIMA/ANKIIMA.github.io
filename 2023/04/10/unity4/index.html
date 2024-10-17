@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这篇博客我们继续学习2D游戏制作，上一节中学习了怎么调试代码，角色的基本控制等，这一节我们会进一步学习2D的碰撞检测，触发器的使用，2D的Animator。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unity入门(四)-制作一个2D游戏">
+<meta property="og:url" content="https://ankiima.github.io/2023/04/10/unity4/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="这篇博客我们继续学习2D游戏制作，上一节中学习了怎么调试代码，角色的基本控制等，这一节我们会进一步学习2D的碰撞检测，触发器的使用，2D的Animator。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/7.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/8.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/9.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/10.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/11.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/12.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/13.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/14.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/10/unity4/15.png">
+<meta property="article:published_time" content="2023-04-10T14:38:14.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.595Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/04/10/unity4/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/04/10/unity4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/04/10/unity4/","path":"2023/04/10/unity4/","title":"unity入门(四)-制作一个2D游戏"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>unity入门(四)-制作一个2D游戏 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B"><span class="nav-number">1.</span> <span class="nav-text">碰撞检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E4%BD%93%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">物体碰撞检测的处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tilemap%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">Tilemap碰撞检测的处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E7%A2%B0%E6%92%9E%E4%BD%93"><span class="nav-number">1.3.</span> <span class="nav-text">优化碰撞体</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">触发器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E5%91%BD%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.</span> <span class="nav-text">生命系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">添加触发器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Sprite%E8%BF%9B%E9%98%B6%E5%92%8C%E5%8A%A8%E7%94%BB"><span class="nav-number">3.</span> <span class="nav-text">Sprite进阶和动画</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E9%93%BASprite"><span class="nav-number">3.1.</span> <span class="nav-text">平铺Sprite</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sprite%E5%8A%A8%E7%94%BB"><span class="nav-number">3.2.</span> <span class="nav-text">Sprite动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Animation-Controller"><span class="nav-number">3.3.</span> <span class="nav-text">Animation Controller</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E6%A0%91"><span class="nav-number">3.4.</span> <span class="nav-text">混合树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E7%BB%99Animator-Controller"><span class="nav-number">3.5.</span> <span class="nav-text">参数传递给Animator Controller</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Animator-Transition%E7%AE%80%E4%BB%8B"><span class="nav-number">3.6.</span> <span class="nav-text">Animator Transition简介</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%8C%E4%BA%BA%E7%A7%BB%E5%8A%A8"><span class="nav-number">4.</span> <span class="nav-text">敌人移动</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/04/10/unity4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="unity入门(四)-制作一个2D游戏 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          unity入门(四)-制作一个2D游戏
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-04-10 22:38:14" itemprop="dateCreated datePublished" datetime="2023-04-10T22:38:14+08:00">2023-04-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这篇博客我们继续学习2D游戏制作，上一节中学习了怎么调试代码，角色的基本控制等，这一节我们会进一步学习2D的碰撞检测，触发器的使用，2D的Animator。</p>
+<span id="more"></span>
+<h1 id="碰撞检测"><a href="#碰撞检测" class="headerlink" title="碰撞检测"></a>碰撞检测</h1><p>前面的学习中我们已经构建了基本的游戏场景，设定了伪透视等视觉效果，现在开始逐步添加场景和角色的交互。</p>
+<h2 id="物体碰撞检测的处理"><a href="#物体碰撞检测的处理" class="headerlink" title="物体碰撞检测的处理"></a>物体碰撞检测的处理</h2><p>首先我们以游戏素材中的保险箱为例来说明如何让场景中的某些物体能够阻挡角色。首先不管是什么操作，我们将角色制作成预制件，保存到Prefabs文件夹中，然后选中，添加Rigidbody 2D和Box Collider 2D两个组件，修改刚体组件中的Gravity scale为0防止角色直接下落。</p>
+<p>然后进一步修改Box Collider的包围盒，仅让人物的下半身进行碰撞检测，从而满足伪透视的效果：</p>
+<p><img src="/2023/04/10/unity4/1.png" alt></p>
+<p>同样的，将需要检测碰撞的物体添加Box Collider 2D，设置碰撞区域保证伪透视效果。注意保险箱不需要添加Rigidbody 2D，因为我们不需要让它实现碰撞效果，碰撞后不用改变位置，所以没有必要，只需要作为一个检测碰撞的区域存在，告知人物不能进入即可。</p>
+<p>现在添加完成后运行游戏，发现几个问题：</p>
+<ul>
+<li>人物碰撞后会旋转；</li>
+<li>人物碰撞时会抖动；</li>
+</ul>
+<p>旋转很好解决，在人物的Rigidbody 2D中，找到Constrains选项卡，勾选Freeze Rotation z，表示人物不能以z轴为中心旋转，这样就没问题了。</p>
+<p>关键是第二个问题，人物抖动是因为角色移动的脚本逻辑是先移动，然后检测碰撞，退出碰撞区域，所以帧数调高的时候人物就一直重复这个进入-退出的过程，从而看起来是在抖动。本质在于我们之前的脚本使用的是Transformer组件控制移动，要进行两点改动才能让角色碰到碰撞区域时停止：</p>
+<ul>
+<li>在FixedUpdate方法中进行移动操作，原来的update函数仅获取键盘输入；</li>
+<li>不再修改Transformer组件的位置参数进行移动，而是获得并修改rigidbody2D组件的position成员变量；</li>
+</ul>
+<p>完成后运行程序，发现问题解决了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RubyController</span> : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    Rigidbody2D rigidbody2D;</span><br><span class="line">    <span class="type">float</span> horizontal;</span><br><span class="line">    <span class="type">float</span> vertical;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="type">void</span> <span class="title">Start</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">//获取当前游戏对象的组件</span></span><br><span class="line">        rigidbody2D = <span class="built_in">GetComponent</span>&lt;Rigidbody2D&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Start is called before the first frame update</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">float</span> speed = <span class="number">0.1f</span>;</span><br><span class="line">    <span class="comment">// 每帧调用一次 Update</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Update</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        horizontal = Input.<span class="built_in">GetAxis</span>(<span class="string">&quot;Horizontal&quot;</span>);</span><br><span class="line">        vertical = Input.<span class="built_in">GetAxis</span>(<span class="string">&quot;Vertical&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="type">void</span> <span class="title">FixedUpdate</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Vector2 position = transform.position;</span><br><span class="line">        position.x = position.x + speed * horizontal * Time.deltaTime;</span><br><span class="line">        position.y = position.y + speed * vertical * Time.deltaTime;</span><br><span class="line">        rigidbody2D.position = position;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之所以不在FixedUpdate中直接获取输入信息，是因为这个函数调用的频率较低，默认50次/秒，显然低于我们设定的update，这样比较流畅，除非设备不能达到50帧/秒。</p>
+<p>FixedUpdate的默认调用次数可以在项目设置中修改，50次就是间隔0.02s调用一次：</p>
+<p><img src="/2023/04/10/unity4/2.png" alt></p>
+<h2 id="Tilemap碰撞检测的处理"><a href="#Tilemap碰撞检测的处理" class="headerlink" title="Tilemap碰撞检测的处理"></a>Tilemap碰撞检测的处理</h2><p>Tilemap作为一个游戏对象显然也可以添加组件，但是它并不使用刚才的碰撞组件，而是要添加Tilemap Collider 2D。添加后所有的Grid都自行添加了碰撞检测，检测边界就是网格，当然对一些不想产生碰撞的Tile，可以在它的Inspector窗口中设置Collider Type为None，默认的Sprite就是将图片的四个边当成碰撞区域。</p>
+<p><img src="/2023/04/10/unity4/3.png" alt></p>
+<p>普通的Tile可以这样设置，我们之前用到的RuleTile也差不多，看起来更直观一点。</p>
+<p><img src="/2023/04/10/unity4/4.png" alt></p>
+<p>而且override的RuleTile会继承基类的collider，这点要注意。可以使用Advanced override RuleTile</p>
+<h2 id="优化碰撞体"><a href="#优化碰撞体" class="headerlink" title="优化碰撞体"></a>优化碰撞体</h2><p>由于我们给很多方格都添加了碰撞体组件，因此产生了庞大的计算量，为了缩小这个计算量我们可以将这些碰撞体通过Composite Collider 2D构建一个整体的碰撞体，这个组件可以获取对象及子对象的所有碰撞体。</p>
+<p>同样给Tilemap添加这个组件，发现还自动添加了2D刚体组件，然后在Tilemap Collider 2D组件中勾选Used by Composite，然后设置刚体组件中的Body Type为static，即静止不动。</p>
+<p>这样就完成了优化。</p>
+<h1 id="触发器"><a href="#触发器" class="headerlink" title="触发器"></a>触发器</h1><p>游戏中会有很多可交互对象，角色走到这个物品上就表示“吃到”这个物品，从而发生一些效果。这就要用到触发器了，前面我们已经接触过这个概念，它是碰撞体组件中的一个可选项，勾选以后碰撞体将仅检测是否进入区域而不进行碰撞效果的约束。下面我们以血瓶为例创建一个生命系统和可交互的血瓶物品。</p>
+<h2 id="生命系统"><a href="#生命系统" class="headerlink" title="生命系统"></a>生命系统</h2><p>在RubyController中添加两个变量分别表示当前生命值和总生命值，添加一个方法接受参数amount并恢复等量生命：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//生命值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> max_health = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">int</span> cur_health;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">change_health</span>(<span class="params"><span class="built_in">int</span> amount</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">        cur_health = Mathf.Clamp(cur_health + amount, <span class="number">0</span>, max_health);</span><br><span class="line">        Debug.Log(<span class="string">&quot;当前生命值：&quot;</span> + cur_health + <span class="string">&quot;/&quot;</span> + max_health);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="添加触发器"><a href="#添加触发器" class="headerlink" title="添加触发器"></a>添加触发器</h2><p>现在逻辑就很清除，触碰血瓶的时候触发器生效，调用上面的方法，就实现了恢复效果。而要给血瓶添加的组件就是碰撞器Collider，并勾选Is Trigger。Unity为触发器检测提供的事件方法是OnTriggerEnter2D(Collider2D other)，该方法在每次检测到碰撞的时候被调用，往其中添加我们编写的方法就可以调用了，因此还要添加一个脚本调用这个事件方法。</p>
+<p>最后，除法事件以后还要让组件消失，调用父类Object的方法destroy即可，其中参数为gameObject，是当前的游戏对象。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">HealthCollectible</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> amount = <span class="number">1</span>;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnTriggerEnter2D</span>(<span class="params">Collider2D collision</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">$&quot;发生碰撞的物体是：<span class="subst">&#123;collision&#125;</span>&quot;</span>);</span><br><span class="line">        RubyController r = collision.GetComponent&lt;RubyController&gt;();</span><br><span class="line">        <span class="keyword">if</span>(r != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(r.cur_health &gt;= r.max_health) <span class="keyword">return</span>;</span><br><span class="line">            r.change_health(amount);</span><br><span class="line">            Destroy(gameObject);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行后发现已经完成了血瓶系统。代码中还给出了根据组件获取对应游戏对象的方法，利用GetComponent&lt;&gt;泛型，可以返回对象，进而赋值给需要的实例。</p>
+<p>除了上面这个触发器事件外，Unity还给出其他与触发器交互的事件方法，上面这个事件是进入触发器范围的时候执行一次，下面我们制作一个尖刺区域来让角色持续扣血，就不能用Enter而是Stay了：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnTriggerStay2D</span>(<span class="params">Collider2D collision</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RubyController r = collision.GetComponent&lt;RubyController&gt;();</span><br><span class="line">        <span class="keyword">if</span> (r == <span class="literal">null</span>) <span class="keyword">return</span>;</span><br><span class="line">        r.change_health(amount);</span><br><span class="line">        Debug.Log(<span class="string">&quot;当前生命值&quot;</span> + r.Cur_health + <span class="string">&quot;/&quot;</span> + r.max_health);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这样的话将在每次刷新的时候都进行一次判断，和FixedUpdate一致，因此角色掉血的速度会非常快，为了解决这个问题我们要认识一下RigidBody中的Sleeping Mode选项，三个子项的含义如下：</p>
+<ul>
+<li>Start Awake：初始时唤醒，也是默认选项；</li>
+<li>Start Asleep：初始睡眠，可以碰撞唤醒；</li>
+<li>Never Sleep：从不睡眠；</li>
+</ul>
+<p>这里睡眠的意思就是是否检测刚体碰撞，因为有时某些物体不发生移动，就不会发生碰撞，没必要每帧计算一次，所以就可以先挂起这部分刚体，称为睡眠。默认情况下选项表示该物体是唤醒的，但是一段时间之后就会睡眠，因此如果让我们的角色一直站在这个区域上，一段时间后就会停止刷新消息了。</p>
+<p>清除这个问题之后我们再解决人物掉血太快的问题，方法就是让角色受伤后短暂无敌，下面是要修改的脚本：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//无敌效果</span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">float</span> timeInvincible = <span class="number">2.0f</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="built_in">bool</span> isInvincible;</span><br><span class="line"><span class="keyword">private</span> <span class="built_in">float</span> invincibleTimer;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//其它...</span></span><br><span class="line">    </span><br><span class="line">        <span class="keyword">this</span>.invincibleTimer = <span class="keyword">this</span>.timeInvincible;</span><br><span class="line">        <span class="keyword">this</span>.isInvincible = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//其它...</span></span><br><span class="line">    </span><br><span class="line">        <span class="keyword">if</span>(isInvincible == <span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            invincibleTimer -= Time.deltaTime;</span><br><span class="line">            <span class="keyword">if</span>(invincibleTimer &lt;= <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                isInvincible = <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change_health</span>(<span class="params"><span class="built_in">int</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(amount &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(isInvincible == <span class="literal">true</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                isInvincible = <span class="literal">true</span>;</span><br><span class="line">                invincibleTimer = timeInvincible; </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">        <span class="comment">//其它...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>思路就是用全局变量作为状态依据，每帧计时器减少，当计时器归零的时候就是一次无敌结束，那么让无敌状态的变量重置为false，重置计时器，参与下一轮计时；用无敌状态变量作为依据判断要不要扣血，处于无敌状态直接返回，否则执行后面的操作。</p>
+<p>个人感觉这里逻辑处理挺乱的，而且不够简洁，熟悉下脚本使用就行了，不必纠结。</p>
+<p>要特别注意下Time.Deltatime这个东西，官方解释为上一帧到这一帧之间的时间间隔，我们又说Update和FixedUpdate调用的时间不一样，但是Time.deltatime会自动适应，也就是说不论什么函数中，这个值保证是两帧之间的时间间隔。</p>
+<h1 id="Sprite进阶和动画"><a href="#Sprite进阶和动画" class="headerlink" title="Sprite进阶和动画"></a>Sprite进阶和动画</h1><h2 id="平铺Sprite"><a href="#平铺Sprite" class="headerlink" title="平铺Sprite"></a>平铺Sprite</h2><p>刚才我们用触发器实现了一个伤害区域，角色在区域内会每两秒损失一点生命值，但是如果我们想用多个Sprite伤害区域放到一起，手动操作的话太麻烦了，利用Sprite的平铺功能可以在缩放图像的同时进行区域的平铺，并且整个区域都具备我们刚才实现的逻辑。</p>
+<ul>
+<li>取消目标对象的缩放值；</li>
+<li>Sprite Renderer中的Draw Mode更改为Tiled；</li>
+<li>将目标对象使用的素材Sprite中的Sprite Mode/Mesh Type更改为Full Rect并Apply；</li>
+</ul>
+<p>现在可以使用矩形工具进行平铺了，并且如果觉得对象大小不合适也可以再次缩放。</p>
+<p>不过要注意，碰撞检测区域并不会随着我们拖动矩形工具而更改，因此要重新设置。</p>
+<h2 id="Sprite动画"><a href="#Sprite动画" class="headerlink" title="Sprite动画"></a>Sprite动画</h2><p>（这部分原本放在简单敌人制作完成后再进入，这里为了排版先说这个）</p>
+<p>不管是敌人还是我们的角色，因为没有添加动画所以显得都很怪，现在我们来给他们添加上去。</p>
+<p>首先选中敌人Robot，添加Animator组件，可以重新创建一个文件夹Animations，在其中存放动画相关的文件，注意本来也有一个Animations文件夹了，用于存储素材，这里再新建一个方便管理接下来要用的控制器。在该文件夹中创建AnimatorController，命名为Robot，然后在Robot预制件的Inspector窗口中修改Animator组件的Controller为这个Robot。</p>
+<p><img src="/2023/04/10/unity4/7.png" alt></p>
+<p>控制器创建好了，但是控制的动画还没创建好，可以想到二维的动画就是快速播放很多Sprite，这里提供的素材是每秒播放四张图片，我们先在Window中单机Animation/Animation打开动画窗口，然后选中一下Robot预制件，看到Animation窗口中出现Create字样，点击后看到可以创建anim文件，这就是动画切片，命名为RobotLeft。找到Art/Sprites/Characters/MrClockworkSheet，看到一系列图片，根据命名可知这些图片就是动画素材，称为关键帧，表示在某一帧播放这个图片就会让画面改变。</p>
+<p><img src="/2023/04/10/unity4/6.png" alt></p>
+<p>然后我们选中其中的WalkSides1到WalkSides4，拖拽进Animation窗口，就给RobotLeft这个动画切片创建好了素材。但是如果直接播放的话，会看到速度非常快，这是因为我们默认的Sample Rate是60，表示每秒采样60次，也就是每1/60s都会播放一个图片，这里我们有4个素材，将它改成4即可。</p>
+<p>如果按钮找不到，点击动画窗口右上角的小点，勾选Show Sample Rate。</p>
+<p><img src="/2023/04/10/unity4/8.png" alt></p>
+<p>播放动画，看到了动画效果。</p>
+<p>另外，在窗口中看到我们拖进来的四个图片依次排列在右边了，每个图片上面都有一个小点，这就是关键帧的标记，可以拖动这个标记来改变播放顺序；小点上面的数字表示进行到一秒的什么时候，0:0表示开始，往后都是1/4s，因为我们设置了Sample Rate为4。</p>
+<p>我们现在要导入其中的walk素材，你可能会疑惑向右的图片在哪里，这里我们使用Unity的翻转功能，同样使用WalkSides，但是这里还要点击下面的Add Property，然后找到Flip x：</p>
+<p><img src="/2023/04/10/unity4/9.png" alt></p>
+<p>点击右边加号添加到其中，然后播放看看，就得到了向右走的Clip了。</p>
+<h2 id="Animation-Controller"><a href="#Animation-Controller" class="headerlink" title="Animation Controller"></a>Animation Controller</h2><p>现在有了切片，就可以使用我们前面创建的Controller了，找到Robot的Controller，点击open，或者直接在Window中打开Animator窗口：</p>
+<p><img src="/2023/04/10/unity4/10.png" alt></p>
+<p>左侧是Layers窗口，用于3D管理，将动画用在角色的不同部分；Parameters控制变量，脚本可以用这个提供信息给Controller。</p>
+<p>右侧就是动画状态机了，除了我们创建的Clip外还有三个状态：</p>
+<ul>
+<li>Entry：初始时；</li>
+<li>Any State：任何时候；</li>
+<li>Exit：退出时；</li>
+</ul>
+<p>因此Entry指向向左的切片，那么游戏开始就会直接播放向左的动画。</p>
+<p>为了让这些动画能相互转换，我们使用混合树进行管理，根据移动方向播放。</p>
+<h2 id="混合树"><a href="#混合树" class="headerlink" title="混合树"></a>混合树</h2><p>删除这四个状态，然后右键，Create State/From New Blend Tree，创建后双击Blend Tree进入该层，此时左侧发现Parameter中有一个Blend参数，将它删除后通过右上角的加号创建两个Float变量MoveX和MoveY，然后点击右侧窗口中的Blend Tree，更改Inspector中的Blend Type为2D Simple Directional，然后选择下面两个Parameter分别为刚才创建的两个变量。</p>
+<p><img src="/2023/04/10/unity4/11.png" alt></p>
+<p>再点击变量下面的加号，Add Motion Field，添加四次，分别选择我们刚才创建的4个Clip，并修改它们的值为图中这样：</p>
+<p><img src="/2023/04/10/unity4/12.png" alt></p>
+<p>PosX和PosY分别表示此时方向，可以拖动上面的红点，会发现上下左右四个区域对应添加的四个片段，所谓的混合就是完成了动画的过渡，例如移动到右边的时候向右的动画程度更多，那就播放。在一维的时候解释更清除，不过我也先不解释了，动画应该专门的部分。</p>
+<h2 id="参数传递给Animator-Controller"><a href="#参数传递给Animator-Controller" class="headerlink" title="参数传递给Animator Controller"></a>参数传递给Animator Controller</h2><p>重新打开Robot的脚本，添加代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Animator animator;</span><br><span class="line"></span><br><span class="line">//start()</span><br><span class="line">animator = GetComponent&lt;Animator&gt;();</span><br><span class="line"></span><br><span class="line">private void FixedUpdate()</span><br><span class="line">    &#123;</span><br><span class="line">        Vector2 position = transform.position;</span><br><span class="line">        if(vertical == true)</span><br><span class="line">        &#123;</span><br><span class="line">            position.y += Time.deltaTime * speed * direction;</span><br><span class="line">            animator.SetFloat(&quot;MoveX&quot;, 0);</span><br><span class="line">            animator.SetFloat(&quot;MoveY&quot;, direction);</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            position.x += Time.deltaTime * speed * direction;</span><br><span class="line">            animator.SetFloat(&quot;MoveX&quot;, direction);</span><br><span class="line">            animator.SetFloat(&quot;MoveY&quot;, 0);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        rigidbody.MovePosition(position);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>Animator作为Robot的一个组件，管理Robot的动画控制器，因此我们首先要获取这个组件，然后调用方法setFloat来给Controller中Blend Tree管理的变量赋值。运行游戏，发现动画已经正常了。现在我们用已经编辑好的AnimationController Ruby，完成Ruby的Idle，Run，Heat动画的转变。</p>
+<p>除了添加移动的动画外，我们还要给角色添加受伤、射击的动画，切片制作就不说了，都是一摸一样的，通过预览调整到合适的效果。制作完成后依然用混合树进行管理，不同的是这次我们要管理的有四个混合树，最后在Animator中实现它们的转变：</p>
+<p><img src="/2023/04/10/unity4/13.png" alt></p>
+<p>素材中给出了制作好的Animator，可以参考制作。这里值得学习的主要是如何传递消息，前面我们用SetFloat传递浮点数，Animator中的混合树之间可以通过我们添加的参数作为Conditons来判断转变到哪个状态。Trigger是其中比较特殊的一类，Bool值类型的变量在使用SetBool后会保持变量值，除非重新设置；而Trigger则在设置后会重新变回默认值，也就是说使用Trigger作为Conditions的State Transition，仅在Trigger被设置的那一次进行播放，播放完了就不再执行这个状态的动画，退出到其他状态。</p>
+<p>所以这里Trigger就很适合作为受击状态Hit的条件，Hit播放一次后无条件退回到Idle。Launch状态也一样。</p>
+<p>另外，由于Animator中的参数范围是[-1,1]，所以要对变量最好进行归一化操作，再传递给Animator。</p>
+<h2 id="Animator-Transition简介"><a href="#Animator-Transition简介" class="headerlink" title="Animator Transition简介"></a>Animator Transition简介</h2><p>接下来简单介绍一下状态转换的设置：</p>
+<p><img src="/2023/04/10/unity4/14.png" alt></p>
+<p>其中的功能如下，可以自行查阅Unity文档：</p>
+<p><img src="/2023/04/10/unity4/15.png" alt></p>
+<p>先了解，3D部分会重点使用这个，连带着会用Blender修改动画。</p>
+<h1 id="敌人移动"><a href="#敌人移动" class="headerlink" title="敌人移动"></a>敌人移动</h1><p>有了前面的脚本，可以试着编写一个控制敌人自动移动的逻辑，这里可以自由发挥，我编写的逻辑是敌人上下移动，碰到任何物体都让敌人改变上下移动的方向，从而循环移动。当然也可以控制移动距离等内容，这都很容易，因此就不多说明了</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">RobotController</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> speed = <span class="number">5</span>;</span><br><span class="line">    Rigidbody2D rigidbody;</span><br><span class="line">    <span class="built_in">float</span> is_up;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        rigidbody = GetComponent&lt;Rigidbody2D&gt;();</span><br><span class="line">        is_up = <span class="number">1.0f</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">FixedUpdate</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Vector2 position = transform.position;</span><br><span class="line">        position.y += is_up * speed * Time.deltaTime;</span><br><span class="line">        rigidbody.position = position;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnCollisionEnter2D</span>(<span class="params">Collision2D collision</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        is_up = -is_up;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到这里本篇博客结束，我们已经掌握了人物控制和敌人控制的基本做法，它们现在拥有了动画效果，并且具备生命值交互系统，剩余的制作过程请看下一篇系列博客。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/28/classicDA1/" rel="prev" title="竞赛常用数据结构和算法(续)">
+                  <i class="fa fa-angle-left"></i> 竞赛常用数据结构和算法(续)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/04/11/uni-shader1/" rel="next" title="Unity和Shader入门（一）">
+                  Unity和Shader入门（一） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

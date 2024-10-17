@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言在 《图嵌入和图神经网络》 一文中，介绍了图表示的三类基本方法，GNN作为GCN延伸的神经网络，是其中十分重要的一类方法，通常将其中介绍的那种GNN称为GCN，不过严格定义的GCN在聚合邻居特征的时候公式上略有不同，结果是一致的。在本文中，受到 Representation Learning on Graphs with Jumping Knowledge Networks 一文的启发，将进一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于GNN的不同聚合方案带来的改进">
+<meta property="og:url" content="https://ankiima.github.io/2022/10/04/GNN-improve/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言在 《图嵌入和图神经网络》 一文中，介绍了图表示的三类基本方法，GNN作为GCN延伸的神经网络，是其中十分重要的一类方法，通常将其中介绍的那种GNN称为GCN，不过严格定义的GCN在聚合邻居特征的时候公式上略有不同，结果是一致的。在本文中，受到 Representation Learning on Graphs with Jumping Knowledge Networks 一文的启发，将进一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2022/10/04/GNN-improve/1.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/10/04/GNN-improve/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/10/04/GNN-improve/3.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/10/04/GNN-improve/4.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/10/04/GNN-improve/5.jpg">
+<meta property="article:published_time" content="2022-10-04T05:37:59.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:40.879Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="GNN">
+<meta property="article:tag" content="JK—net">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2022/10/04/GNN-improve/1.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/10/04/GNN-improve/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/10/04/GNN-improve/","path":"2022/10/04/GNN-improve/","title":"关于GNN的不同聚合方案带来的改进"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于GNN的不同聚合方案带来的改进 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GNN%E7%9A%84%E5%B1%80%E9%99%90"><span class="nav-number">2.</span> <span class="nav-text">GNN的局限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GNN%E5%AD%98%E5%9C%A8%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">2.1.</span> <span class="nav-text">GNN存在什么问题？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Random-Walk%E4%B8%8EGCN"><span class="nav-number">2.2.</span> <span class="nav-text">Random Walk与GCN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%80%9C%E5%B9%B3%E5%9D%87%E2%80%9D%E7%9A%84%E5%9D%8F%E5%A4%84%EF%BC%9F"><span class="nav-number">2.3.</span> <span class="nav-text">“平均”的坏处？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JK-net"><span class="nav-number">3.</span> <span class="nav-text">JK-net</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E5%B1%82%E4%B9%8B%E9%97%B4%E7%9A%84Jump-Connections"><span class="nav-number">3.1.</span> <span class="nav-text">不同层之间的Jump-Connections</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E7%82%B9%E5%A6%82%E4%BD%95%E8%87%AA%E5%8A%A8%E9%80%89%E6%8B%A9"><span class="nav-number">3.2.</span> <span class="nav-text">结点如何自动选择</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/10/04/GNN-improve/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于GNN的不同聚合方案带来的改进 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于GNN的不同聚合方案带来的改进
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-10-04 13:37:59" itemprop="dateCreated datePublished" datetime="2022-10-04T13:37:59+08:00">2022-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Machine-Learning/Deep-Learning/Graph/" itemprop="url" rel="index"><span itemprop="name">Graph</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在 <em>《图嵌入和图神经网络》</em> 一文中，介绍了图表示的三类基本方法，GNN作为GCN延伸的神经网络，是其中十分重要的一类方法，通常将其中介绍的那种GNN称为GCN，不过严格定义的GCN在聚合邻居特征的时候公式上略有不同，结果是一致的。在本文中，受到 <em>Representation Learning on Graphs with Jumping Knowledge Networks</em> 一文的启发，将进一步介绍一些先进GNN的做法，有人将这种做法称为“多跳”邻居的聚合方案。<br><span id="more"></span></p>
+<h1 id="GNN的局限"><a href="#GNN的局限" class="headerlink" title="GNN的局限"></a>GNN的局限</h1><h2 id="GNN存在什么问题？"><a href="#GNN存在什么问题？" class="headerlink" title="GNN存在什么问题？"></a>GNN存在什么问题？</h2><p>GNN也并不是一开始就能在所有数据上表现出良好性能的，实际上在一些真实网络上GNN的表现要比传统方法更差。有一个很明显的问题已经被人们注意到了，深度学习往往通过利用深度的网络达到更好的拟合效果，但是GNN在深层网络的效果缺远不如浅层网络，这是非常值得分析的。</p>
+<p>实际上，GNN中结点对邻居信息的汇聚意味着重复的“平均”，经过深层迭代以后，所有结点的特征都包含了整个图的特征，这样一来留给结点自己的信息就会越来越少，导致网络完全无法利用这部分信息做出有效的预测。因此，这个空白需要进行填补，这就是JK-net一文中着重介绍的部分，用RandomWalk对比GCN的聚合过程，系统地阐释“平均”效果产生的原因。</p>
+<h2 id="Random-Walk与GCN"><a href="#Random-Walk与GCN" class="headerlink" title="Random Walk与GCN"></a>Random Walk与GCN</h2><p>可以考虑这样一件事情，Random Walk从网络中一个结点出发，经过一定步数k后，将有可能给影响到某个范围内的所有结点，这就是距离出发结点k跳的所有结点，假设对所有邻居的访问概率完全相同，那么RW经过一定次数迭代后会收敛，访问所有结点的概率将确定到某个值，将访问不同点的概率定义为Walk Distribution。而GCN聚合同样可以这样考虑，一个结点想要聚合到距离它两跳的结点的信息，同样需要两次聚合，因为只有到第二次聚合的时候，该结点的邻居结点才会带有距离他两跳的结点的信息。进行可视化以后，得到这样的效果：<br><img src="/2022/10/04/GNN-improve/1.jpg" alt="场景"><br>GCN中一层汇聚就相当于RW中走一步，文中用雅可比矩阵定义了Influence Distribution，表示结点y的输入特征对结点x输出特征的影响程度，记为Ix(y)，并证明这个值和Walk Distribution相等，上面的图中方块表示出发点，其他深颜色的点表示值越高的点。</p>
+<p>这样，我们可以重新直观地看待“平均”效果，GCN中每层layer都加大了某个点影响与被其他点影响的分布，不管使用的是加权和还是平均等聚合方法，每个结点本身的特征会越来越少，表示全局特征的信息会越来越多，6层的GCN汇聚就涵盖了如此多的点，显然自身信息很难得到保留。</p>
+<h2 id="“平均”的坏处？"><a href="#“平均”的坏处？" class="headerlink" title="“平均”的坏处？"></a>“平均”的坏处？</h2><p>前面说，“平均”让GCN难以分辨不同结点的特征，比较笼统，现在我们接着这部分理论完整分析一下， 到底是什么样的结点不需要这种平均。首先，我们将结点分成两种来分析，位于边缘的和位于中心的。<br><img src="/2022/10/04/GNN-improve/2.jpg" alt="场景"><br>中心结点的Influence Distribution扩散很快，而边缘结点刚开始扩散很慢，但是到达中心结点后又快速扩散到周围了。如果这两个点都经过四层的GCN，得到的信息将非常不一致，用前人的数学方法分析，中心结点的RW收敛很快，带有丰富的全局信息和有限的局部信息；而边缘结点的RW收敛很慢，带有有限的全局信息和丰富的局部信息。因此，中心点过快的“平均”会导致信息丢失，但是边缘点却又需要足够的邻居来得到不那么局部的信息。只有在这两者中做出权衡，才有可能达到更好的表示效果，要进一步探索能不能让每个结点选择自己合适的层数。</p>
+<h1 id="JK-net"><a href="#JK-net" class="headerlink" title="JK-net"></a>JK-net</h1><p>现在，正式提出JK-net，它能够解决上面的问题，这将从两个方面入手分析。第一，需要记录不同层的信息供结点自己选择；第二，结点如何选择最适合自己的层。</p>
+<h2 id="不同层之间的Jump-Connections"><a href="#不同层之间的Jump-Connections" class="headerlink" title="不同层之间的Jump-Connections"></a>不同层之间的Jump-Connections</h2><p>文中提出三种方法记录不同层的特征，分别是concatenation、max-pooling，和LSTM-attention。这里着重介绍max-pooling，因为作者证明了这种聚合能同时解决第二个问题，另外两个暂时不明朗，不过concatenation的做法和DGCNN十分类似，可以作为参考。</p>
+<p>Max-pooling通过下面的式子对不同层的特征进行选择：<br><img src="/2022/10/04/GNN-improve/3.jpg" alt="场景"><br>这就是说，对结点v，每个通道选择不同层中最大的特征作为v的特征表示。</p>
+<p><img src="/2022/10/04/GNN-improve/4.jpg" alt="场景"></p>
+<h2 id="结点如何自动选择"><a href="#结点如何自动选择" class="headerlink" title="结点如何自动选择"></a>结点如何自动选择</h2><p>Max-pooling已经选择了最大的特征作为最合适的表示，在文中作者用中心点来解释。JK-net使用max-pooling，通过自动学习，对非中心点总是将大部分影响尽可能施加在当前结点上，其余影响传播出去(限制在局部上防止丢失信息)；对中心点总是将影响扩散到一个合理的范围(中心点连接的结点多，有可能其中包含另外的中心点)。<br><img src="/2022/10/04/GNN-improve/5.jpg" alt="场景"><br>在本人看来，从网络结构上，其实如何自动选择还是依靠可训练参数矩阵实现的，只不过max-pooling的存在让GNN进一步细化了优化目标实现的方式，多层次信息的存在可以让不同层之间的可训练参数进一步提升自己的表达，而不用为了只得到最后一层的表达进行一定程度的妥协。也就是说，JK-net中不同层之间的参数矩阵完全独立，每个结点的每个特征总是选择最合适的一层进行优化，从而实现了很好的效果。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>文章指出了GNN存在的关键问题，结合一些已有的优化GNN的做法，系统地分析了原因，并提出了一般的解决方案。下一步的工作是对不同层之间的聚合方式(拼接，最大池化，LSTM等)，不同结点之间的聚合方式(最大，平均，加权和等)，以及这两种方案的不同组合，在不同结构的网络上进一步探索。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/GNN/" rel="tag"># GNN</a>
+              <a href="/tags/JK%E2%80%94net/" rel="tag"># JK—net</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/11/games7/" rel="prev" title="games101系列(7) 路径追踪">
+                  <i class="fa fa-angle-left"></i> games101系列(7) 路径追踪
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/08/WSEAL/" rel="next" title="赋权网络对解决链路预测问题的帮助">
+                  赋权网络对解决链路预测问题的帮助 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

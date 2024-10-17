@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="用冯乐乐大神的《Unity Shader入门精要》入门，记录个人整理的知识点和代码。本篇博客本来应该讲到数学基础，不过由于在Games101系列第一篇博客笔记中已经有一致的内容，这里就不复习了，如有看客可以移步标签查找。本篇博客会先举例说明变换的作用，就直接进入Shader的编写了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity和Shader入门（二）">
+<meta property="og:url" content="https://ankiima.github.io/2023/05/19/uni-shader2/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="用冯乐乐大神的《Unity Shader入门精要》入门，记录个人整理的知识点和代码。本篇博客本来应该讲到数学基础，不过由于在Games101系列第一篇博客笔记中已经有一致的内容，这里就不复习了，如有看客可以移步标签查找。本篇博客会先举例说明变换的作用，就直接进入Shader的编写了。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/5.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/7.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/8.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/9.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/10.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/11.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/12.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/13.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/14.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/15.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/16.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/17.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/18.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/19.png">
+<meta property="article:published_time" content="2023-05-19T06:35:55.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.445Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Shader">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/05/19/uni-shader2/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/05/19/uni-shader2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/05/19/uni-shader2/","path":"2023/05/19/uni-shader2/","title":"Unity和Shader入门（二）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unity和Shader入门（二） | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Unity%E4%B8%AD%E5%9D%90%E6%A0%87%E7%A9%BA%E9%97%B4%E7%9A%84%E5%8F%98%E6%8D%A2"><span class="nav-number">1.</span> <span class="nav-text">Unity中坐标空间的变换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MODEL-gt-WORLD"><span class="nav-number">1.1.</span> <span class="nav-text">MODEL-&gt;WORLD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WORLD-gt-VIEW"><span class="nav-number">1.2.</span> <span class="nav-text">WORLD-&gt;VIEW</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VIEW-gt-CLIP"><span class="nav-number">1.3.</span> <span class="nav-text">VIEW-&gt;CLIP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CLIP-gt-SCREEN"><span class="nav-number">1.4.</span> <span class="nav-text">CLIP-&gt;SCREEN</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8Unity-Shader"><span class="nav-number">2.</span> <span class="nav-text">开始使用Unity Shader</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B6%E7%82%B9%E5%92%8C%E7%89%87%E5%85%83%E7%9D%80%E8%89%B2%E5%99%A8%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">顶点和片元着色器的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Properties%E5%92%8C%E8%AF%AD%E4%B9%89"><span class="nav-number">2.2.</span> <span class="nav-text">使用Properties和语义</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/05/19/uni-shader2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unity和Shader入门（二） | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity和Shader入门（二）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-05-19 14:35:55" itemprop="dateCreated datePublished" datetime="2023-05-19T14:35:55+08:00">2023-05-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>用冯乐乐大神的《Unity Shader入门精要》入门，记录个人整理的知识点和代码。本篇博客本来应该讲到数学基础，不过由于在Games101系列第一篇博客笔记中已经有一致的内容，这里就不复习了，如有看客可以移步标签查找。本篇博客会先举例说明变换的作用，就直接进入Shader的编写了。</p>
+<span id="more"></span>
+<h1 id="Unity中坐标空间的变换"><a href="#Unity中坐标空间的变换" class="headerlink" title="Unity中坐标空间的变换"></a>Unity中坐标空间的变换</h1><p>通过学习我们知道，图形学中有五个用来实现变换的坐标系，也了解了如何使用矩阵对它们进行变换。（不清楚请看Games101的笔记博客）</p>
+<ul>
+<li><em>MODEL</em>首先是物体坐标系，或者说模型坐标系，这个坐标系用来给物体进行建模，定义复杂物体的各种几何属性；</li>
+<li><em>WORLD</em>世界坐标系，建模完成的物体在世界坐标系中进行变换，从而移动到不同的位置和朝向；</li>
+<li><em>VIEW</em>视图坐标系，将世界坐标系中的物体再进行视图变换，使其符合摄像机的观察(“符合”同样会在后面解释)；</li>
+<li><em>CLIP</em>裁剪坐标系，投影变换再次对物体进行处理，这时让整个可见空间的坐标范围缩放到标准的单位大小；</li>
+<li><em>SCREEN</em>屏幕坐标系，透视投影已经让物体从三维变换到二维上了，所以可以根据屏幕大小再次缩放可见图形，在根据Z轴提供的深度关系，就完成了整个变换。</li>
+</ul>
+<p>我们的变换目标就是从讲将体从以自己为准的空间中变换到屏幕上，这个过程实际上就是图形学的原理，下面我们通过例子来看如何实现。现在有一个🐂，它的Transform组件显示Position为[5,0,25]，Rotation为[0,150,0]，Scale为[2,2,2]，它还有一个子对象鼻子，坐标是[0,2,4]，缩放和旋转均为0。此外，我们或许还要用到摄像机的变换信息，Position为[0,10,-10]，Rotation为[30,0,0]，Scale为[1,1,1]。Unity使用的变换顺序是缩放旋转平移，那么这个🐂的鼻子会如何变换到屏幕上？</p>
+<h2 id="MODEL-gt-WORLD"><a href="#MODEL-gt-WORLD" class="headerlink" title="MODEL-&gt;WORLD"></a>MODEL-&gt;WORLD</h2><p>第一步，我们从MODEL变换到WORLD中，Unity中的子对象位置坐标是在父对象的模型坐标系下的，所以我们可以根据🐂的变换和鼻子的位置坐标将它变换到世界中，先放大2倍，然后绕y轴旋转30度，最后平移到[5,0,25]。🐂的变换矩阵应该是这样的：</p>
+<p><img src="/2023/05/19/uni-shader2/1.png" alt></p>
+<p>也就是说，该模型下的所有子对象都会被施加这个变换。那么鼻子的位置坐标右乘就得到鼻子在世界坐标系中的位置：</p>
+<p><img src="/2023/05/19/uni-shader2/2.png" alt></p>
+<h2 id="WORLD-gt-VIEW"><a href="#WORLD-gt-VIEW" class="headerlink" title="WORLD-&gt;VIEW"></a>WORLD-&gt;VIEW</h2><p>之前理解VIEW空间比较难，现在知道Unity中的摄像机对象就清楚多了，要做的就是将世界坐标系中的物体再次变换到摄像机的观察空间中，这里需要主要，Unity中相机的观察空间使用的是右手坐标系，而世界空间使用的是左手坐标系，也就是Z轴方向相反，这两种标准的坐标系是不能通过平移、旋转转换的，你可以试着将左手和右手比成坐标系并尝试，肯定会发现它们总是有一个轴是相对的。唯一的方式就是将Z轴取反，统一到右手坐标系下，然后才能使用平移和旋转变换。</p>
+<p>VIEW空间使用的坐标系以摄像机为原点，摄像机的后方、上方、右方分别作为z轴、y轴、x轴的正方向，原本我们游戏对象的前方是z轴正方向。为了得知这个变化矩阵，我们先考虑摄像机目前的情况，它从世界坐标系中的原点开始，先绕x轴旋转30度，然后平移到[0,10,-10]，那么一开始物体在世界坐标系中，此时观察坐标和世界坐标重合，在物体位置不变的情况下，我们把摄像机在世界坐标下旋转+30度，那么物体相对于摄像机就旋转了-30度，平移同理，所以把摄像机的变换逆向过来就是世界坐标变换到观察坐标了。</p>
+<p><img src="/2023/05/19/uni-shader2/3.png" alt></p>
+<p>此时记得Z轴取反，这一步放在前面也行：</p>
+<p><img src="/2023/05/19/uni-shader2/4.png" alt></p>
+<p>最后还是右乘本来鼻子的世界坐标，就得到鼻子在观察空间中的位置了。</p>
+<p><img src="/2023/05/19/uni-shader2/5.png" alt></p>
+<h2 id="VIEW-gt-CLIP"><a href="#VIEW-gt-CLIP" class="headerlink" title="VIEW-&gt;CLIP"></a>VIEW-&gt;CLIP</h2><p>这里是透视投影和正交投影，推导还是在前面说的博客中。但是这里稍有不同，因为我们又一次改变了旋向性，回到了左手坐标系。此时靠近摄像机的点具有更小的z值。</p>
+<p><img src="/2023/05/19/uni-shader2/6.png" alt></p>
+<p>对应Unity摄像机的参数如下：</p>
+<p><img src="/2023/05/19/uni-shader2/7.png" alt></p>
+<p>书中给出的是正交投影下的结果。正交是缩放加平移，最终矩阵如下：</p>
+<p><img src="/2023/05/19/uni-shader2/8.png" alt></p>
+<p>对应Unity摄像机的参数如下：</p>
+<p><img src="/2023/05/19/uni-shader2/9.png" alt></p>
+<p>我们代入上面设置中的值计算，得到鼻子在裁剪空间中的坐标：</p>
+<p><img src="/2023/05/19/uni-shader2/10.png" alt></p>
+<p>不过为了匹配不同的设备，对透视投影来说还要进行齐次除法，也就是除以最后一个分量，此时坐标变换到称为NDC的空间，坐标值在[-1,1]中，而正交投影由于已经缩放了所以不起作用。</p>
+<h2 id="CLIP-gt-SCREEN"><a href="#CLIP-gt-SCREEN" class="headerlink" title="CLIP-&gt;SCREEN"></a>CLIP-&gt;SCREEN</h2><p>投影后我们得到的是标准的[-1,1]，此时需要进一步映射到屏幕像素上，这里就比较简单了，对xy使用下面的公式：</p>
+<p><img src="/2023/05/19/uni-shader2/11.png" alt></p>
+<p>此时屏幕左下角是(0,0)，右上角和分辨率有关，其中$clip_w$实际上就是齐次除法。对于z分量我们需要进行深度测试之类的工作，所以还是要保留。最终得到鼻子在400*300屏幕上的像素位置：</p>
+<p><img src="/2023/05/19/uni-shader2/12.png" alt></p>
+<p>最后，我们以后还会用到法线变换，这里暂且不说。当然使用Unity Shader后我们不必自己编写这么复杂的过程了，Unity提供了一系列的变换函数，调用它们即可。阅读书中补充内容深感这部分内容复杂，还是要抽空看虎书，由于后面很多内容都是变换，这些空间及其坐标发生了什么变化非常有必要清楚地认识，例如在某个阶段顶点或片元的齐次坐标取值范围如何。在没有大的影响下，我们还是先认识如何写Shader。</p>
+<h1 id="开始使用Unity-Shader"><a href="#开始使用Unity-Shader" class="headerlink" title="开始使用Unity Shader"></a>开始使用Unity Shader</h1><h2 id="顶点和片元着色器的创建"><a href="#顶点和片元着色器的创建" class="headerlink" title="顶点和片元着色器的创建"></a>顶点和片元着色器的创建</h2><p>Unity中使用ShaderLab作为跨平台Shader开发的语言体系，提供了许多封装好的工具函数处理底层逻辑。通过使用Unity Shader编写ShaderLab，可以方便地修改可编程管线。</p>
+<p>要编写Shader Lab，首先需要建立材质，然后让材质使用当前的Unity Shader。材质是体现物体对光照反射的数据集，读取材质信息后Shader才能实现光照信息的交互。因此要使用Shader必须有一个材质，而材质又体现在实际的游戏对象上。因此我们先在Unity中创建场景，将Window/Lighting/Skybox设置为None，然后进行以下步骤：</p>
+<p><img src="/2023/05/19/uni-shader2/13.png" style="zoom:75%;"></p>
+<ul>
+<li>在Assets或者Project窗口/Create/Material，命名为SimpleShaderMat；在场景中创建一个Sphere，将这个SimpleShaderMat文件拖拽到场景中目标物体或者在物体的Mseh Renderer组件中赋值；默认情况下，新建材质会使用Standard Shader，一种基于物理模拟的渲染。</li>
+</ul>
+<p><img src="/2023/05/19/uni-shader2/14.png" alt></p>
+<ul>
+<li><p>Assets或者Project窗口/Create/Shader；Unity提供四种Unity Shader模板，Standard Surface Shader包含标准光照模型，Unlit Shader产生一个不含光照但包含烟雾的基本着色器，Image Effect Shader提供实现各种屏幕后处理效果的基本模板，Compute Shader提供典型的表面着色器的实现方法，这里我们不适用模板，创建后命名为SimpleShader，删除文件中所有内容。在材质的属性菜单中选择使用的Shader；</p>
+</li>
+<li><p>然后我们重新打开Simple Shader，输入下面的代码：</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">1.	shader &quot;Custom/Simple Shader&quot;</span><br><span class="line">2.	&#123;</span><br><span class="line">3.	 SubShader</span><br><span class="line">4.	 &#123;</span><br><span class="line">5.	       Pass</span><br><span class="line">6.	        &#123;</span><br><span class="line">7.	            CGPROGRAM</span><br><span class="line">8.	            #pragma vertex vert</span><br><span class="line">9.	            #pragma fragment frag</span><br><span class="line">10.	</span><br><span class="line">11.	            float4 vert (float4 v : POSITION) : SV_POSITION</span><br><span class="line">12.	            &#123;</span><br><span class="line">13.	                return mul(UNITY_MATRIX_MVP,v);</span><br><span class="line">14.	            &#125;</span><br><span class="line">15.	</span><br><span class="line">16.	            fixed4 frag ( ) : SV_Target</span><br><span class="line">17.	            &#123;</span><br><span class="line">18.	                return fixed4(1.0,1.0,1.0,1.0);</span><br><span class="line">19.	            &#125;</span><br><span class="line">20.	            ENDCG</span><br><span class="line">21.	        &#125;</span><br><span class="line">22.	 &#125;</span><br><span class="line">23.	 FallBack &quot;Diffuse&quot;</span><br><span class="line">24.	&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>保存后回到Unity，看到场景中的球体变成了白色，材质球也是白色的。其中，第一行定义了Shader的名称，””定义在Shader栏中出现的位置。接下来是SubShader，其中定义一个Pass语义块，使用CGPROGRAM和ENDCG包裹了CG代码。然后#开头的两个字符指定了顶点着色器和片元着色器对应的函数。这里语法类似C语言，不过vert函数的参数我们使用了语义POSITION和SV_POSITION，前者表示将顶点的坐标填充到输入参数v中，后者表示该函数输出是一个系统值，顶点着色器处理后应该是裁剪空间中的顶点坐标。该函数只有一行代码，就是使用MVP变换矩阵，将顶点从模型空间转换到裁剪空间。</p>
+<p>frag函数没有输入，SV_Target表示这个函数的输出是系统值，要将这个值存储到一个渲染目标中，这里对应默认帧缓存，可以说是像素的值。该函数返回一个fixed4类型的变量，代表颜色值。</p>
+<p>最后是FallBack语句，告诉Unity如果没有可用的SubShader就采用漫反射这个简单的着色器。</p>
+<p><img src="/2023/05/19/uni-shader2/15.png" alt></p>
+<h2 id="使用Properties和语义"><a href="#使用Properties和语义" class="headerlink" title="使用Properties和语义"></a>使用Properties和语义</h2><p>之前我们知道材质面板中会显示能够修改的属性，它们和Unity脚本中的序列化很类似，设置属性后就可以才材质面板中实时调节，观察效果。我们修改代码为下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">1.	shader &quot;Custom/Simple Shader&quot;</span><br><span class="line">2.	&#123;</span><br><span class="line">3.	 Properties&#123;</span><br><span class="line">4.	  _Color(&quot;Color Tint&quot;, Color) = (1.0,1.0,1.0,1.0)</span><br><span class="line">5.	 &#125;</span><br><span class="line">6.	</span><br><span class="line">7.	 SubShader</span><br><span class="line">8.	 &#123;</span><br><span class="line">9.	          Pass</span><br><span class="line">10.	        &#123;</span><br><span class="line">11.	            CGPROGRAM</span><br><span class="line">12.	            #pragma vertex vert</span><br><span class="line">13.	            #pragma fragment frag</span><br><span class="line">14.	            fixed4 _Color;</span><br><span class="line">15.	</span><br><span class="line">16.	            struct a2v</span><br><span class="line">17.	            &#123;</span><br><span class="line">18.	                float4 vertex : POSITION;</span><br><span class="line">19.	                float2 uv : TEXCOORD0;</span><br><span class="line">20.	                float3 normal : NORMAL;</span><br><span class="line">21.	            &#125;;</span><br><span class="line">22.	</span><br><span class="line">23.	            struct v2f</span><br><span class="line">24.	            &#123;</span><br><span class="line">25.	                float2 uv : TEXCOORD0;</span><br><span class="line">26.	                float4 vertex : SV_POSITION;</span><br><span class="line">27.	                float3 color : COLOR;</span><br><span class="line">28.	            &#125;;</span><br><span class="line">29.	</span><br><span class="line">30.	</span><br><span class="line">31.	            v2f vert (a2v v)</span><br><span class="line">32.	            &#123;</span><br><span class="line">33.	                v2f o;</span><br><span class="line">34.	                o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line">35.	                o.uv = v.uv;</span><br><span class="line">36.	                o.color = v.normal * 0.5 + fixed3(0.5,0.5,0.5);</span><br><span class="line">37.	                return o;</span><br><span class="line">38.	            &#125;</span><br><span class="line">39.	</span><br><span class="line">40.	            fixed4 frag (v2f i) : SV_Target</span><br><span class="line">41.	            &#123;</span><br><span class="line">42.	                fixed4 curCol = fixed4(i.color, 1.0);</span><br><span class="line">43.	                return curCol * _Color;</span><br><span class="line">44.	            &#125;</span><br><span class="line">45.	            ENDCG</span><br><span class="line">46.	        &#125;</span><br><span class="line">47.	 &#125;</span><br><span class="line">48.	</span><br><span class="line">49.	 FallBack &quot;Diffuse&quot;</span><br><span class="line">50.	&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到我们使用Properties语义块定义了一个属性_Clolor，它的性质是一个颜色拾取器，然后我们进一步在Pass中用同样的名字命名，就可以在CG代码块中访问了。此外可以看到，我们使用了两个结构体来存储顶点和片元的一些属性，方式是使用语义，Unity会根据这些语义来填充结构体的成员，vert函数作为顶点着色器，负责将顶点数据传递给片元，我们通过流水线知道这其中发生了插值，一个片元对应三个顶点，它们的重心插值就是片元的值，所以不论其中如何，顶点着色器中仍然给v2f赋值了，在片元着色器中我们返回这个顶点着色器中计算的颜色值，就得到了下面的图像，你可以思考下其中的流程。</p>
+<p><img src="/2023/05/19/uni-shader2/16.png" alt></p>
+<p>那什么是语义？它实际上就是赋值给Shader输入和输出的字符串，表达这个参数对应什么。有一些语义使用SV开头，代表System Value，这些值不可随意赋值，具有特殊含义，因为流水线会使用它们进行计算，DX10中更新了这些SV语义，也导致一些平台上的差异，例如前面POSITION在PS4上就必须指明是SV_POSITION才行。下面是一些常用语义的含义：</p>
+<p><img src="/2023/05/19/uni-shader2/17.png" alt></p>
+<p><img src="/2023/05/19/uni-shader2/18.png" alt></p>
+<p><img src="/2023/05/19/uni-shader2/19.png" alt></p>
+<p>读懂上面的代码后，我们可以正式进入光照部分了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Shader/" rel="tag"># Shader</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/05/07/unity15/" rel="prev" title="unity入门(十五)-使用Cinemachine制作俯视角/第三人称控制器">
+                  <i class="fa fa-angle-left"></i> unity入门(十五)-使用Cinemachine制作俯视角/第三人称控制器
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/05/20/uni-shader3/" rel="next" title="Unity和Shader入门（三）">
+                  Unity和Shader入门（三） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="TinyRenderer是一个计算机图形学课程项目，旨在通过500行的C++代码来自行编写一个渲染器，它能够读取模型，应用纹理，基础光照，以便深入理解OpenGL的运行机制，而不是讲述如何编写OpenGL的应用程序。课程共分为九部分，这里我会根据个人学习的进度来划分，学过Games101的朋友上手会很快。 到最后，我们会将整个项目集合成一个类似shader语法的渲染器，你就可以为所欲为了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="五百行C++理解OpenGL机制(一)">
+<meta property="og:url" content="https://ankiima.github.io/2023/07/28/tinyRenderer0/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="TinyRenderer是一个计算机图形学课程项目，旨在通过500行的C++代码来自行编写一个渲染器，它能够读取模型，应用纹理，基础光照，以便深入理解OpenGL的运行机制，而不是讲述如何编写OpenGL的应用程序。课程共分为九部分，这里我会根据个人学习的进度来划分，学过Games101的朋友上手会很快。 到最后，我们会将整个项目集合成一个类似shader语法的渲染器，你就可以为所欲为了。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/07/28/tinyRenderer0/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/07/28/tinyRenderer0/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/07/28/tinyRenderer0/3.png">
+<meta property="article:published_time" content="2023-07-28T12:23:05.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.372Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="OpenGL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/07/28/tinyRenderer0/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/07/28/tinyRenderer0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/07/28/tinyRenderer0/","path":"2023/07/28/tinyRenderer0/","title":"五百行C++理解OpenGL机制(一)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>五百行C++理解OpenGL机制(一) | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%BE%E5%89%8D%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">课前准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#obj%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%BB%E5%8F%96"><span class="nav-number">1.1.</span> <span class="nav-text">obj模型的读取</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%A4%B4%E7%9A%84%E8%A1%A8%E7%A4%BA%E6%B3%A8%E9%87%8A"><span class="nav-number">2.</span> <span class="nav-text">开头的表示注释</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E8%AE%A1%E7%AE%97"><span class="nav-number">2.1.</span> <span class="nav-text">几何计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TGA%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%BB%E5%86%99"><span class="nav-number">2.2.</span> <span class="nav-text">TGA文件的读写</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Lesson1-%E7%9B%B4%E7%BA%BF"><span class="nav-number">3.</span> <span class="nav-text">Lesson1 直线</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E6%83%B3%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">自己想方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">开始优化</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/07/28/tinyRenderer0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="五百行C++理解OpenGL机制(一) | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          五百行C++理解OpenGL机制(一)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-07-28 20:23:05" itemprop="dateCreated datePublished" datetime="2023-07-28T20:23:05+08:00">2023-07-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/" itemprop="url" rel="index"><span itemprop="name">Graphics API</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/OpenGL/" itemprop="url" rel="index"><span itemprop="name">OpenGL</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>TinyRenderer是一个计算机图形学课程项目，旨在通过500行的C++代码来自行编写一个渲染器，它能够读取模型，应用纹理，基础光照，以便深入理解OpenGL的运行机制，而不是讲述如何编写OpenGL的应用程序。课程共分为九部分，这里我会根据个人学习的进度来划分，学过Games101的朋友上手会很快。</p>
+<p>到最后，我们会将整个项目集合成一个类似shader语法的渲染器，你就可以为所欲为了。</p>
+<span id="more"></span>
+<h1 id="课前准备"><a href="#课前准备" class="headerlink" title="课前准备"></a>课前准备</h1><p>尽管说是500行就能完成，实际上因为C++不像C#，Python那样有十分方便的库函数，作者也给出了自己编写的工具类，完成三个任务：读取obj模型文件，提供处理二维、三维向量的重载，提供读写tga格式图片的方法。这里我也简单记录一下，看懂语法和逻辑即可。</p>
+<p>源文件都可以在作者的<a target="_blank" rel="noopener" href="https://github.com/ssloy/tinyrenderer/">github</a>中找到。</p>
+<blockquote>
+<p>8.1更新：作者第一次课程给出的下列文件和后续是不一致的，下面贴的是第一次给出的文件，建议直接使用最终的版本，总的代码在我自己的<a target="_blank" rel="noopener" href="https://github.com/ANKIIMA/Repeat-for-TinyRenderer">github</a>中，我将每节课的主要内容写成单独的class，但是不包括每节课单独的main函数，在博客中大多记录了当时的main，不过完成class后main已经不是难事了，你完全可以自己编写增加理解。</p>
+</blockquote>
+<h2 id="obj模型的读取"><a href="#obj模型的读取" class="headerlink" title="obj模型的读取"></a>obj模型的读取</h2><p>obj是一类最简单的三维模型文件格式，一个立方体的模型文件如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"># Blender v3.1.2 OBJ File: &#x27;&#x27;</span><br><span class="line"># www.blender.org</span><br><span class="line">mtllib mycube.mtl</span><br><span class="line">o Cube</span><br><span class="line">v 1.000000 1.000000 -1.000000</span><br><span class="line">v 1.000000 -1.000000 -1.000000</span><br><span class="line">v 1.000000 1.000000 1.000000</span><br><span class="line">v 1.000000 -1.000000 1.000000</span><br><span class="line">v -1.000000 1.000000 -1.000000</span><br><span class="line">v -1.000000 -1.000000 -1.000000</span><br><span class="line">v -1.000000 1.000000 1.000000</span><br><span class="line">v -1.000000 -1.000000 1.000000</span><br><span class="line">vt 0.625000 0.500000</span><br><span class="line">vt 0.875000 0.500000</span><br><span class="line">vt 0.875000 0.750000</span><br><span class="line">vt 0.625000 0.750000</span><br><span class="line">vt 0.375000 0.750000</span><br><span class="line">vt 0.625000 1.000000</span><br><span class="line">vt 0.375000 1.000000</span><br><span class="line">vt 0.375000 0.000000</span><br><span class="line">vt 0.625000 0.000000</span><br><span class="line">vt 0.625000 0.250000</span><br><span class="line">vt 0.375000 0.250000</span><br><span class="line">vt 0.125000 0.500000</span><br><span class="line">vt 0.375000 0.500000</span><br><span class="line">vt 0.125000 0.750000</span><br><span class="line">vn 0.0000 1.0000 0.0000</span><br><span class="line">vn 0.0000 0.0000 1.0000</span><br><span class="line">vn -1.0000 0.0000 0.0000</span><br><span class="line">vn 0.0000 -1.0000 0.0000</span><br><span class="line">vn 1.0000 0.0000 0.0000</span><br><span class="line">vn 0.0000 0.0000 -1.0000</span><br><span class="line">usemtl Material</span><br><span class="line">s off</span><br><span class="line">f 1/1/1 5/2/1 7/3/1 3/4/1</span><br><span class="line">usemtl Material.001</span><br><span class="line">f 4/5/2 3/4/2 7/6/2 8/7/2</span><br><span class="line">f 8/8/3 7/9/3 5/10/3 6/11/3</span><br><span class="line">f 6/12/4 2/13/4 4/5/4 8/14/4</span><br><span class="line">f 2/13/5 1/1/5 3/4/5 4/5/5</span><br><span class="line">f 6/11/6 5/10/6 1/1/6 2/13/6</span><br></pre></td></tr></table></figure>
+<p>文件以行为单位，第一个字符表明该行的用处：</p>
+<ul>
+<li><h1 id="开头的表示注释"><a href="#开头的表示注释" class="headerlink" title="开头的表示注释"></a>开头的表示注释</h1></li>
+<li>mtllib表示外部材质链接库，后面是材质文件的名称</li>
+<li>o表示模型名称</li>
+<li>v表示vertices，顶点，后面三个数字表示顶点坐标</li>
+<li>vt表示顶点的纹理坐标，后面是二维的纹理坐标</li>
+<li>vn表示面法向量，后面是法向量具体的值</li>
+<li>usemtl表示使用材质库中的材质的名称</li>
+<li>s off表示关闭光滑组</li>
+<li>f就是面face，后面每组数字表示一个顶点，正方体每个面有四个顶点所以是四组；其中第一个数字是顶点的编号(从1开始)，第二个是该点对应的vt纹理坐标，第三个是该点对应的vn法向量。</li>
+</ul>
+<p>在目前使用的模型中，我们需要的只是渲染某个面，所以仅读取这个面对应的顶点，绘制三角形即可，所以我们只关心f中每个组第一个数字，以及对应顶点的坐标即可。给出读取方法如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">Model::<span class="built_in">Model</span>(<span class="type">const</span> <span class="type">char</span> *filename) : <span class="built_in">verts_</span>(), <span class="built_in">faces_</span>() &#123;</span><br><span class="line">    std::ifstream in;</span><br><span class="line">    in.<span class="built_in">open</span> (filename, std::ifstream::in);</span><br><span class="line">    <span class="keyword">if</span> (in.<span class="built_in">fail</span>()) <span class="keyword">return</span>;</span><br><span class="line">    std::string line;</span><br><span class="line">    <span class="keyword">while</span> (!in.<span class="built_in">eof</span>()) &#123;</span><br><span class="line">        std::<span class="built_in">getline</span>(in, line);</span><br><span class="line">        <span class="function">std::istringstream <span class="title">iss</span><span class="params">(line.c_str())</span></span>;</span><br><span class="line">        <span class="type">char</span> trash;</span><br><span class="line">        <span class="comment">//v开头</span></span><br><span class="line">        <span class="keyword">if</span> (!line.<span class="built_in">compare</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="string">&quot;v &quot;</span>)) &#123;</span><br><span class="line">            iss &gt;&gt; trash;</span><br><span class="line">            Vec3f v;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">3</span>;i++) iss &gt;&gt; v.raw[i];</span><br><span class="line">            verts_.<span class="built_in">push_back</span>(v);</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="comment">//f开头</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (!line.<span class="built_in">compare</span>(<span class="number">0</span>, <span class="number">2</span>, <span class="string">&quot;f &quot;</span>)) &#123;</span><br><span class="line">            std::vector&lt;<span class="type">int</span>&gt; f;</span><br><span class="line">            <span class="type">int</span> itrash, idx;</span><br><span class="line">            iss &gt;&gt; trash;</span><br><span class="line">            <span class="comment">//只要每个面三个点的第一个数字，代表顶点序号</span></span><br><span class="line">            <span class="keyword">while</span> (iss &gt;&gt; idx &gt;&gt; trash &gt;&gt; itrash &gt;&gt; trash &gt;&gt; itrash) &#123;</span><br><span class="line">                idx--; <span class="comment">// in wavefront obj all indices start at 1, not zero</span></span><br><span class="line">                f.<span class="built_in">push_back</span>(idx);</span><br><span class="line">            &#125;</span><br><span class="line">            faces_.<span class="built_in">push_back</span>(f);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    std::cerr &lt;&lt; <span class="string">&quot;# v# &quot;</span> &lt;&lt; verts_.<span class="built_in">size</span>() &lt;&lt; <span class="string">&quot; f# &quot;</span>  &lt;&lt; faces_.<span class="built_in">size</span>() &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="几何计算"><a href="#几何计算" class="headerlink" title="几何计算"></a>几何计算</h2><p>向量的计算是C++没有提供的，尽管STL提供了一个vector类，仍然没有诸如点乘之类的向量计算，它实际上就是线性表。所以要想处理二维和三维向量，需要使用自己编写的工具类。这里我们要处理的是二维三维向量，代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//模板结构体</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">t</span>&gt; <span class="keyword">struct</span> <span class="title class_">Vec2</span> &#123;</span><br><span class="line">	<span class="comment">//union共享三种类型数据</span></span><br><span class="line">	<span class="keyword">union</span> &#123;</span><br><span class="line">		<span class="keyword">struct</span> &#123;t u, v;&#125;;</span><br><span class="line">		<span class="keyword">struct</span> &#123;t x, y;&#125;;</span><br><span class="line">		t raw[<span class="number">2</span>];</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="comment">//构造函数</span></span><br><span class="line">	<span class="built_in">Vec2</span>() : <span class="built_in">u</span>(<span class="number">0</span>), <span class="built_in">v</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">	<span class="built_in">Vec2</span>(t _u, t _v) : <span class="built_in">u</span>(_u),<span class="built_in">v</span>(_v) &#123;&#125;</span><br><span class="line">	<span class="comment">//内联重载操作符处理二维向量，防止函数栈溢出</span></span><br><span class="line">	<span class="keyword">inline</span> Vec2&lt;t&gt; <span class="keyword">operator</span> +(<span class="type">const</span> Vec2&lt;t&gt; &amp;V) <span class="type">const</span> &#123; <span class="keyword">return</span> <span class="built_in">Vec2</span>&lt;t&gt;(u+V.u, v+V.v); &#125;</span><br><span class="line">	<span class="keyword">inline</span> Vec2&lt;t&gt; <span class="keyword">operator</span> -(<span class="type">const</span> Vec2&lt;t&gt; &amp;V) <span class="type">const</span> &#123; <span class="keyword">return</span> <span class="built_in">Vec2</span>&lt;t&gt;(u-V.u, v-V.v); &#125;</span><br><span class="line">	<span class="keyword">inline</span> Vec2&lt;t&gt; <span class="keyword">operator</span> *(<span class="type">float</span> f)          <span class="type">const</span> &#123; <span class="keyword">return</span> <span class="built_in">Vec2</span>&lt;t&gt;(u*f, v*f); &#125;</span><br><span class="line">	<span class="comment">//友元函数重载&lt;&lt;方便输出</span></span><br><span class="line">	<span class="keyword">template</span> &lt;<span class="keyword">class</span> &gt; <span class="keyword">friend</span> std::ostream&amp; <span class="keyword">operator</span>&lt;&lt;(std::ostream&amp; s, Vec2&lt;t&gt;&amp; v);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//和上面类似</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">t</span>&gt; <span class="keyword">struct</span> <span class="title class_">Vec3</span> &#123;</span><br><span class="line">	<span class="keyword">union</span> &#123;</span><br><span class="line">		<span class="keyword">struct</span> &#123;t x, y, z;&#125;;</span><br><span class="line">		<span class="keyword">struct</span> &#123; t ivert, iuv, inorm; &#125;;</span><br><span class="line">		t raw[<span class="number">3</span>];</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="built_in">Vec3</span>() : <span class="built_in">x</span>(<span class="number">0</span>), <span class="built_in">y</span>(<span class="number">0</span>), <span class="built_in">z</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">	<span class="built_in">Vec3</span>(t _x, t _y, t _z) : <span class="built_in">x</span>(_x),<span class="built_in">y</span>(_y),<span class="built_in">z</span>(_z) &#123;&#125;</span><br><span class="line">	<span class="keyword">inline</span> Vec3&lt;t&gt; <span class="keyword">operator</span> ^(<span class="type">const</span> Vec3&lt;t&gt; &amp;v) <span class="type">const</span> &#123; <span class="keyword">return</span> <span class="built_in">Vec3</span>&lt;t&gt;(y*v.z-z*v.y, z*v.x-x*v.z, x*v.y-y*v.x); &#125;</span><br><span class="line">	<span class="keyword">inline</span> Vec3&lt;t&gt; <span class="keyword">operator</span> +(<span class="type">const</span> Vec3&lt;t&gt; &amp;v) <span class="type">const</span> &#123; <span class="keyword">return</span> <span class="built_in">Vec3</span>&lt;t&gt;(x+v.x, y+v.y, z+v.z); &#125;</span><br><span class="line">	<span class="keyword">inline</span> Vec3&lt;t&gt; <span class="keyword">operator</span> -(<span class="type">const</span> Vec3&lt;t&gt; &amp;v) <span class="type">const</span> &#123; <span class="keyword">return</span> <span class="built_in">Vec3</span>&lt;t&gt;(x-v.x, y-v.y, z-v.z); &#125;</span><br><span class="line">	<span class="keyword">inline</span> Vec3&lt;t&gt; <span class="keyword">operator</span> *(<span class="type">float</span> f)          <span class="type">const</span> &#123; <span class="keyword">return</span> <span class="built_in">Vec3</span>&lt;t&gt;(x*f, y*f, z*f); &#125;</span><br><span class="line">	<span class="keyword">inline</span> t       <span class="keyword">operator</span> *(<span class="type">const</span> Vec3&lt;t&gt; &amp;v) <span class="type">const</span> &#123; <span class="keyword">return</span> x*v.x + y*v.y + z*v.z; &#125;</span><br><span class="line">	<span class="function"><span class="type">float</span> <span class="title">norm</span> <span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> std::<span class="built_in">sqrt</span>(x*x+y*y+z*z); &#125;</span><br><span class="line">	<span class="function">Vec3&lt;t&gt; &amp; <span class="title">normalize</span><span class="params">(t l=<span class="number">1</span>)</span> </span>&#123; *<span class="keyword">this</span> = (*<span class="keyword">this</span>)*(l/<span class="built_in">norm</span>()); <span class="keyword">return</span> *<span class="keyword">this</span>; &#125;</span><br><span class="line">	<span class="keyword">template</span> &lt;<span class="keyword">class</span> &gt; <span class="keyword">friend</span> std::ostream&amp; <span class="keyword">operator</span>&lt;&lt;(std::ostream&amp; s, Vec3&lt;t&gt;&amp; v);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> Vec2&lt;<span class="type">float</span>&gt; Vec2f;</span><br><span class="line"><span class="keyword">typedef</span> Vec2&lt;<span class="type">int</span>&gt;   Vec2i;</span><br><span class="line"><span class="keyword">typedef</span> Vec3&lt;<span class="type">float</span>&gt; Vec3f;</span><br><span class="line"><span class="keyword">typedef</span> Vec3&lt;<span class="type">int</span>&gt;   Vec3i;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">t</span>&gt; std::ostream&amp; <span class="keyword">operator</span>&lt;&lt;(std::ostream&amp; s, Vec2&lt;t&gt;&amp; v) &#123;</span><br><span class="line">	s &lt;&lt; <span class="string">&quot;(&quot;</span> &lt;&lt; v.x &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; v.y &lt;&lt; <span class="string">&quot;)\n&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">t</span>&gt; std::ostream&amp; <span class="keyword">operator</span>&lt;&lt;(std::ostream&amp; s, Vec3&lt;t&gt;&amp; v) &#123;</span><br><span class="line">	s &lt;&lt; <span class="string">&quot;(&quot;</span> &lt;&lt; v.x &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; v.y &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; v.z &lt;&lt; <span class="string">&quot;)\n&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码中涉及到使用了模板来实现泛型，使用union共享了三种泛型的数据代表向量的值，还有结构体的构造、析构函数，以及内联运算符的重载。具体内容在代码注释，不懂的可以再搜索关键词。</p>
+<p>不过这里好像有点问题，我在使用[]运算符对数据操作时会报错，之后作者换了另一个处理向量的头文件供后续使用，这里篇幅原因也不贴了。</p>
+<h2 id="TGA文件的读写"><a href="#TGA文件的读写" class="headerlink" title="TGA文件的读写"></a>TGA文件的读写</h2><p>该读写方法的实现就已经达到四百行的规模了，这里也不打算展开，我自己写了一点简单的注释，感兴趣可以到我github上看一眼，暂时以了解功能为主。</p>
+<p>代码提供了图片读写、缩放、翻转，以及最关键的给像素点赋值的功能，翻转主要是因为C++中二维数组存储后从(0,0)开始，写图片是也是从(0,0)开始，该点是图片的左上角，所以经过翻转可以让图片以左下角为原点。</p>
+<h1 id="Lesson1-直线"><a href="#Lesson1-直线" class="headerlink" title="Lesson1 直线"></a>Lesson1 直线</h1><p>学习过图形学的朋友都知道著名的Bresenham算法，这里我们也会采用该方法实现，但是能够深入地了解为什么使用它。首先我们自己想办法来画一条直线。</p>
+<h2 id="自己想方法"><a href="#自己想方法" class="headerlink" title="自己想方法"></a>自己想方法</h2><p>通常会想到迭代的方法，由于x，y都是整数坐标，所以我们可以每次让x+1，计算一个t值代表此时x的进度，y更新为y0+t*(y1-y0)，将这些点全部绘制出来即可，这样的话x长度就决定了迭代的时间。最后得到的图片如下(代码不放了，很简单而且也没什么意义研究)：</p>
+<p><img src="/2023/07/28/tinyRenderer0/1.png" alt></p>
+<p>放大后明显看到，红色的直线中间断开了，白色的直线是符合预期的。原因在于，当斜率超过tan(PI/4)时，起点和重点的y差值大于x的差值，因此以x为标准来绘制就会使得很多同一个x值不同y值的点跳过。所以我们还需要判断一下，当y的差值大于x时，以y为基准即可，做法就是直接交换起点和重点的x和y，这样在后续计算的时候自然绘制的应该是交换后的(y,x)处的像素，不必做其它修改；</p>
+<p>除此外，还有一个问题是，如果我们给出的两个点并不都满足从左下到右上角，按照我们这里遍历的逻辑：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> x=x0; x&lt;=x1; x++) </span><br></pre></td></tr></table></figure>
+<p>显然当x0&gt;x1时就直接终止了，所以我们还要判断下大小，将较小的值交换到x0处。这样我们绘制的直线就已经完美地符合预期了。</p>
+<p><img src="/2023/07/28/tinyRenderer0/2.png" alt></p>
+<p>但是为什么最后不适用它呢？</p>
+<p>答案是效率，这种方式中频繁使用乘除法和浮点数，导致运算时间很长，使用性能分析工具可以发现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">%   cumulative   self              self     total </span><br><span class="line"> time   seconds   seconds    calls  ms/call  ms/call  name </span><br><span class="line"> 69.16      2.95     2.95  3000000     0.00     0.00  line(int, int, int, int, TGAImage&amp;, TGAColor) </span><br><span class="line"> 19.46      3.78     0.83 204000000     0.00     0.00  TGAImage::set(int, int, TGAColor) </span><br><span class="line">  8.91      4.16     0.38 207000000     0.00     0.00  TGAColor::TGAColor(TGAColor const&amp;) </span><br><span class="line">  1.64      4.23     0.07        2    35.04    35.04  TGAColor::TGAColor(unsigned char, unsigned char, unsigned char, unsigned char) </span><br><span class="line">  0.94      4.27     0.04                             TGAImage::get(int, int)</span><br></pre></td></tr></table></figure>
+<p>调用line方法的时间占了70%，我们这时就要想办法优化一下了。</p>
+<h2 id="开始优化"><a href="#开始优化" class="headerlink" title="开始优化"></a>开始优化</h2><p>这次我们不计算t了，由于x每次加1，y要不要变化则以当前累加的误差为准，误差每次累加斜率k，当累加达到1就让y变换一次。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">DrawLine::fourthAttempt</span><span class="params">(<span class="type">int</span> x0, <span class="type">int</span> y0, <span class="type">int</span> x1, <span class="type">int</span> y1, TGAImage&amp; image, TGAColor color)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">bool</span> steep = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">if</span> (std::<span class="built_in">abs</span>(x0 - x1) &lt; std::<span class="built_in">abs</span>(y0 - y1)) &#123;</span><br><span class="line">		std::<span class="built_in">swap</span>(x0, y0);</span><br><span class="line">		std::<span class="built_in">swap</span>(x1, y1);</span><br><span class="line">		steep = <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (x0 &gt; x1) &#123;</span><br><span class="line">		std::<span class="built_in">swap</span>(x0, x1);</span><br><span class="line">		std::<span class="built_in">swap</span>(y0, y1);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> dx = x1 - x0;</span><br><span class="line">	<span class="type">int</span> dy = y1 - y0;</span><br><span class="line">	<span class="type">float</span> derror = std::<span class="built_in">abs</span>(dy / <span class="built_in">float</span>(dx));</span><br><span class="line">	<span class="type">float</span> error = <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> y = y0;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> x = x0; x &lt;= x1; x++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (steep) &#123;</span><br><span class="line">			image.<span class="built_in">set</span>(y, x, color);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			image.<span class="built_in">set</span>(x, y, color);</span><br><span class="line">		&#125;</span><br><span class="line">		error += derror;</span><br><span class="line">		<span class="keyword">if</span> (error &gt; <span class="number">.5</span>) &#123;</span><br><span class="line">			y += (y1 &gt; y0 ? <span class="number">1</span> : <span class="number">-1</span>);</span><br><span class="line">			error -= <span class="number">1.</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样已经明显减少了时间，我们还可以再进一步，将浮点数k也修改下，error直接和dx比较：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">DrawLine::fifthAttempt</span><span class="params">(<span class="type">int</span> x0, <span class="type">int</span> y0, <span class="type">int</span> x1, <span class="type">int</span> y1, TGAImage&amp; image, TGAColor color)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">bool</span> steep = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">if</span> (std::<span class="built_in">abs</span>(x0 - x1) &lt; std::<span class="built_in">abs</span>(y0 - y1)) &#123;</span><br><span class="line">		std::<span class="built_in">swap</span>(x0, y0);</span><br><span class="line">		std::<span class="built_in">swap</span>(x1, y1);</span><br><span class="line">		steep = <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (x0 &gt; x1) &#123;</span><br><span class="line">		std::<span class="built_in">swap</span>(x0, x1);</span><br><span class="line">		std::<span class="built_in">swap</span>(y0, y1);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> dx = x1 - x0;</span><br><span class="line">	<span class="type">int</span> dy = y1 - y0;</span><br><span class="line">	<span class="type">int</span> derror2 = std::<span class="built_in">abs</span>(dy) * <span class="number">2</span>;</span><br><span class="line">	<span class="type">int</span> error2 = <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> y = y0;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> x = x0; x &lt;= x1; x++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (steep) &#123;</span><br><span class="line">			image.<span class="built_in">set</span>(y, x, color);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			image.<span class="built_in">set</span>(x, y, color);</span><br><span class="line">		&#125;</span><br><span class="line">		error2 += derror2;</span><br><span class="line">		<span class="keyword">if</span> (error2 &gt; dx) &#123;</span><br><span class="line">			y += (y1 &gt; y0 ? <span class="number">1</span> : <span class="number">-1</span>);</span><br><span class="line">			error2 -= dx * <span class="number">2</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也许他跟你平常见到的Bresenham算法不太一样，但是原理上就是一致的，在我的另一篇博客《图形学知识目录》收录了几种不同的表示，但根本目的就是避免浮点计算，从而大幅提高运行效率：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">%   cumulative   self              self     total </span><br><span class="line"> time   seconds   seconds    calls  ms/call  ms/call  name </span><br><span class="line"> 42.77      0.91     0.91 204000000     0.00     0.00  TGAImage::set(int, int, TGAColor) </span><br><span class="line"> 30.08      1.55     0.64  3000000     0.00     0.00  line(int, int, int, int, TGAImage&amp;, TGAColor) </span><br><span class="line"> 21.62      2.01     0.46 204000000     0.00     0.00  TGAColor::TGAColor(int, int) </span><br><span class="line">  1.88      2.05     0.04        2    20.02    20.02  TGAColor::TGAColor(unsigned char, unsigned char, unsigned char, unsigned char) </span><br></pre></td></tr></table></figure>
+<p>下一次课程我们学习如何绘制并填充一个三角形。现在我们再让它有趣一点，绘制一个人像的线框。使用前面的工具类得到模型的顶点和面信息，然后绘制每个三角形面的三条边即可。由于模型顶点是三维的，我们需要将它转换为二维坐标，方法就是忽略代表深度的Z轴，并将xy值从[-1,1]投影到[0,width-1]和[0,height-1]即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;model-&gt;<span class="built_in">nfaces</span>(); i++) &#123; </span><br><span class="line">    <span class="comment">//获取面信息</span></span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; face = model-&gt;<span class="built_in">face</span>(i); </span><br><span class="line">    <span class="comment">//遍历三条边并绘制</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>; j&lt;<span class="number">3</span>; j++) &#123; </span><br><span class="line">        Vec3f v0 = model-&gt;<span class="built_in">vert</span>(face[j]); </span><br><span class="line">        Vec3f v1 = model-&gt;<span class="built_in">vert</span>(face[(j+<span class="number">1</span>)%<span class="number">3</span>]); </span><br><span class="line">        <span class="type">int</span> x0 = (v0.x+<span class="number">1.</span>)*width/<span class="number">2.</span>; </span><br><span class="line">        <span class="type">int</span> y0 = (v0.y+<span class="number">1.</span>)*height/<span class="number">2.</span>; </span><br><span class="line">        <span class="type">int</span> x1 = (v1.x+<span class="number">1.</span>)*width/<span class="number">2.</span>; </span><br><span class="line">        <span class="type">int</span> y1 = (v1.y+<span class="number">1.</span>)*height/<span class="number">2.</span>; </span><br><span class="line">        <span class="built_in">line</span>(x0, y0, x1, y1, image, white); </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将该代码添加到main中，并修改以适应自己的代码，得到下面的结果：</p>
+<p><img src="/2023/07/28/tinyRenderer0/3.png" alt></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/06/25/unity16/" rel="prev" title="unity入门(十六)-布料模拟和输入系统的使用">
+                  <i class="fa fa-angle-left"></i> unity入门(十六)-布料模拟和输入系统的使用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/07/31/CGCollection/" rel="next" title="图形学知识合集">
+                  图形学知识合集 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

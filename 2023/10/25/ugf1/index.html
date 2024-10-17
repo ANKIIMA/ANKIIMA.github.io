@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这个系列记录一下ugf框架的学习，一个比较知名的unity游戏框架，先从作者给出的实例demo开始学习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity GameFramework框架笔记(一) Procedure是什么？">
+<meta property="og:url" content="https://ankiima.github.io/2023/10/25/ugf1/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="这个系列记录一下ugf框架的学习，一个比较知名的unity游戏框架，先从作者给出的实例demo开始学习。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/10/25/ugf1/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/10/25/ugf1/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/10/25/ugf1/3.png">
+<meta property="article:published_time" content="2023-10-25T11:50:02.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.426Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/10/25/ugf1/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/10/25/ugf1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/10/25/ugf1/","path":"2023/10/25/ugf1/","title":"Unity GameFramework框架笔记(一) Procedure是什么？"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unity GameFramework框架笔记(一) Procedure是什么？ | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Procedure"><span class="nav-number">1.</span> <span class="nav-text">Procedure</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/10/25/ugf1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unity GameFramework框架笔记(一) Procedure是什么？ | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity GameFramework框架笔记(一) Procedure是什么？
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-25 19:50:02" itemprop="dateCreated datePublished" datetime="2023-10-25T19:50:02+08:00">2023-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/GameFramework/" itemprop="url" rel="index"><span itemprop="name">GameFramework</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这个系列记录一下ugf框架的学习，一个比较知名的unity游戏框架，先从作者给出的实例demo开始学习。</p>
+<span id="more"></span>
+<h1 id="Procedure"><a href="#Procedure" class="headerlink" title="Procedure"></a>Procedure</h1><p>作者写的这个demo叫做<a target="_blank" rel="noopener" href="https://github.com/EllanJiang/StarForce">Star-Force</a>，我们克隆下来之后还要记得克隆子模块，这里作者将自己的框架链接成git的submodule了，不弄的话会报错，所以要注意。都拉下来之后直接用Unity打开，我是用的版本是2020.3.45f1c1，这个应该影响不大，文档烂但是代码还是很好的。</p>
+<p>首先看到框架入口，也就是Game Entry脚本：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">GameEntry</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            InitBuiltinComponents();</span><br><span class="line">            InitCustomComponents();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个部分类，只有一个Start函数，调用了两个方法，分别对框架内部的组件和我们自己添加的组件进行初始化。接下来如果点开InitBuiltinComponents()，会发现该静态方法定义在该类的另一个部分类中，主要是对框架自己定义的一些组件进行初始化，这个暂时不管，我们先看CustomComponents()。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">InitCustomComponents</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            BuiltinData = UnityGameFramework.Runtime.GameEntry.GetComponent&lt;BuiltinDataComponent&gt;();</span><br><span class="line">            HPBar = UnityGameFramework.Runtime.GameEntry.GetComponent&lt;HPBarComponent&gt;();</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>寥寥两行代码貌似也不足以让游戏运行起来，第一行代码又是关于框架的调用，第二行代码也似乎只是将血条进行了初始化而已，那么我们可以判断该方法真的只是进行了初始化而已，关于进一步的介绍还要看作者的叙述。<a target="_blank" rel="noopener" href="http://www.benmutou.com/archives/2486">木头大佬</a>提到，框架的顺序执行应该和流程有关，作者介绍流程如下：</p>
+<ul>
+<li><strong>流程 (Procedure)</strong> - 是贯穿游戏运行时整个生命周期的有限状态机。通过流程，将不同的游戏状态进行解耦将是一个非常好的习惯。对于网络游戏，你可能需要如检查资源流程、更新资源流程、检查服务器列表流程、选择服务器流程、登录服务器流程、创建角色流程等流程，而对于单机游戏，你可能需要在游戏选择菜单流程和游戏实际玩法流程之间做切换。如果想增加流程，只要派生自 ProcedureBase 类并实现自己的流程类即可使用。</li>
+</ul>
+<p>那么打开GameFramework的子对象列表，可以看到BuiltIn含有二十个子对象，除了Reference Pool外，其余十九个对象正是作者简介中列出来的框架组件。</p>
+<p><img src="/2023/10/25/ugf1/1.png" alt></p>
+<p>因此我们点开Procedure，发现挂载的脚本上有一个列表：</p>
+<p><img src="/2023/10/25/ugf1/2.png" alt></p>
+<p>这里意思应该是，勾选后可以启用该流程，并且下面还有一个Entrance Procedure代表从那个Procedure进入。根据作者描述，我们应该能在其中添加自己的Procedure，方法就是继承ProcedureBase 类，之后我们自己创建的方法就应该会被收集到这个地方。我们先看看它这些类是如何实现的，我尝试搜索ProcedureMain脚本，然后打开：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcedureMain</span> : <span class="title">ProcedureBase</span></span><br></pre></td></tr></table></figure>
+<p>和作者描述的一致，那我再尝试新建一个自己的脚本继承以下这个Base：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">StarForce</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ProcedureTest</span> : <span class="title">ProcedureBase</span></span><br><span class="line">	&#123;  </span><br><span class="line">	        <span class="comment">//要求必须实现继承的抽象方法</span></span><br><span class="line">	        <span class="keyword">public</span> <span class="keyword">override</span> <span class="built_in">bool</span> UseNativeDialog =&gt; <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这里还需要将基类的抽象方法实现，这个应该是后来添加的，作者注释说用来决定获取流程是否使用原生对话框，在一些特殊的流程（如游戏逻辑对话框资源更新完成前的流程）中，可以考虑调用原生对话框进行消息提示行为。（我看不懂所以搬的原话）</p>
+<p>总之参考其它类里面的选项，返回false就行了。接着回到Unity中，找到Procedure对象，发现这个方法真的被识别进去了！</p>
+<p><img src="/2023/10/25/ugf1/3.png" alt></p>
+<p>那么我们就了解了Procedure的基本逻辑。那么其中的方法是以什么顺序执行？进一步查看，第一个方法是UseNativeDialog，必须实现的静态方法；下面就是OnEnter方法。看到这个方法很容易想到这应该和状态机类似，在进入该流程的时候要执行一些方法。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnEnter</span>(<span class="params">ProcedureOwner procedureOwner</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">base</span>.OnEnter(procedureOwner);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构建信息：发布版本时，把一些数据以 Json 的格式写入 Assets/GameMain/Configs/BuildInfo.txt，供游戏逻辑读取</span></span><br><span class="line">    GameEntry.BuiltinData.InitBuildInfo();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 语言配置：设置当前使用的语言，如果不设置，则默认使用操作系统语言</span></span><br><span class="line">    InitLanguageSettings();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 变体配置：根据使用的语言，通知底层加载对应的资源变体</span></span><br><span class="line">    InitCurrentVariant();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 声音配置：根据用户配置数据，设置即将使用的声音选项</span></span><br><span class="line">    InitSoundSettings();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 默认字典：加载默认字典文件 Assets/GameMain/Configs/DefaultDictionary.xml</span></span><br><span class="line">    <span class="comment">// 此字典文件记录了资源更新前使用的各种语言的字符串，会随 App 一起发布，故不可更新</span></span><br><span class="line">    GameEntry.BuiltinData.InitDefaultDictionary();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>文档内搜索以下，BuiltIn的两个方法和OnEnter都是框架其它地方的内部方法，而中间三个方法则是写在这个类里面的私有方法，它们应该就是执行主要逻辑的方法。具体就不列出来了，另外还有个OnUpdate方法，猜测是和Unity的Update类似，所以打开了Base类，看到它其实又继承状态机给了五个方法：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">GameFramework.Procedure</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// 摘要:</span></span><br><span class="line">    <span class="comment">//     流程基类。</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">ProcedureBase</span> : <span class="title">FsmState</span>&lt;<span class="title">IProcedureManager</span>&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 摘要:</span></span><br><span class="line">        <span class="comment">//     状态初始化时调用。</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 参数:</span></span><br><span class="line">        <span class="comment">//   procedureOwner:</span></span><br><span class="line">        <span class="comment">//     流程持有者。</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">internal</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnInit</span>(<span class="params">IFsm&lt;IProcedureManager&gt; procedureOwner</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">base</span>.OnInit(procedureOwner);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 摘要:</span></span><br><span class="line">        <span class="comment">//     进入状态时调用。</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 参数:</span></span><br><span class="line">        <span class="comment">//   procedureOwner:</span></span><br><span class="line">        <span class="comment">//     流程持有者。</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">internal</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnEnter</span>(<span class="params">IFsm&lt;IProcedureManager&gt; procedureOwner</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">base</span>.OnEnter(procedureOwner);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 摘要:</span></span><br><span class="line">        <span class="comment">//     状态轮询时调用。</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 参数:</span></span><br><span class="line">        <span class="comment">//   procedureOwner:</span></span><br><span class="line">        <span class="comment">//     流程持有者。</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">//   elapseSeconds:</span></span><br><span class="line">        <span class="comment">//     逻辑流逝时间，以秒为单位。</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">//   realElapseSeconds:</span></span><br><span class="line">        <span class="comment">//     真实流逝时间，以秒为单位。</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">internal</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnUpdate</span>(<span class="params">IFsm&lt;IProcedureManager&gt; procedureOwner, <span class="built_in">float</span> elapseSeconds, <span class="built_in">float</span> realElapseSeconds</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">base</span>.OnUpdate(procedureOwner, elapseSeconds, realElapseSeconds);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 摘要:</span></span><br><span class="line">        <span class="comment">//     离开状态时调用。</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 参数:</span></span><br><span class="line">        <span class="comment">//   procedureOwner:</span></span><br><span class="line">        <span class="comment">//     流程持有者。</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">//   isShutdown:</span></span><br><span class="line">        <span class="comment">//     是否是关闭状态机时触发。</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">internal</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnLeave</span>(<span class="params">IFsm&lt;IProcedureManager&gt; procedureOwner, <span class="built_in">bool</span> isShutdown</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">base</span>.OnLeave(procedureOwner, isShutdown);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 摘要:</span></span><br><span class="line">        <span class="comment">//     状态销毁时调用。</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// 参数:</span></span><br><span class="line">        <span class="comment">//   procedureOwner:</span></span><br><span class="line">        <span class="comment">//     流程持有者。</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">internal</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnDestroy</span>(<span class="params">IFsm&lt;IProcedureManager&gt; procedureOwner</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">base</span>.OnDestroy(procedureOwner);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么我们基本就清楚Procedure了，如果进一步查看会发现，它本质上是一个状态机，继承自FsmState类，就和动画状态机一样，方便我们管理游戏事件。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/18/unityInterview/" rel="prev" title="Unity面试问题整理">
+                  <i class="fa fa-angle-left"></i> Unity面试问题整理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/25/ugf2/" rel="next" title="Unity GameFramework框架笔记(二)">
+                  Unity GameFramework框架笔记(二) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

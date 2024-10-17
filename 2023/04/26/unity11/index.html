@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="除了上次介绍的内容外，这篇博客中我们还会进一步使用New Input System和Root Motion，后者是很常见的动画概念，动画是可以包含角色移动控制的，这里会着重讲解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unity入门(十一)-动画系统(二)">
+<meta property="og:url" content="https://ankiima.github.io/2023/04/26/unity11/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="除了上次介绍的内容外，这篇博客中我们还会进一步使用New Input System和Root Motion，后者是很常见的动画概念，动画是可以包含角色移动控制的，这里会着重讲解。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/26/unity11/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/26/unity11/8.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/26/unity11/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/26/unity11/5.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/26/unity11/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/04/26/unity11/7.png">
+<meta property="article:published_time" content="2023-04-26T10:10:00.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.544Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/04/26/unity11/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/04/26/unity11/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/04/26/unity11/","path":"2023/04/26/unity11/","title":"unity入门(十一)-动画系统(二)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>unity入门(十一)-动画系统(二) | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#New-Input-System"><span class="nav-number">1.</span> <span class="nav-text">New Input System</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Root-Motion"><span class="nav-number">2.</span> <span class="nav-text">Root Motion</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Generic%E4%B8%AD%E7%9A%84Root-Motion"><span class="nav-number">2.1.</span> <span class="nav-text">Generic中的Root Motion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hunmanoid%E4%B8%AD%E7%9A%84Root-Motion"><span class="nav-number">2.2.</span> <span class="nav-text">Hunmanoid中的Root Motion</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E7%94%BB%E7%9A%84Root-Motion%E5%9F%BA%E7%A1%80%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.2.1.</span> <span class="nav-text">动画的Root Motion基础设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Root-Transform-Rotation"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Root Transform Rotation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Root-Transform-Position-Y"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">Root Transform Position(Y)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Root-Transform-Position-XZ"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">Root Transform Position(XZ)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E5%88%B6%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">机制和配置</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/04/26/unity11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="unity入门(十一)-动画系统(二) | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          unity入门(十一)-动画系统(二)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-04-26 18:10:00" itemprop="dateCreated datePublished" datetime="2023-04-26T18:10:00+08:00">2023-04-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>除了上次介绍的内容外，这篇博客中我们还会进一步使用New Input System和Root Motion，后者是很常见的动画概念，动画是可以包含角色移动控制的，这里会着重讲解。</p>
+<span id="more"></span>
+<h1 id="New-Input-System"><a href="#New-Input-System" class="headerlink" title="New Input System"></a>New Input System</h1><p>与我们一直使用的输入系统相比，新输入系统有更好的性能，还提供更好的扩展性，所以我们有必要学习。要使用它，需要我们在Package Manager/Registry中搜索input system并安装，完成后会提示需要重启。</p>
+<p><img src="/2023/04/26/unity11/1.png" alt></p>
+<p>然后选中角色，添加Player Input组件，这就是new input system提供的，它需要一个配置文件来定义玩家的输入，点击Create创建，我们使用默认配置，保存会会打开这个配置的编辑窗口，我们先放在一边；然后修改Behavior属性为Invoke Unity Events，表示检测到输入时执行Unity的事件方法，从而调用我们编写的脚本函数。</p>
+<p><img src="/2023/04/26/unity11/8.png" alt></p>
+<p>接着展开下面的Events，可以看到列出了很多空表，它们对应左侧配置窗口中的信息，表示此时执行Callback回调，这里用法其实就是我们将写好的方法添加到右侧的List中注册，那么当右侧被回调的时候就会连带执行我们注册的方法了，例如Move中WASD表示按下WASD移动角色，并且此时系统检测到玩家处于Move状态，那么就执行Move的回调函数，将我们播放动画的方法添加进去，那么角色移动的同时就会播放动画了。</p>
+<p>上面图中选中了Move，看到右边的Action Type为Value，Control Type为Vector2，即决定角色动作触发的形式是采用值判断，控制方式为使用二维向量，其中x值表示AD的按键，y值表示WS的按键，而且如果同时按下W和D，这个二维向量不会是(1,1)，因为Unity会自动归一化长度超过1的向量。</p>
+<p>下面我们开始编写等待调用的方法，新建一个脚本，添加以下内容：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.InputSystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerMove</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    Animator animator;</span><br><span class="line">    <span class="built_in">float</span> threshold = <span class="number">0.1f</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> forwardSpeed = <span class="number">2.0f</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> backwardSpeed = <span class="number">-1.5f</span>;</span><br><span class="line">    <span class="built_in">float</span> currentSpeed;</span><br><span class="line">    <span class="comment">// Start is called before the first frame update</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        animator = GetComponent&lt;Animator&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update is called once per frame</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        moveCharacter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">moveCharacter</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Vector3 movement;</span><br><span class="line">        movement = <span class="keyword">new</span> Vector3(<span class="number">0</span>, <span class="number">0</span>, currentSpeed * Time.deltaTime);</span><br><span class="line">        transform.position += movement;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Move</span>(<span class="params">InputAction.CallbackContext callbackContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//记录玩家输入</span></span><br><span class="line">        Vector2 movement = callbackContext.ReadValue&lt;Vector2&gt;();</span><br><span class="line">        currentSpeed = <span class="number">0f</span>;</span><br><span class="line">        <span class="keyword">if</span>(movement.y &gt; threshold)</span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetBool(<span class="string">&quot;Forward&quot;</span>, <span class="literal">true</span>);</span><br><span class="line">            currentSpeed = forwardSpeed;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (movement.y &lt;= threshold)</span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetBool(<span class="string">&quot;Forward&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (movement.y &lt; -threshold)</span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetBool(<span class="string">&quot;Backward&quot;</span>, <span class="literal">true</span>);</span><br><span class="line">            currentSpeed = backwardSpeed;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (movement.y &gt;= -threshold)</span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetBool(<span class="string">&quot;Backward&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>保存后运行游戏，我们的人物现在可以通过WS控制前进和后退，使用摇杆的玩家也可以通过我们设定的阈值来进行输入，而且动画可能并不匹配人物移动的速度，这可以通过调整动画或者移动的速度来控制，我们后面会用Root Motion来彻底解决问题。</p>
+<p>除此外，这里我们一按下按键角色就开始进行移动了，而且对使用手柄或者手机摇杆的玩家很不友好，通常希望移动遥感的程度与角色移动的速度同步，并且在从静止切换走路的时候速度是逐渐加快的，到因此我们修改一下，将上面的currentSpeed重命名为targetSpeed，然后调用线性插值方法来使我们的currentSpeed从零逐渐提高到targetSpeed，因为moveCharacter方法每帧都会调用一次，意味着currentSpeed总是在向TargetSpeed靠近而不是直接等于；然后对于移动的targetSpeed也乘上玩家输入的控制值movement.y。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//注意不要设置currentSpeed初始化为0，Lerp方法的第三个参数t表示插值返回的值有多靠近第一个参数，例如这里0.9就是取			//(targetSpeed-currentSpeed)*0.9+currentSpeed</span></span><br><span class="line">   currentSpeed = Mathf.Lerp(targetSpeed, currentSpeed, <span class="number">0.9f</span>);</span><br><span class="line"></span><br><span class="line">targetSpeed = forwardSpeed * movement.y;</span><br><span class="line">targetSpeed = backwardSpeed * movement.y;</span><br></pre></td></tr></table></figure>
+<p>这样就改进了没有过渡速度的问题，而且手柄玩家也可也正常使用这个移动系统了。但是还有一个问题没解决，我们的移动速度在变化，但是动画的播放速度并不会同步，这就要使用我们之前熟悉过的Blend Tree了。所以我们通过将速度传递给Blend Tree之后，混合树会根据currentSpeed帮我们计算当前动画的状态。</p>
+<p>最终我们的代码如下：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.InputSystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerMove</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    Animator animator;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> forwardSpeed = <span class="number">2.0f</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> backwardSpeed = <span class="number">1.5f</span>;</span><br><span class="line">    <span class="built_in">float</span> targetSpeed;</span><br><span class="line">    <span class="built_in">float</span> currentSpeed;</span><br><span class="line"></span><br><span class="line">    Vector3 movevalue;</span><br><span class="line">    <span class="comment">// Start is called before the first frame update</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        animator = GetComponent&lt;Animator&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update is called once per frame</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        moveCharacter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">moveCharacter</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        currentSpeed = Mathf.Lerp(targetSpeed, currentSpeed, <span class="number">0.9f</span>);</span><br><span class="line">        movevalue = <span class="keyword">new</span> Vector3(<span class="number">0</span>, <span class="number">0</span>, currentSpeed * Time.deltaTime);</span><br><span class="line">        transform.position += movevalue;</span><br><span class="line">        animator.SetFloat(<span class="string">&quot;Speed&quot;</span>, currentSpeed);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Move</span>(<span class="params">InputAction.CallbackContext callbackContext</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//记录玩家输入</span></span><br><span class="line">        Vector2 movement = callbackContext.ReadValue&lt;Vector2&gt;();</span><br><span class="line">        targetSpeed = movement.y &gt; <span class="number">0</span> ? forwardSpeed * movement.y : backwardSpeed * movement.y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>只不过我们由于删除了阈值，所以如果玩家的摇杆有漂移、损坏的情况就会很难受，他们的输入始终无法达到最值1，所以我们速度的最大值也无法达到，因此我们重新打开new input system的配置文件，添加一个叫Stick DeadZone的processor：</p>
+<p><img src="/2023/04/26/unity11/4.png" alt></p>
+<p>这个processor会对输入的数据进行处理，最小值意味着[-0.125,0.125]之间的输入会被视为0，防止误触；小于-0.925的会被视为-0，大于0.925的会被视为1。</p>
+<h1 id="Root-Motion"><a href="#Root-Motion" class="headerlink" title="Root Motion"></a>Root Motion</h1><p>我们先尝试简单使用Root Motion功能，首先在Maximo上找到包含Root Motion的动画，你可以使用这个<a target="_blank" rel="noopener" href="https://www.mixamo.com/#/?page=1&amp;query=locomation+pack">移动包</a>，下载之后我们复制一个角色出来，然后重新更改状态机，使用Pack中提供的Walking，Running，Idle三个动画，你可以在预览窗口中查看是否正确，确保将他们都设置为人形动画。</p>
+<p>如果你角色的Animator窗口中勾选了Apply Root Motion属性，那么此时播放Walking或者Running时预览窗口中的角色就会有自主的位移了。然后添加一个只设置状态机变量而完全不处理输入的脚本：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.InputSystem;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerRootmotion</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Start is called before the first frame update</span></span><br><span class="line">    Animator animator;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        animator = GetComponent&lt;Animator&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update is called once per frame</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">PlayerMove</span>(<span class="params">InputAction.CallbackContext context</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Vector2 movement = context.ReadValue&lt;Vector2&gt;();</span><br><span class="line">        <span class="keyword">if</span> (movement.y &gt; <span class="number">0f</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetBool(<span class="string">&quot;Forward&quot;</span>, <span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetBool(<span class="string">&quot;Forward&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (movement.y &lt; <span class="number">0f</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetBool(<span class="string">&quot;Backward&quot;</span>, <span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            animator.SetBool(<span class="string">&quot;Backward&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>保存并运行游戏，发现角色确实会自己移动，但是角色的移动并不正确，不是直线移动，而且还会发生高度的变化。因此我们有必要理解Root Motion的核心机制，当启动Root Motion后，我们计算动画中Transform的方式改变了，之前我们介绍动画的时候说，动画实际上就是对象及其子对象的一系列变换，动画的关键帧记录了对象的变换值，播放到这一帧的时候就会将对象的变换设置为记录的值，从而完成动画。</p>
+<p>但是启用Root Motion后，动画之间将不再强制赋值，而是计算相对变换，用图形学中旋转、缩放、位移矩阵来解释，就是每次计算帧和帧之间的移动不再通过给这些矩阵赋值的方式，而是给物体的这些矩阵不断乘以一个相对位移矩阵，这个相对位移矩阵就是当前对象变换的情况，就像惯性一样。所以，勾选Root Motion后对象的变换就不会被重置，如果一个动画的开头记录了对象的初始位置，结尾记录了最后的位置，那么在这个动画播放一次之后不会将物体重置到开头的位置，而是乘以让对象不断移动的相对变换矩阵，因此对象将继续沿着动画指定的方向移动。</p>
+<h2 id="Generic中的Root-Motion"><a href="#Generic中的Root-Motion" class="headerlink" title="Generic中的Root Motion"></a>Generic中的Root Motion</h2><p>在Generic的动画中，不像Hunmanoid那样有人形骨骼，如果我们打开一个Generic的动画，会发现它的Clip中没有对游戏对象的移动，那应该怎么让动画对游戏对象的移动生效呢？方法就是指定一个骨骼，将这个骨骼的所有变换应用到整个游戏对象上，因此同样需要指定Generic的Avatar，不过Generic的Avatart仅有一根骨骼，也只会进行一次绑定。</p>
+<p>那么总结一下，Generic中的Root Motion就是将根骨骼的运动应用到整个游戏对象上。而在模型制作中，骨骼一般不使用模型上面的某一个骨骼，而是会单独制作一个骨骼来记录变换，应该把这个骨骼设置为Root Node。</p>
+<p>有需要可以下载这个<a target="_blank" rel="noopener" href="https://assetstore.unity.com/packages/3d/characters/animals/toon-fox-183005">狐狸资源</a>查看，它的Root Node就设置在模型的中间了。</p>
+<p><img src="/2023/04/26/unity11/5.png" alt></p>
+<h2 id="Hunmanoid中的Root-Motion"><a href="#Hunmanoid中的Root-Motion" class="headerlink" title="Hunmanoid中的Root Motion"></a>Hunmanoid中的Root Motion</h2><h3 id="动画的Root-Motion基础设置"><a href="#动画的Root-Motion基础设置" class="headerlink" title="动画的Root Motion基础设置"></a>动画的Root Motion基础设置</h3><p>下面我们才能真正理解动画中Root Motion选项的作用，点开一个动画的Inspector窗口，查看下面这些属性：</p>
+<p><img src="/2023/04/26/unity11/6.png" alt></p>
+<p>要说明的是，在Generic动画中这些root motion相关的设置中，Based Upon一项会有一个Root Node Oreintation，不同于Hunmanoid中的Body Oreintation，这里我们先当成一样的，马上我们会解释它们的差别。</p>
+<h4 id="Root-Transform-Rotation"><a href="#Root-Transform-Rotation" class="headerlink" title="Root Transform Rotation"></a>Root Transform Rotation</h4><p>表示旋转的Root Motion设置，我们依次介绍。</p>
+<ul>
+<li>Bake Into Pose：将根骨骼节点的旋转当作普通动画处理，而不是Root Motion的一部分；如果我们不想让动画的根骨骼带动对象，就可以勾选，例如英雄联盟中角色跳舞的时候游戏对象停在原地；所以像前进、待机、后退这种动画我们希望自己能控制移动，就可以勾选，避免莫名其妙的旋转。后面的loop match表示动画在角度上的吻合度，如果动画带动的旋转很大，这个标记会是红色的，代表效果比较显著；绿色则是代表没有什么影响。</li>
+<li>Based Upon：对象在动画开始时对准的方向，Body Orientation表示根骨骼的方向，但这个方向是Unity根据整个动画算出来的平均方向，所以不准确，我们可以使用下面的offset来矫正这个方向；Original则表示原本的朝向，也就是美术规定的方向，一般可以信任。</li>
+</ul>
+<h4 id="Root-Transform-Position-Y"><a href="#Root-Transform-Position-Y" class="headerlink" title="Root Transform Position(Y)"></a>Root Transform Position(Y)</h4><p>表示垂直方向上的设置：</p>
+<ul>
+<li>Bake Into Pose：和上面类似，勾选表示不要将根骨骼Y方向上的位移带动游戏对象；</li>
+<li>Based Upon：将垂直方向上的哪个位置对齐到游戏对象的原点，选择Original表示美术选择的部分，通常也就是脚；选择Feet也是差不多；最后Center of Mass就是将质心放到原点；下面的Offset同样调整便宜；</li>
+</ul>
+<h4 id="Root-Transform-Position-XZ"><a href="#Root-Transform-Position-XZ" class="headerlink" title="Root Transform Position(XZ)"></a>Root Transform Position(XZ)</h4><p>表示水平方向上的设置：</p>
+<ul>
+<li>Bake Into Pose：和上面类似，勾选表示不要将根骨骼水平方向上的位移带动游戏对象；</li>
+<li>Based Upon：将水平方向上的哪个位置对齐到游戏对象的原点，和Y方向上的完全一致，只不过是水平面上的。</li>
+</ul>
+<h2 id="机制和配置"><a href="#机制和配置" class="headerlink" title="机制和配置"></a>机制和配置</h2><p>不像Generic模型那样，Hunmanoid动画通常没有根骨骼，Unity会通过分析模型计算重心Center of Mass，也就是预览窗口中开启右上角坐标系图标的时候会显示的蓝色箭头：</p>
+<p><img src="/2023/04/26/unity11/7.png" alt></p>
+<p>这个Mass Center在脚本中通过animator.bodyPosition和animator.bodyRotation来访问坐标和方向，可以用OndrawGizmos方法在场景中画出来。然后Unity将这个重心在水平面上的投影作为根骨骼来对待，被称为Root Transform，通过animator.rootPosition和animator.rootRotation访问坐标和方向。</p>
+<p>因此，如果角色的动画此时是歪斜的，root Transform也会跟着有变化，Unity会把root Transform的位移应用到游戏对象上，简单来说，可以将root Transform作为root motion的根骨骼。</p>
+<p>那么通过这种方式，Unity将人形模型中可能不同的根节点转化为root Transform，能帮助在不同的骨骼结构上复用一个Root Motion动画。</p>
+<p>最后关于Root Node Oreintation和Body Oreintation，其实前者就是根骨骼，后者因为没有根骨骼，所以就是root transform。</p>
+<p>现在你明白我们之前动画的问题如何解决了，就是设置Root Motion选项，将水平移动的Root Motion动画的Y方向和Rotation勾选Bake Into Pose，调整Rotation的Based Upon为Original，这样角色就不会走歪路，或者走到地面中了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/04/25/unity10/" rel="prev" title="unity入门(十)-动画系统(一)">
+                  <i class="fa fa-angle-left"></i> unity入门(十)-动画系统(一)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/04/27/unity12/" rel="next" title="unity入门(十二)-Root Motion和Character Controller">
+                  unity入门(十二)-Root Motion和Character Controller <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

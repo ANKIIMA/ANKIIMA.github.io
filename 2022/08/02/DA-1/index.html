@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言本章介绍线性表，包括顺序表示和链式表示，要熟练掌握，要能写出最优性能。要注意动手编写代码。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构与算法复习（2）线性表">
+<meta property="og:url" content="https://ankiima.github.io/2022/08/02/DA-1/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言本章介绍线性表，包括顺序表示和链式表示，要熟练掌握，要能写出最优性能。要注意动手编写代码。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/02/DA-1/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2022/08/02/DA-1/1.jpg">
+<meta property="article:published_time" content="2022-08-02T08:20:31.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:40.819Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="Data Structure and Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2022/08/02/DA-1/2.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/08/02/DA-1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/08/02/DA-1/","path":"2022/08/02/DA-1/","title":"数据结构与算法复习（2）线性表"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据结构与算法复习（2）线性表 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">定义和基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.2.</span> <span class="nav-text">基本操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E8%A1%A8"><span class="nav-number">3.</span> <span class="nav-text">顺序表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="nav-number">3.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C"><span class="nav-number">3.2.</span> <span class="nav-text">操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E8%A1%A8"><span class="nav-number">3.2.1.</span> <span class="nav-text">建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ListInsert"><span class="nav-number">3.2.2.</span> <span class="nav-text">ListInsert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ListDelete"><span class="nav-number">3.2.3.</span> <span class="nav-text">ListDelete</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LocateElem"><span class="nav-number">3.2.4.</span> <span class="nav-text">LocateElem</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8"><span class="nav-number">4.</span> <span class="nav-text">链表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E9%93%BE%E8%A1%A8"><span class="nav-number">4.1.</span> <span class="nav-text">单链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C-1"><span class="nav-number">4.2.</span> <span class="nav-text">操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%B4%E6%8F%92%E6%B3%95%E5%BB%BA%E8%A1%A8"><span class="nav-number">4.2.1.</span> <span class="nav-text">头插法建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%BE%E6%8F%92%E6%B3%95%E5%BB%BA%E8%A1%A8"><span class="nav-number">4.2.2.</span> <span class="nav-text">尾插法建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GetElem"><span class="nav-number">4.2.3.</span> <span class="nav-text">GetElem</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LocateElem-1"><span class="nav-number">4.2.4.</span> <span class="nav-text">LocateElem</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ListInsert-1"><span class="nav-number">4.2.5.</span> <span class="nav-text">ListInsert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ListDelete-1"><span class="nav-number">4.2.6.</span> <span class="nav-text">ListDelete</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Length"><span class="nav-number">4.2.7.</span> <span class="nav-text">Length</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E9%93%BE%E8%A1%A8"><span class="nav-number">4.3.</span> <span class="nav-text">双链表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ListInsert-2"><span class="nav-number">4.3.1.</span> <span class="nav-text">ListInsert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ListDelete-2"><span class="nav-number">4.3.2.</span> <span class="nav-text">ListDelete</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8"><span class="nav-number">4.4.</span> <span class="nav-text">循环链表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E5%8D%95%E9%93%BE%E8%A1%A8"><span class="nav-number">4.4.1.</span> <span class="nav-text">循环单链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E5%8F%8C%E9%93%BE%E8%A1%A8"><span class="nav-number">4.4.2.</span> <span class="nav-text">循环双链表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E9%93%BE%E8%A1%A8"><span class="nav-number">4.5.</span> <span class="nav-text">静态链表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E8%A1%A8%E5%92%8C%E9%93%BE%E8%A1%A8%E6%AF%94%E8%BE%83"><span class="nav-number">5.</span> <span class="nav-text">顺序表和链表比较</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%8F%96%E6%96%B9%E5%BC%8F"><span class="nav-number">5.1.</span> <span class="nav-text">存取方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84%E5%92%8C%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84"><span class="nav-number">5.2.</span> <span class="nav-text">逻辑结构和物理结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E3%80%81%E6%8F%92%E5%85%A5%E3%80%81%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C"><span class="nav-number">5.3.</span> <span class="nav-text">查找、插入、删除操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D"><span class="nav-number">5.4.</span> <span class="nav-text">空间分配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">5.5.</span> <span class="nav-text">存储结构的选择</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/08/02/DA-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据结构与算法复习（2）线性表 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据结构与算法复习（2）线性表
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-02 16:20:31" itemprop="dateCreated datePublished" datetime="2022-08-02T16:20:31+08:00">2022-08-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm/408/" itemprop="url" rel="index"><span itemprop="name">408</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本章介绍线性表，包括顺序表示和链式表示，要熟练掌握，要能写出最优性能。要注意动手编写代码。<br><img src="/2022/08/02/DA-1/2.jpg" alt="场景"><br><span id="more"></span></p>
+<h1 id="定义和基本操作"><a href="#定义和基本操作" class="headerlink" title="定义和基本操作"></a>定义和基本操作</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>线性表是具有相同数据类型的<em>n</em>个数据元素的有限序列，<em>n</em>为表长，<em>n = 0</em>时表为空表。</p>
+<p>线性表有唯一一个表头元素和唯一一个表尾元素，且除表头元素外，每个元素都有且仅有一个前驱；除表尾元素外，每个元素都有且仅有一个后继。</p>
+<p>线性表是逻辑结构，表示元素间一对一的相对关系。顺序表和链表是存储结构。</p>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">InitList(&amp;L)</span><br><span class="line">Length(&amp;L)</span><br><span class="line">LocateElem(L,e)</span><br><span class="line">GetElem(L,i)</span><br><span class="line">ListInsert(&amp;L,i,e)</span><br><span class="line">ListDelete(&amp;L,i,e)</span><br><span class="line">PrintList(L)</span><br><span class="line">Empty(L)</span><br><span class="line">DestroyList(L)</span><br></pre></td></tr></table></figure>
+<h1 id="顺序表"><a href="#顺序表" class="headerlink" title="顺序表"></a>顺序表</h1><h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>线性表的顺序存储就是线性表，用地址连续的存储单元依次存储数据元素，使逻辑上相邻的两个元素在物理位置上也相邻，位置称为位序，从1开始。</p>
+<p>特点是逻辑顺序和物理顺序相同。是一种随机存取的存储结构，一般用数组表述，空间可以静态分配也可以动态分配。</p>
+<blockquote>
+<p>静态/动态分配空间指的是分配内存的大小是否能变化，本质上还是顺序存储。</p>
+</blockquote>
+<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><h3 id="建表"><a href="#建表" class="headerlink" title="建表"></a>建表</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//静态分配</span><br><span class="line">#define MaxSize 50</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    ElemType data[MaxSize];</span><br><span class="line">    int length;</span><br><span class="line">&#125;SqList;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//动态分配，一旦数据空间占满，就申请一块更大的空间替换现有空间。</span><br><span class="line">#define InitSize 50</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    ElemType *data;</span><br><span class="line">    int length;</span><br><span class="line">&#125;SqList;</span><br><span class="line">SqList L;</span><br><span class="line">L.data = (ElemType*)malloc(sizeof(ElemType) * InitSize);</span><br><span class="line">/*L.data = new ElemType[InitSize];*/</span><br></pre></td></tr></table></figure>
+<h3 id="ListInsert"><a href="#ListInsert" class="headerlink" title="ListInsert"></a>ListInsert</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">bool ListInsert(SqList &amp;L, int i, ElemType e)</span><br><span class="line">&#123;</span><br><span class="line">    if(i&lt;1 || i&gt;L.Length+1);</span><br><span class="line">        return false;</span><br><span class="line">    if(L.length &gt; MaxSize)</span><br><span class="line">        return false;</span><br><span class="line">    for(int j = L.length; j&gt;=i; i--)</span><br><span class="line">    &#123;</span><br><span class="line">        L.data[j] = L.data[j-1];</span><br><span class="line">    &#125;</span><br><span class="line">    L.data[i] = e;</span><br><span class="line">    L.Length++;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度<em>n/2</em>;</p>
+<h3 id="ListDelete"><a href="#ListDelete" class="headerlink" title="ListDelete"></a>ListDelete</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">bool ListDelete(SqList &amp;L, int i, ElemType &amp;e)</span><br><span class="line">&#123;</span><br><span class="line">    if(i&lt;1 || i&gt;L.Length+1);</span><br><span class="line">        return false;</span><br><span class="line">    e = L.data[i-1];</span><br><span class="line">    for(int j = i; j &lt; L.length; j++)</span><br><span class="line">    &#123;</span><br><span class="line">        L.data[j-1] = L.data[j];</span><br><span class="line">    &#125;</span><br><span class="line">    L.length--;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度(<em>n-1</em>)<em>/2</em>。</p>
+<h3 id="LocateElem"><a href="#LocateElem" class="headerlink" title="LocateElem"></a>LocateElem</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">LocateElem(SqList L, ElemType e)</span><br><span class="line">&#123;</span><br><span class="line">    for(int i = 0;i&lt;L.Length;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        if(L.data[i] == e)</span><br><span class="line">            return i+1;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度(<em>n+1</em>)<em>/2</em>。</p>
+<h1 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h1><h2 id="单链表"><a href="#单链表" class="headerlink" title="单链表"></a>单链表</h2><p>线性表的链式存储叫单链表，通过一组任意的存储单元来存储线性表中的数据元素，在每个结点存放指向后继的指针。</p>
+<p>由于物理地址不相邻，所以插入删除元素不用进行移动，但同时也不能随机存取了。</p>
+<p>使用头指针来标识一个单链表，头指针为NULL则表空。还可以在第一个结点之前增加一个头结点，优点是：1）方便处理第一个元素，统一所有元素的增删操作；2）方便处理空表，因为头结点非空，只要判断指针域即可，统一空表和非空表的。</p>
+<h2 id="操作-1"><a href="#操作-1" class="headerlink" title="操作"></a>操作</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef struct LNode&#123;</span><br><span class="line">    ElemType data;</span><br><span class="line">    struct LNode *next;</span><br><span class="line">&#125;LNode, *LinkList;</span><br></pre></td></tr></table></figure>
+<h3 id="头插法建表"><a href="#头插法建表" class="headerlink" title="头插法建表"></a>头插法建表</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">//注意这里用了引用传递的特性，下面会将参数解释成一个指向该类型的const指针，且指针指向的链表可以被修改，避免值传递的复制行为。</span><br><span class="line">//一般对于基本数据类型用值传递就可以，但是对于复杂的结构体，对象，最好使用引用传递。</span><br><span class="line">LinkList List_HeadInsert(LinkList &amp;L)</span><br><span class="line">&#123;</span><br><span class="line">    LNode *s; //临时结点</span><br><span class="line">    int x;    //临时值</span><br><span class="line">    L = (LinkList)malloc(sizeof(LNode));</span><br><span class="line">    L-&gt;next = NULL;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">    while(x != -1)</span><br><span class="line">    &#123;</span><br><span class="line">        s = (LNode*)malloc(sizeof(LNode));</span><br><span class="line">        s-&gt;data = x;</span><br><span class="line">        s-&gt;next = L-&gt;next;</span><br><span class="line">        L-&gt;next = s;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">    &#125;</span><br><span class="line">    return L;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="尾插法建表"><a href="#尾插法建表" class="headerlink" title="尾插法建表"></a>尾插法建表</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">LinkList List_TailInsert(LinkList &amp;L)</span><br><span class="line">&#123;</span><br><span class="line">    int x;</span><br><span class="line">    L = (LinkList)malloc(sizeof(LNode));</span><br><span class="line">    LNode *s = L;</span><br><span class="line">    LNode *r = L;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">    while(x != -1)</span><br><span class="line">    &#123;</span><br><span class="line">        s = (LNode *)malloc(sizeof(LNode));</span><br><span class="line">        s-&gt;data = x;</span><br><span class="line">        r-&gt;next = s;</span><br><span class="line">        r = s;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">    &#125;</span><br><span class="line">    r-&gt;next = NULL;</span><br><span class="line">    return L;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="GetElem"><a href="#GetElem" class="headerlink" title="GetElem"></a>GetElem</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">LNode* GetElem(LinkList L, int i)</span><br><span class="line">&#123;</span><br><span class="line">    int j = 1;</span><br><span class="line">    LNode* p = L-&gt;next;</span><br><span class="line">    if(i==0)</span><br><span class="line">    &#123;</span><br><span class="line">        return L;</span><br><span class="line">    &#125;</span><br><span class="line">    if(i&lt;1)</span><br><span class="line">    &#123;</span><br><span class="line">        return NULL;</span><br><span class="line">    &#125;</span><br><span class="line">    while(p != NULL &amp;&amp; j &lt; i)</span><br><span class="line">    &#123;</span><br><span class="line">        p = p-&gt;next;</span><br><span class="line">        j++;</span><br><span class="line">    &#125;</span><br><span class="line">    return p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="LocateElem-1"><a href="#LocateElem-1" class="headerlink" title="LocateElem"></a>LocateElem</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">LNode* LocateElem(LinkList L, ElemType e)</span><br><span class="line">&#123;</span><br><span class="line">    LNode* p = L-&gt;next;</span><br><span class="line">    while(p != NULL &amp;&amp; p-&gt;data != e)</span><br><span class="line">    &#123;</span><br><span class="line">        p = p-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    return p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ListInsert-1"><a href="#ListInsert-1" class="headerlink" title="ListInsert"></a>ListInsert</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">bool ListInsert(LinkList L, int i, ElemType e)</span><br><span class="line">&#123;</span><br><span class="line">    if(i&lt;1 || i&gt;Length(L)+1)</span><br><span class="line">        return false;</span><br><span class="line">    LNode* s = (LNode*)malloc(sizeof(LNode));</span><br><span class="line">    s-&gt;data = e;</span><br><span class="line">    LNode* p = GetElem(L,i-1);</span><br><span class="line">    s-&gt;next = p-&gt;next;</span><br><span class="line">    p-&gt;next = s;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ListDelete-1"><a href="#ListDelete-1" class="headerlink" title="ListDelete"></a>ListDelete</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">bool ListDelete(LinkList L, int i)</span><br><span class="line">&#123;</span><br><span class="line">    if(i &lt; 1 || i &gt; Length(L))</span><br><span class="line">        return false;</span><br><span class="line">    LNode* p = GetElem(L, i-1);</span><br><span class="line">    LNode* q = p-&gt;next;</span><br><span class="line">    p-&gt;next = q-&gt;next;</span><br><span class="line">    free(q);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Length"><a href="#Length" class="headerlink" title="Length"></a>Length</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int Length(LinkList L)</span><br><span class="line">&#123;</span><br><span class="line">    LNode* p = L-&gt;next;</span><br><span class="line">    int l = 0;</span><br><span class="line">    while(p != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        l++;</span><br><span class="line">        p = p-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    return l;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="双链表"><a href="#双链表" class="headerlink" title="双链表"></a>双链表</h2><p>相比于单链表，双链表设置两个指针分别指向结点的前驱和后继，这样在寻找结点前驱的时候就不用从头开始遍历。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef struct DNode&#123;</span><br><span class="line">    ElemType data;</span><br><span class="line">    struct DNode* prior, * next;</span><br><span class="line">&#125;DNode, *DLinkList;</span><br></pre></td></tr></table></figure></p>
+<h3 id="ListInsert-2"><a href="#ListInsert-2" class="headerlink" title="ListInsert"></a>ListInsert</h3><p>在p指向的结点后插入元素。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">bool ListInsert(DLinkList L, DNode* p, ElemType e)</span><br><span class="line">&#123;</span><br><span class="line">    if(p == NULL)</span><br><span class="line">        return false;</span><br><span class="line">    DNode* s = (DNode*)malloc(sizeof(DNode));</span><br><span class="line">    s-&gt;data = e;</span><br><span class="line">    if(p-&gt;next == NULL)        </span><br><span class="line">    &#123;    </span><br><span class="line">        s-&gt;next = p-&gt;next;</span><br><span class="line">        p-&gt;next = s;</span><br><span class="line">        s-&gt;prior = p;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    s-&gt;next = p-&gt;next;</span><br><span class="line">    p-&gt;next-&gt;prior = s;</span><br><span class="line">    s-&gt;prior = p;</span><br><span class="line">    p-&gt;next = s;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="ListDelete-2"><a href="#ListDelete-2" class="headerlink" title="ListDelete"></a>ListDelete</h3><p>删除p指向的结点的后继。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">bool ListDelete(DLinkList L, DNode* p)</span><br><span class="line">&#123;</span><br><span class="line">    if(p == NULL || P-&gt;next == NULL)</span><br><span class="line">        return false;</span><br><span class="line">    p-&gt;next = p-&gt;next-&gt;next;</span><br><span class="line">    p-&gt;next-&gt;next-&gt;prior = p;</span><br><span class="line">    free(p-&gt;next);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="循环链表"><a href="#循环链表" class="headerlink" title="循环链表"></a>循环链表</h2><h3 id="循环单链表"><a href="#循环单链表" class="headerlink" title="循环单链表"></a>循环单链表</h3><p>单链表的尾结点后继指针指向头结点。表中没有为NULL的指针，通过判断头结点后继是否是头结点判断表空。而且因为已经成环，所以不用判断表尾，在每个位置上的插入删除都是等价的。</p>
+<h3 id="循环双链表"><a href="#循环双链表" class="headerlink" title="循环双链表"></a>循环双链表</h3><p>同理将双链表的尾结点后继指向头结点，头结点前驱指针也指向尾结点，就构成了循环双链表。</p>
+<p>有时对单链表所做的操作通常在表头表尾，这时可以通过仅设置尾指针来优化，这样对头尾结点的操作都是统一的，且时间复杂度都是常数级。</p>
+<h2 id="静态链表"><a href="#静态链表" class="headerlink" title="静态链表"></a>静态链表</h2><p>借助数组来表述线性表的链式存储结构，结点也有数据域data和指针域next，不过这里的指针是相对地址，称为游标。需要预先分配一块连续的内存空间。<br><img src="/2022/08/02/DA-1/1.jpg" alt="场景"><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#define MaxSize 50</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    ElemType data;</span><br><span class="line">    int next;</span><br><span class="line">&#125;SLinkList[MaxSize];</span><br></pre></td></tr></table></figure><br>以next为-1结束链表，通常使用在不支持指针的语言中。</p>
+<h1 id="顺序表和链表比较"><a href="#顺序表和链表比较" class="headerlink" title="顺序表和链表比较"></a>顺序表和链表比较</h1><h2 id="存取方式"><a href="#存取方式" class="headerlink" title="存取方式"></a>存取方式</h2><p>顺序表可以顺序存取，也可以随机存取；链表只能顺序存取；</p>
+<h2 id="逻辑结构和物理结构"><a href="#逻辑结构和物理结构" class="headerlink" title="逻辑结构和物理结构"></a>逻辑结构和物理结构</h2><p>顺序存储时逻辑地址相邻的元素物理地址也相邻，链式存储时逻辑地址相邻的元素物理地址不一定相邻。</p>
+<h2 id="查找、插入、删除操作"><a href="#查找、插入、删除操作" class="headerlink" title="查找、插入、删除操作"></a>查找、插入、删除操作</h2><p>按值查找，顺序表和链表时间复杂度都为<em>O</em>(<em>n</em>)，顺序表如果有序可以用折半查找降低；<br>按序查找，顺序表随机访问<em>O</em>(<em>n</em>)，链表<em>O</em>(<em>n</em>)；<br>插入，删除操作，顺序表要移动一定表长的元素，而链表只需要修改对应指针；</p>
+<h2 id="空间分配"><a href="#空间分配" class="headerlink" title="空间分配"></a>空间分配</h2><p>顺序存储，如果采用静态存储分配，不灵活，可能会溢出；采用动态分配，又需要移动大量元素，而且可能分配失败；<br>链式存储，只在需要的时候申请分配，比较灵活高效。</p>
+<h2 id="存储结构的选择"><a href="#存储结构的选择" class="headerlink" title="存储结构的选择"></a>存储结构的选择</h2><p>存储上，如果线性表规模难以估计，用链式存储；<br>运算上，对于访问元素，按序访问使用顺序存储，按值访问区别不大；对于插入删除，表比较大的时候使用顺序存储很不方便，要移动的规模太大了，链表虽然要查找，但是操作更方便。<br>环境上，顺序表更容易实现，链表需要指针支持。</p>
+<p>通常，稳定的线性表使用顺序存储，频繁插入删除使用链式存储。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Data-Structure-and-Algorithm/" rel="tag"># Data Structure and Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/08/01/DA-0/" rel="prev" title="数据结构与算法复习（1）概述">
+                  <i class="fa fa-angle-left"></i> 数据结构与算法复习（1）概述
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/08/03/DA-2/" rel="next" title="数据结构与算法复习（3）栈、数组和队列">
+                  数据结构与算法复习（3）栈、数组和队列 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

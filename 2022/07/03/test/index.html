@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="记录博客网站的美化操作，用的是hexo和next主题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo+next主题配置">
+<meta property="og:url" content="https://ankiima.github.io/2022/07/03/test/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="记录博客网站的美化操作，用的是hexo和next主题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-03T03:48:55.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.372Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="next">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2022/07/03/test/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2022/07/03/test/","path":"2022/07/03/test/","title":"hexo+next主题配置"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>hexo+next主题配置 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#hexo%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">hexo配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-config-yml"><span class="nav-number">1.1.</span> <span class="nav-text">hexo配置文件 _config.yml</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%BD%91%E7%AB%99%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.1.</span> <span class="nav-text">修改网站基本配置信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.2.</span> <span class="nav-text">修改主题配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#next%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">next配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%A1%86%E6%9E%B6"><span class="nav-number">2.0.1.</span> <span class="nav-text">选择框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dark-mode%E5%90%AF%E7%94%A8"><span class="nav-number">2.0.2.</span> <span class="nav-text">dark mode启用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E5%9B%BE%E6%A0%87%E6%9B%B4%E6%8D%A2%EF%BC%88%E4%BD%BF%E7%94%A8%E6%AD%A4%E7%BD%91%E7%AB%99%E5%88%9B%E5%BB%BA%E5%9B%BE%E6%A0%87%EF%BC%89%E6%9B%BF%E6%8D%A2%E8%B7%AF%E5%BE%84%E4%B8%BA%E5%AF%B9%E5%BA%94%E5%9B%BE%E7%89%87"><span class="nav-number">2.0.3.</span> <span class="nav-text">网页图标更换（使用此网站创建图标）替换路径为对应图片</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8F%9C%E5%8D%95%E8%AE%BE%E7%BD%AE-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B7%BB%E5%8A%A0%E8%8F%9C%E5%8D%95%E9%A1%B9"><span class="nav-number">2.0.4.</span> <span class="nav-text">菜单设置 自定义添加菜单项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%A7%E8%BE%B9%E6%A0%8F%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">侧边栏设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%B4%E5%83%8F-%E9%9C%80%E8%A6%81gif%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.1.1.</span> <span class="nav-text">头像 需要gif格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%A1%B5%E9%9D%A2%E9%93%BE%E6%8E%A5"><span class="nav-number">2.1.2.</span> <span class="nav-text">其他页面链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E8%84%9A%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">页脚设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BE%E6%A0%87"><span class="nav-number">2.2.1.</span> <span class="nav-text">图标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#copyright"><span class="nav-number">2.2.2.</span> <span class="nav-text">copyright</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E7%AB%A0%E6%98%BE%E7%A4%BA%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">文章显示设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">2.3.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%85%E8%AF%BB%E5%85%A8%E6%96%87%E6%8C%89%E9%92%AE"><span class="nav-number">2.3.2.</span> <span class="nav-text">阅读全文按钮</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E7%AB%A0%E6%9C%AB%E5%B0%BE%E6%A0%87%E7%AD%BE%E7%AC%A6%E5%8F%B7%E6%98%BE%E7%A4%BA"><span class="nav-number">2.3.3.</span> <span class="nav-text">文章末尾标签符号显示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E6%9C%AB%E6%8E%A8%E5%B9%BF%E9%93%BE%E6%8E%A5"><span class="nav-number">2.3.4.</span> <span class="nav-text">文末推广链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E9%A2%98%E5%85%B6%E4%BB%96%E8%AE%BE%E5%AE%9A"><span class="nav-number">2.4.</span> <span class="nav-text">主题其他设定</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%9C%E8%89%B2%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.4.1.</span> <span class="nav-text">颜色设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B9%A6%E7%AD%BE"><span class="nav-number">2.4.2.</span> <span class="nav-text">书签</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%8F%9C%E5%8D%95%E9%A1%B9%E9%A1%B5%E9%9D%A2"><span class="nav-number">2.5.</span> <span class="nav-text">添加菜单项页面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A%E4%BF%A1%E6%81%AF"><span class="nav-number">3.</span> <span class="nav-text">更多信息</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2022/07/03/test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="hexo+next主题配置 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          hexo+next主题配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-03 11:48:55" itemprop="dateCreated datePublished" datetime="2022-07-03T11:48:55+08:00">2022-07-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Blog/" itemprop="url" rel="index"><span itemprop="name">Blog</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>记录博客网站的美化操作，用的是hexo和next主题。<br><span id="more"></span></p>
+<h2 id="hexo配置"><a href="#hexo配置" class="headerlink" title="hexo配置"></a>hexo配置</h2><h3 id="hexo配置文件-config-yml"><a href="#hexo配置文件-config-yml" class="headerlink" title="hexo配置文件 _config.yml"></a>hexo配置文件 <em>_config.yml</em></h3><h4 id="修改网站基本配置信息"><a href="#修改网站基本配置信息" class="headerlink" title="修改网站基本配置信息"></a>修改网站基本配置信息</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Site  </span><br><span class="line">title: ANKIIMA  </span><br><span class="line">subtitle: &#x27;Blog&#x27;  </span><br><span class="line">description: &#x27;ANKIIMA的博客&#x27;  </span><br><span class="line">keywords: &#x27;OpenGL CV&#x27;  </span><br><span class="line">author: &#x27;ANKIIMA&#x27;  </span><br><span class="line">language: zh-CN  </span><br><span class="line">timezone: &#x27;&#x27;`  </span><br></pre></td></tr></table></figure>
+<h4 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># Extensions  </span><br><span class="line">theme: NEXT  </span><br></pre></td></tr></table></figure>
+<h2 id="next配置"><a href="#next配置" class="headerlink" title="next配置"></a>next配置</h2><h4 id="选择框架"><a href="#选择框架" class="headerlink" title="选择框架"></a>选择框架</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Schemes</span><br><span class="line"># scheme: Muse</span><br><span class="line">#scheme: Mist</span><br><span class="line">#scheme: Pisces</span><br><span class="line">scheme: Gemini</span><br></pre></td></tr></table></figure>
+<h4 id="dark-mode启用"><a href="#dark-mode启用" class="headerlink" title="dark mode启用"></a>dark mode启用</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># Dark Mode  </span><br><span class="line">darkmode: false  </span><br></pre></td></tr></table></figure>
+<h4 id="网页图标更换（使用此网站创建图标）替换路径为对应图片"><a href="#网页图标更换（使用此网站创建图标）替换路径为对应图片" class="headerlink" title="网页图标更换（使用此网站创建图标）替换路径为对应图片"></a>网页图标更换（使用<a target="_blank" rel="noopener" href="https://realfavicongenerator.net/">此网站</a>创建图标）替换路径为对应图片</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Site Information Settings  </span><br><span class="line">favicon:</span><br><span class="line">  small: /images/favicon-16x16-next.png  </span><br><span class="line">  medium: /images/favicon-32x32-next.png  </span><br><span class="line">  apple_touch_icon: /images/apple-touch-icon-next.png  </span><br><span class="line">  safari_pinned_tab: /images/logo.svg  </span><br><span class="line">  #android_manifest: /manifest.json  `  </span><br></pre></td></tr></table></figure>
+<h4 id="菜单设置-自定义添加菜单项"><a href="#菜单设置-自定义添加菜单项" class="headerlink" title="菜单设置 自定义添加菜单项"></a>菜单设置 自定义添加菜单项</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">menu:  </span><br><span class="line">  home: / || fa fa-home  </span><br><span class="line">  # about: /about/ || fa fa-user  </span><br><span class="line">  tags: /tags/ || fa fa-tags  </span><br><span class="line">  categories: /categories/ || fa fa-th  </span><br><span class="line">  archives: /archives/ || fa fa-archive  </span><br><span class="line">  #schedule: /schedule/ || fa fa-calendar  </span><br><span class="line">  #sitemap: /sitemap.xml || fa fa-sitemap  </span><br><span class="line">  #commonweal: /404/ || fa fa-heartbeat`</span><br></pre></td></tr></table></figure>
+<p>next提供上面的可选菜单项，格式最后一项是显示图标，可以在<a target="_blank" rel="noopener" href="https://fontawesome.com/">该网站</a>查询对应的值并修改。如果想添加其他菜单项应该也可以按照上面的格式，不过对我来说够用了。</p>
+<h3 id="侧边栏设置"><a href="#侧边栏设置" class="headerlink" title="侧边栏设置"></a>侧边栏设置</h3><h4 id="头像-需要gif格式"><a href="#头像-需要gif格式" class="headerlink" title="头像 需要gif格式"></a>头像 需要gif格式</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Sidebar Avatar</span><br><span class="line">avatar:</span><br><span class="line">  # Replace the default image and set the url here.</span><br><span class="line">  url: /images/1.gif</span><br><span class="line">  # If true, the avatar will be displayed in circle.</span><br><span class="line">  rounded: false</span><br><span class="line">  # If true, the avatar will be rotated with the cursor.</span><br><span class="line">  rotated: false</span><br></pre></td></tr></table></figure>
+<h4 id="其他页面链接"><a href="#其他页面链接" class="headerlink" title="其他页面链接"></a>其他页面链接</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Social Links</span><br><span class="line"># Usage: `Key: permalink || icon`</span><br><span class="line"># Key is the link label showing to end users.</span><br><span class="line"># Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.</span><br><span class="line">social:</span><br><span class="line">  GitHub: https://github.com/ANKIIMA || fab fa-github</span><br></pre></td></tr></table></figure>
+<h3 id="页脚设置"><a href="#页脚设置" class="headerlink" title="页脚设置"></a>页脚设置</h3><h4 id="图标"><a href="#图标" class="headerlink" title="图标"></a>图标</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Icon between year and copyright info.</span><br><span class="line">  icon:</span><br><span class="line">    # Icon name in Font Awesome. See: https://fontawesome.com/icons</span><br><span class="line">    name: fa-solid fa-cannabis</span><br><span class="line">    # If you want to animate the icon, set it to true.</span><br><span class="line">    animated: false</span><br><span class="line">    # Change the color of icon, using Hex Code.</span><br><span class="line">    color: &quot;#A9A9A9&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="copyright"><a href="#copyright" class="headerlink" title="copyright"></a>copyright</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># If not defined, `author` from Hexo `_config.yml` will be used.</span><br><span class="line">  copyright: ANKIIMA</span><br></pre></td></tr></table></figure>
+<h3 id="文章显示设置"><a href="#文章显示设置" class="headerlink" title="文章显示设置"></a>文章显示设置</h3><h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>按照<a target="_blank" rel="noopener" href="https://hexo.io/docs/tag-plugins#Post-Excerpt">hexo文档</a>的格式在文章中设置摘要部分，否则自动全部显示<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># Automatically excerpt description in homepage as preamble text.</span><br><span class="line">excerpt_description: true</span><br></pre></td></tr></table></figure></p>
+<h4 id="阅读全文按钮"><a href="#阅读全文按钮" class="headerlink" title="阅读全文按钮"></a>阅读全文按钮</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Read more button</span><br><span class="line"># If true, the read more button will be displayed in excerpt section.</span><br><span class="line">read_more_btn: true</span><br></pre></td></tr></table></figure>
+<h4 id="文章末尾标签符号显示"><a href="#文章末尾标签符号显示" class="headerlink" title="文章末尾标签符号显示"></a>文章末尾标签符号显示</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># Use icon instead of the symbol # to indicate the tag at the bottom of the post</span><br><span class="line">tag_icon: true</span><br></pre></td></tr></table></figure>
+<h4 id="文末推广链接"><a href="#文末推广链接" class="headerlink" title="文末推广链接"></a>文末推广链接</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Subscribe through Telegram Channel, Twitter, etc.</span><br><span class="line"># Usage: `Key: permalink || icon` (Font Awesome)</span><br><span class="line">follow_me:</span><br><span class="line">  #QQ: 1667791793 || fa-brands fa-qq</span><br><span class="line">  GitHub: https://github.com/ANKIIMA || fa-brands fa-github</span><br><span class="line">  #Twitter: https://twitter.com/username || fab fa-twitter</span><br><span class="line">  #Telegram: https://t.me/channel_name || fab fa-telegram</span><br><span class="line">  #WeChat: /images/wechat_channel.jpg || fab fa-weixin</span><br></pre></td></tr></table></figure>
+<p>上面的icon设置同上</p>
+<h3 id="主题其他设定"><a href="#主题其他设定" class="headerlink" title="主题其他设定"></a>主题其他设定</h3><h4 id="颜色设置"><a href="#颜色设置" class="headerlink" title="颜色设置"></a>颜色设置</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Browser header panel color.</span><br><span class="line">theme_color:</span><br><span class="line">  light: &quot;#222&quot;</span><br><span class="line">  dark: &quot;#222&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="书签"><a href="#书签" class="headerlink" title="书签"></a>书签</h4><p>显示在右上角，自动保存读者阅读进度<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Bookmark Support</span><br><span class="line">bookmark:</span><br><span class="line">  enable: true</span><br><span class="line">  # Customize the color of the bookmark.</span><br><span class="line">  color: &quot;#222&quot;</span><br><span class="line">  # If auto, save the reading progress when closing the page or clicking the bookmark-icon.</span><br><span class="line">  # If manual, only save it by clicking the bookmark-icon.</span><br><span class="line">  save: auto</span><br></pre></td></tr></table></figure></p>
+<h3 id="添加菜单项页面"><a href="#添加菜单项页面" class="headerlink" title="添加菜单项页面"></a>添加菜单项页面</h3><p>  如果仅在菜单设置中添加选项，点击后由于没有资源所以不会打开页面，所以不用修改配置文件，而应该在博客文件夹中应该使用hexo添加对应的页面资源：<br>  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new page custom-name</span><br></pre></td></tr></table></figure><br>添加以后博客文件中会出现对应名称的文件夹，包含子集目录index，生成一个md文件。  举例来说，如果添加的是标签和分类页面，那么先进入md文件，在文首的hexo信息栏中添加type关键字，值为对应名称(tags | categories)，然后更新博客就可以看到效果了。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line"># tag页面信息栏</span><br><span class="line">title: tags</span><br><span class="line">date: 2022-07-03 22:13:01</span><br><span class="line">type: tags</span><br><span class="line">---</span><br></pre></td></tr></table></figure><br>添加完成后，标签页面和分类页面会自动统计并显示已经存在的标签或类别，不用进一步更改；点击对应标签或类别也会显示对应文章。  </p>
+<p>要注意的是，撰写文章的同时也要将对应的标签和分类关键字按照hexo要求写在信息栏中，例如本篇博客：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: hexo+next主题配置</span><br><span class="line">date: 2022-07-03 11:48:55</span><br><span class="line">categories:</span><br><span class="line">- Blog</span><br><span class="line">tags:</span><br><span class="line">- hexo</span><br><span class="line">- next</span><br><span class="line">---</span><br></pre></td></tr></table></figure></p>
+<h2 id="更多信息"><a href="#更多信息" class="headerlink" title="更多信息"></a>更多信息</h2><p>  上面是我博客配置的大致信息，更多配置方法可以参考<a target="_blank" rel="noopener" href="https://theme-next.js.org">next文档</a>，next在配置文件中给出了一系列配置接口，即使不懂前端知识也能进行个性化设置，还可以在博客页面中添加聊天室、评论等功能，如果以后有精力会再进行记录。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/next/" rel="tag"># next</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/04/mask/" rel="next" title="YOLOv5实现口罩佩戴检测">
+                  YOLOv5实现口罩佩戴检测 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

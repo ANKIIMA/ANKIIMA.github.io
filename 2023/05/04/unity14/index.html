@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这次我们来学习动画片段的三个基本操作，分割，事件，修改Curves。虽然我们不是动画师，但是有必要对Unity的动画系统有全面的了解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="unity入门(十四)-Animation系统(四)">
+<meta property="og:url" content="https://ankiima.github.io/2023/05/04/unity14/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="这次我们来学习动画片段的三个基本操作，分割，事件，修改Curves。虽然我们不是动画师，但是有必要对Unity的动画系统有全面的了解。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/04/unity14/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/04/unity14/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/04/unity14/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/04/unity14/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/04/unity14/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/04/unity14/7.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/04/unity14/8.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/04/unity14/9.png">
+<meta property="article:published_time" content="2023-05-04T12:50:39.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.562Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/05/04/unity14/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/05/04/unity14/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/05/04/unity14/","path":"2023/05/04/unity14/","title":"unity入门(十四)-Animation系统(四)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>unity入门(十四)-Animation系统(四) | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%89%B2%E7%89%87%E6%AE%B5"><span class="nav-number">1.</span> <span class="nav-text">分割片段</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A8%E7%94%BB%E4%BA%8B%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">动画事件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0Curve"><span class="nav-number">3.</span> <span class="nav-text">添加Curve</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2D-Blend-Tree%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">2D Blend Tree原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2D-Simple-Directional"><span class="nav-number">4.1.</span> <span class="nav-text">2D Simple Directional</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2D-Freedom-Cartesian"><span class="nav-number">4.2.</span> <span class="nav-text">2D Freedom Cartesian</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2D-Freedom-Directional"><span class="nav-number">4.3.</span> <span class="nav-text">2D Freedom Directional</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/05/04/unity14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="unity入门(十四)-Animation系统(四) | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          unity入门(十四)-Animation系统(四)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-05-04 20:50:39" itemprop="dateCreated datePublished" datetime="2023-05-04T20:50:39+08:00">2023-05-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这次我们来学习动画片段的三个基本操作，分割，事件，修改Curves。虽然我们不是动画师，但是有必要对Unity的动画系统有全面的了解。</p>
+<span id="more"></span>
+<h1 id="分割片段"><a href="#分割片段" class="headerlink" title="分割片段"></a>分割片段</h1><p>在游戏开发中，一个动画片段可能包含多个逻辑，例如拔枪和收枪动画常常会放在一起，我们实际使用的时候就需要将整个动画分割成两份。</p>
+<p><img src="/2023/05/04/unity14/1.png" alt></p>
+<p>在动画的FBX文件属性中，Animation下的Clips一栏显示了当前FBX文件中存在的Clips(上面是maximo动画Grab and Put Bakc Rifle分割后的列表)，右侧Start代表该Clip开始的帧数，End代表结束的帧数。点击下面的+号就可以添加Clip。</p>
+<p><img src="/2023/05/04/unity14/2.png" alt></p>
+<p>再往下就是调整Clip起始帧的地方了，我们之前在这里调整root motion的设置，右边的信号灯起始表示的是从当前Cllip起始帧到结束帧的各种差异，含义和之前介绍的一样。上面Length是Clip持续的时间，30FPS代表每秒三十帧，下面就是时间轴，拖动蓝色箭头就可以修改Clip的长度、位置，而Start和End还是表示起始和结束的帧数。其余设置就不说了，前面root motion的博客介绍过。</p>
+<p>那么现在我们要将这个动画分割成拔枪和收枪两部分，于是点击加号添加，调整好时间以后点击下方的Apply，就得到了开始图中的两个Clip片段。</p>
+<p>在状态机中测试：</p>
+<p><img src="/2023/05/04/unity14/3.png" alt></p>
+<p>记得禁用角色的rig约束，可以看到动画已经正确播放了。我们后面再进一步调整动画。</p>
+<h1 id="动画事件"><a href="#动画事件" class="headerlink" title="动画事件"></a>动画事件</h1><p>在Unity中，有时我们需要动画的播放和一些事件关联，如角色播放技能动画时播放音效，攻击动作达到指定位置时触发伤害等，这就是Animation Event的作用。那么这里的例子就是，让角色播放收枪动画到一定程度时，将步枪绑定到角色背后；播放拔枪动画到一定程度时，将步枪绑定到角色手上。</p>
+<p>作为例子来说，这里处理方式就采用简单的激活，弄一个枪模型挂在角色背后，当角色伸手拿枪的时候，把背上的枪禁用，然后激活手上的枪；放枪的时候就反过来激活：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">PutGrabRifle</span>(<span class="params"><span class="built_in">int</span> isOnBack</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(isOnBack == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        rifleOnBack.SetActive(<span class="literal">true</span>);</span><br><span class="line">        rifleInHand.SetActive(<span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(isOnBack == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        rifleOnBack.SetActive(<span class="literal">false</span>);</span><br><span class="line">        rifleInHand.SetActive(<span class="literal">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此我们需要使用动画事件来让这个事件函数在播放到一定帧的时候被调用。点开FBX文件下面的Events：</p>
+<p><img src="/2023/05/04/unity14/4.png" alt></p>
+<p>有加号的按钮就是添加事件函数的按钮，添加以后时间轴上会多出一个白条，表示该处存在事件函数。动画事件的逻辑是，填写Function为事件函数的名称后，当动画播放到该帧，Unity会让Animator组件发出一个Message，然后根据Function名称，调用该游戏对象组件中与Function名称相同的方法，无论有多少个同名方法。</p>
+<p>注意，Events中的时间轴不能被拖动，只能被选中，只有在预览窗口中才能拖动时间轴，达到想要的位置。我们这里选择好时间轴，添加方法名称，下面则是传入的参数，只允许传入这四种参数，所以我们传入一个Int值1/0，就完成了这里的事件函数。</p>
+<p>然后播放动画，此时收枪拔枪动画已经正常了，只不过位置有些不对。</p>
+<h1 id="添加Curve"><a href="#添加Curve" class="headerlink" title="添加Curve"></a>添加Curve</h1><p>在开发中的很多时候，我们需要根据动画播放的进度来调整角色的某些属性，例如滑铲等动画中角色的碰撞体需要修改大小，一种方案是编写脚本来跟踪动画播放进度，不过我们可以直接将修改的属性写入动画文件，也就是Curve，从而方便开发。</p>
+<p>刚才添加了收枪拔枪的动画之后，再打开rig，发现角色的IK动画不正常了，因为rig权重是100，导致角色一开始进入拔枪动画时手就被固定在Target上。所以我们需要让角色的rig权重随着动画播放而慢慢变化，需要IK的时候就升高权重，不需要就降低，才能达到平滑的过渡效果。另外，角色的手也应该处于枪把手的位置，这也需要调整。</p>
+<p>所以我们要做的事情是：</p>
+<ul>
+<li>添加一个背上的Target，这个背上Target和背上的枪的相对位置，应该和手上的枪和手上的Target的相对位置一致；</li>
+<li>将背上Target的Transform按照前面一篇博客介绍的方法做成一个New Clip，就可以删除这个背上的Target了；</li>
+<li>使用Animation的Curve功能调整rig的权重；</li>
+<li>修改状态机</li>
+</ul>
+<p>为了保持相对位置一致，可以把原来的的Target拖动到手上的枪对象下，这样Target就保存了当前相对于父对象枪的相对位置，那么新的Target可以创建到背上的枪对象下面，拷贝这个相对位置即可得到正确的Target位置。</p>
+<p>重点说后面如何使用曲线，之前说Curves是动画保存变换的根本形式，我们自然可以通过类似的形式来添加其他变量的Curves，那么这里要修改的就是左右手的Rig权重，我们打开动画文件的Animation栏，找到下面的Curves并点开，点击加号添加一条曲线。</p>
+<p><img src="/2023/05/04/unity14/6.png" alt></p>
+<p>你可以拖动预览窗口的时间轴选择帧，然后点击菱形按钮添加关键帧并命名，注意这个名字就应该是稍后我们添加在Animator Controller中的Parameter的值，Unity会根据这个名字去匹配Parameter中的变量，然后对变量做对应曲线的修改。</p>
+<p>这里我们要修改的是拔枪的动画，为了让角色拔枪的时候动作平滑，那么对于拔枪的右手，就要让它伸到背后枪把手的位置，也就是背上的Target。当动画刚开始播放的时候Weight肯定为0，快要拿到枪的时候让Weight开始上升，角色右手向枪把靠近，拿到枪的时候Weight肯定为1，达到Target；之后让Weight下降，角色要把手拿开，等拔枪到角色身前时，要进入持枪Idle的动画，右手肯定不在背上了，Weight为0。这就是上图中Right Hand Weight三个关键帧的含义。</p>
+<p>对于左手，只有在拔出枪后，才会接住枪，这里接住枪的位置和持枪Idle中的约束一致，因此我们直接让左手快要接住枪的时候Weight上升，拿到枪的时候Weight为1，之后保持这个值即可。</p>
+<p>现在你大概明白Weight和Target在控制什么了，其实就是角色肢体靠近某个位置的程度，拔枪的时候需要角色将右手放到枪把上，左手等拔出来之后放到枪托上，通过这种方式我们可以控制角色肢体进行精确的抓取操作。</p>
+<p>之后我们要做的，就是从Animator中获取这个Curve的值，然后赋值给Constraint的Weight即可。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> TwoBoneIKConstraint rightHandConstraint;</span><br><span class="line"><span class="keyword">public</span> TwoBoneIKConstraint leftHandConstraint;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SetTwoHandsWeight</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    rightHandConstraint.weight = animator.GetFloat(<span class="string">&quot;Right Hand Weight&quot;</span>);</span><br><span class="line">    leftHandConstraint.weight = animator.GetFloat(<span class="string">&quot;Left Hand Weight&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，你也许注意到另一个问题，Right Hand Weight后半部分保持Weight为0，通过上面的代码，这意味着即使拔枪动画完成了，角色的右手约束仍然为0，此时Target虽然已经变成我们之前调整的持枪Idle，但是约束并不会被应用。所以我们用了这种方式后，就得为其他需要的Clip一并添加曲线，保持这个Weight的正常。</p>
+<p>因此我们找到持枪Idle的动画，添加两条全为1的Curve，名称仍然是和上面图中一致。对于瞄准Idle的动画同样要添加。这样以后我们动作才正式调整完成。</p>
+<p>最后我们只需要调整下状态机，那么这部分动画就制作好了。之前我们设置的移动、瞄准等状态机都不需要修改，现在只是要使用我们刚刚制作的新的Target动画Clip来调整手臂的IK，所以我们为了方便管理，我们可以使用同步机制来同步Arms层的转换，将之前控制Target转换的层和Arms同步，并且勾上Timing，保证有Exit Time的动画时间一致。然后将不同状态对应的Target动画放进去，其余都不需要调整。</p>
+<p>此时运行游戏，可以看到人物的收枪、拔枪、瞄准都比较精确了。</p>
+<h1 id="2D-Blend-Tree原理"><a href="#2D-Blend-Tree原理" class="headerlink" title="2D Blend Tree原理"></a>2D Blend Tree原理</h1><p>之前我们虽然使用了2D混合树，但是并不清楚一些细节和原理。现在我们制作的角色在瞄准的时候虽然能正常移动，但是显然枪口是随着人物移动而移动的，这在射击游戏中显然不对，我们希望的是瞄准时角色的移动不影响瞄准方向，所以需要另外的动画片段才能实现这个移动。</p>
+<h2 id="2D-Simple-Directional"><a href="#2D-Simple-Directional" class="headerlink" title="2D Simple Directional"></a>2D Simple Directional</h2><p>我们之前下载的动画包中已经有了八个方向的瞄准移动动画了，使用2DBlend Tree可以让角色动画在它们之间混合，向左后方移动的角色动画枪口仍然是朝正前方的。那么我们修改瞄准移动的Blend Tree为2D Simple Directional，然后依然使用Unity自动计算它们在Blend Tree中的位置：</p>
+<p><img src="/2023/05/04/unity14/7.png" alt></p>
+<p>点击Compute Positions，Pos X根据X方向的速度计算，Pos Y根据Z方向的速度计算，就得到上面的效果了，可以看到这几个动画片段都被分配到正确位置上。</p>
+<p>下面的Adjust Time Scale则是用于调整动画播放速度，只有重置和同步两个选项，前者不用说了，同步则是计算每个动画的平均播放速度(也就是动画文件中的速度)，然后调节播放速度，让动画的平均速度一致。</p>
+<p>下面我们重点说明Unity如何给混合树进行混合的，如果坐标原点存在动画，如上图，那么此时Unity会根据红点的位置连线成向量n，然后再连线原点和其他动画，找到顺时针和逆时针距离n夹角最小的两个动画，这样连上原点就有三个点了，它们连成一个三角形，红点作为重心，坐标均已知，因此可以用来计算三个点的权重，作为动画播放的权重。</p>
+<p>如果原点不存在动画，做法依然不变，不同的是最后将原点计算的权重平均给其他所有动画，无论其他动画在什么位置。因此，如果原点不存在动画，那么当红点不在重心的时候所有动画都会被分配一定权重，来自原点。</p>
+<p>因此，2D Simple Directional模式下动画混合计算比较快速，但是由于采用同原点连线的方式进行计算权重，导致不能让同一个方向上存在两个动画，而原点的某个180度方向内也不允许一个动画都不存在，否则红点在该区域内也不能匹配到三角形。当不需要在一个方向上混合多个动画时，应该首选这个模式。</p>
+<h2 id="2D-Freedom-Cartesian"><a href="#2D-Freedom-Cartesian" class="headerlink" title="2D Freedom Cartesian"></a>2D Freedom Cartesian</h2><p>下面我们规范名称，进一步了解这个2D混合树机制。我们把动画称为Example Motion，红点蓝点所在的空间称为Parameter Space，红点则是Sample Point，蓝点是Example Point。</p>
+<p>现在我们用$P$表示Sample Point，给定两个Example Point为$P_i, P_j$，定义$i$对$P$的影响力为$h_i(p)=min(1-\frac{\overrightarrow{P_iP} \cdot \overrightarrow{P_iP_j}}{|| \overrightarrow{P_iP_j} ||})$。</p>
+<p>其物理意义是，遍历所有存在的$P_j$，向量$\overrightarrow{P_iP}$在向量$\overrightarrow{P_iP_j}$方向上的投影长度和$\overrightarrow{P_iP_j}$长度的比值，取得其中的最小值。这个比值衡量了$P_i$和$P$之间的远近，当比值越大，说明Sample Point距离Example Point越远；比值越小，说明Sample Point距离Example Point越近。将这个比值取反并归一化，就得到我们定义的影响力了。</p>
+<p>如果再将这个影响力归一化到所有点上，也就是除以所有点影响力之和，就得到了每个点的权重。</p>
+<p>这种混合计算方法就是2D Freedom Cartesian的分配原理，称为Gradient Band Interpolation，是由Unity的开发人员提出的，在笛卡尔坐标系下进行混合计算。<a target="_blank" rel="noopener" href="https://www.shadertoy.com/view/XlKXWR">ShaderToy</a>上还有人复现了该算法。</p>
+<h2 id="2D-Freedom-Directional"><a href="#2D-Freedom-Directional" class="headerlink" title="2D Freedom Directional"></a>2D Freedom Directional</h2><p>Cartesian使用的算法会导致一个问题，我们开发中有可能一个方向上角色需要播放走和跑的动画，那么当两个方向都需要走和跑的时候，即使我们的Sample Point达到边界，此时因为走路对应的Example Point计算出的影响力参考的是跑步动画的点，那么走路的点的影响力并不为0。我们当然希望这时走路的点权重为0。</p>
+<p><img src="/2023/05/04/unity14/8.png" alt></p>
+<p>因此，2D Freedom Directional使用了一个加强的Gradient Band Interpolation算法，在极坐标下进行计算。</p>
+<p>我们根据论文补充一点数学定义(并不是普遍做法)，在笛卡尔坐标系中，向量被定义为两个点坐标的差，现已知两个点的坐标，极坐标下两个点的向量可以表示为：</p>
+<p><img src="/2023/05/04/unity14/9.png" alt></p>
+<p>其中$P_i$和$P_j$分别是两个二维坐标。之所以要除以两个坐标的模的平均，是为了保证单位大小不变。α是先验的权重，用来调整极坐标中半径和角度的重要性。</p>
+<p>除此外，计算方法完全一致。但是由于在极坐标下进行了计算，最后呈现的效果也是不一样的。该算法的时间复杂度达到了O(n^2)。具体的计算细节我们不再展开。</p>
+<p>只需要知道，采用这种方法以后，混合计算就比较精确了。</p>
+<p>到这里我们的动画系统就正式介绍完了。由于Animation系统Bug很多，现在很多项目都启用了该系统，不过作为个人来说可以学习使用。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/04/30/unity13/" rel="prev" title="unity入门(十三)-动画系统(三)">
+                  <i class="fa fa-angle-left"></i> unity入门(十三)-动画系统(三)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/05/07/unity15/" rel="next" title="unity入门(十五)-使用Cinemachine制作俯视角/第三人称控制器">
+                  unity入门(十五)-使用Cinemachine制作俯视角/第三人称控制器 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

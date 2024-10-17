@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言前面两个作业内容以后，我们已经掌握了简单的几何变换以及光栅化过程，现在可以将一个物体和摄像机移动到任意位置，投影得到屏幕坐标，然后通过光栅化与深度测试，计算屏幕上每个像素的值，从而将物体显示到屏幕上。现在，我们再考虑一下真实感，显然颜色是我们忽略的，物体也没有什么阴影，在作业3中，我们使用纹理和光照模型，渲染一个obj对象。着色(Shading)，给每个像素一个确定的颜色表示，让物体显示出明暗">
+<meta property="og:type" content="article">
+<meta property="og:title" content="games101系列(3) 光照和纹理">
+<meta property="og:url" content="https://ankiima.github.io/2024/10/05/games3/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="前言前面两个作业内容以后，我们已经掌握了简单的几何变换以及光栅化过程，现在可以将一个物体和摄像机移动到任意位置，投影得到屏幕坐标，然后通过光栅化与深度测试，计算屏幕上每个像素的值，从而将物体显示到屏幕上。现在，我们再考虑一下真实感，显然颜色是我们忽略的，物体也没有什么阴影，在作业3中，我们使用纹理和光照模型，渲染一个obj对象。着色(Shading)，给每个像素一个确定的颜色表示，让物体显示出明暗">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/1.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/2.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/3.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/6.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/4.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/5.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/7.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/8.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/9.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/10.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/12.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/13.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/11.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/14.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/15.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/16.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/17.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/18.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/19.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/20.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/21.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/22.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/23.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/24.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/25.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/26.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/27.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/28.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/29.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/30.jpg">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/normal.png">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/phong.png">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/texture.png">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/Bump.png">
+<meta property="og:image" content="https://ankiima.github.io/2024/10/05/games3/displacement.png">
+<meta property="article:published_time" content="2024-10-05T08:48:41.180Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.180Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="gmaes101">
+<meta property="article:tag" content="Computer Graphics">
+<meta property="article:tag" content="Rsterization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2024/10/05/games3/1.jpg">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2024/10/05/games3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2024/10/05/games3/","path":"2024/10/05/games3/","title":"games101系列(3) 光照和纹理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>games101系列(3) 光照和纹理 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Blinn%E2%80%94Phong-Reflectance-Model"><span class="nav-number">2.</span> <span class="nav-text">Blinn—Phong Reflectance Model</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Diffuse-reflection"><span class="nav-number">2.1.</span> <span class="nav-text">Diffuse reflection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Specular-highlights"><span class="nav-number">2.2.</span> <span class="nav-text">Specular highlights</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ambient-lighting"><span class="nav-number">2.3.</span> <span class="nav-text">Ambient lighting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9D%80%E8%89%B2%E9%A2%91%E7%8E%87"><span class="nav-number">3.</span> <span class="nav-text">着色频率</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Flat-Shading-%E5%B9%B3%E9%9D%A2%E7%9D%80%E8%89%B2"><span class="nav-number">3.1.</span> <span class="nav-text">Flat Shading 平面着色</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gouraud-Shading-%E9%A1%B6%E7%82%B9%E7%9D%80%E8%89%B2"><span class="nav-number">3.2.</span> <span class="nav-text">Gouraud Shading 顶点着色</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Phong-Shading-%E5%83%8F%E7%B4%A0%E7%9D%80%E8%89%B2"><span class="nav-number">3.3.</span> <span class="nav-text">Phong Shading 像素着色</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E6%97%B6%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF"><span class="nav-number">4.</span> <span class="nav-text">实时渲染管线</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%B9%E7%90%86%E6%98%A0%E5%B0%84"><span class="nav-number">5.</span> <span class="nav-text">纹理映射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%83%8F%E7%B4%A0%E6%94%BE%E5%A4%A7"><span class="nav-number">5.1.</span> <span class="nav-text">像素放大</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%83%8F%E7%B4%A0%E7%BC%A9%E5%B0%8F"><span class="nav-number">5.2.</span> <span class="nav-text">像素缩小</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MipMap"><span class="nav-number">5.2.1.</span> <span class="nav-text">MipMap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC"><span class="nav-number">5.2.1.1.</span> <span class="nav-text">三线性插值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E5%90%91%E5%BC%82%E6%80%A7"><span class="nav-number">5.2.2.</span> <span class="nav-text">各向异性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">5.3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%85%89%E8%B4%B4%E5%9B%BE-Environment-Map"><span class="nav-number">5.3.1.</span> <span class="nav-text">环境光贴图 Environment Map</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%B9%E5%87%B8%E8%B4%B4%E5%9B%BE-Bump-Mapping"><span class="nav-number">5.4.</span> <span class="nav-text">凹凸贴图 Bump Mapping</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E7%A7%BB%E8%B4%B4%E5%9B%BE-Displacement-mapping"><span class="nav-number">5.4.1.</span> <span class="nav-text">位移贴图 Displacement mapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%8C%96%E7%BA%B9%E7%90%86-Procedural-Noise-amp-Procedural-textures"><span class="nav-number">5.4.2.</span> <span class="nav-text">程序化纹理 Procedural Noise&amp;Procedural textures</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E8%AE%A1%E7%AE%97%E7%9D%80%E8%89%B2-Precomputed-Shading"><span class="nav-number">5.4.3.</span> <span class="nav-text">预计算着色 Precomputed Shading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3D-Texture-and-Volume-rendering"><span class="nav-number">5.4.4.</span> <span class="nav-text">3D Texture and Volume rendering</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A3"><span class="nav-number">6.</span> <span class="nav-text">作业3</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%95%E5%BD%B1%E7%9F%A9%E9%98%B5"><span class="nav-number">6.1.</span> <span class="nav-text">投影矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Normal"><span class="nav-number">6.2.</span> <span class="nav-text">Normal</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Phong"><span class="nav-number">6.3.</span> <span class="nav-text">Phong</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Texture"><span class="nav-number">6.4.</span> <span class="nav-text">Texture</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%B9%E5%87%B8%E8%B4%B4%E5%9B%BE"><span class="nav-number">6.5.</span> <span class="nav-text">凹凸贴图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E7%A7%BB%E8%B4%B4%E5%9B%BE"><span class="nav-number">6.6.</span> <span class="nav-text">位移贴图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">6.7.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2024/10/05/games3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="games101系列(3) 光照和纹理 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          games101系列(3) 光照和纹理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-05 16:48:41" itemprop="dateCreated datePublished" datetime="2024-10-05T16:48:41+08:00">2024-10-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/games101/" itemprop="url" rel="index"><span itemprop="name">games101</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前面两个作业内容以后，我们已经掌握了简单的几何变换以及光栅化过程，现在可以将一个物体和摄像机移动到任意位置，投影得到屏幕坐标，然后通过光栅化与深度测试，计算屏幕上每个像素的值，从而将物体显示到屏幕上。现在，我们再考虑一下真实感，显然颜色是我们忽略的，物体也没有什么阴影，在作业3中，我们使用纹理和光照模型，渲染一个obj对象。着色(Shading)，给每个像素一个确定的颜色表示，让物体显示出明暗特征；纹理，让物体表面呈现不同的性质(凹凸，颜色等)。之前的作业中，我们都是用的黑白颜色来表示物体。<br><span id="more"></span><br>现在，我们先介绍Blinn-Phong反射模型，这是一种简单的光照模型；然后再看看纹理技术的实现，最后在作业中将这些方法全部实现。</p>
+<h1 id="Blinn—Phong-Reflectance-Model"><a href="#Blinn—Phong-Reflectance-Model" class="headerlink" title="Blinn—Phong Reflectance Model"></a>Blinn—Phong Reflectance Model</h1><p>通过观察光照下的一个光滑物体表面(下面的茶杯)，这种模型将物体上的光分为三种类。<br><img src="/2024/10/05/games3/1.jpg" alt="场景"></p>
+<ul>
+<li>Specular highlights，镜面光，是物体上最亮的那部分高光；</li>
+<li>Diffuse reflection，漫反射光，是物体上渐变的那部分光，在面对光源的地方让物体显得比较明亮，背对光源的地方让物体显得比较暗淡；</li>
+<li>Ambient lighting，环境光，环境中其他物体反射到茶杯上的光；</li>
+</ul>
+<p>通过这三种类型的光，就能简单地模拟光照情况。现在从数学角度介绍一下这几种光的计算方法。</p>
+<h2 id="Diffuse-reflection"><a href="#Diffuse-reflection" class="headerlink" title="Diffuse reflection"></a>Diffuse reflection</h2><p>显然，这种光出现的地方应该和物体与光源的角度有关。正对光源就应该比较亮，否则就比较暗。所以我们先定义几个方向向量，然后在此基础上具体计算。<br><img src="/2024/10/05/games3/2.jpg" alt="场景"><br>l是从待着色点指向光源的单位向量，n是待着色点在物体表面的法线向量，b则是从待着色点指向摄像机的单位向量。初次之外，还做一种假设，一个点光源朝四面八方发出光线，能量会逐渐衰减，这里假设能量与离光源的距离的平方成反比。最后得到这样的式子，被称为Lambert’s law：<br><img src="/2024/10/05/games3/3.jpg" alt="场景"><br>其中 <em>Ld</em> 是待着色点光强，<em>Kd</em> 是漫反射系数，决定物体接受光照以后是什么颜色；<em>I</em> 表示点光源的能量，<em>r</em> 表示距离；最后一项决定光源以这种角度照射到着色点，会接受多少能量，且这个值不会为负数，否则后方照来的光线也会照亮待着色点。</p>
+<p>漫反射光的位置与摄像机视角无关，只和光源与物体表面法线的夹角有关。</p>
+<h2 id="Specular-highlights"><a href="#Specular-highlights" class="headerlink" title="Specular highlights"></a>Specular highlights</h2><p>从直觉上感受，镜面光应该与摄像机视角有关了，从光学上解释，这部分光是光源的光线反射出来的，包含了大部分的能量，所以比较明亮。</p>
+<p>通过反射，我们定义一个半程向量h，也就是向量l和v的角平分线向量。<br><img src="/2024/10/05/games3/6.jpg" alt="场景"><br>之所以使用这个向量，是因为我们假设当观察视角和反射光方向比较接近的时候，看到的镜面光比较强；而这个时候，角平分线向量就应该比较接近法线向量，也就是直接比较法线向量n和这个半程向量就可以得出光照结果了，避免了反射光的复杂计算。<br><img src="/2024/10/05/games3/4.jpg" alt="场景"><br>然后和漫反射相似，也定义一个镜面反射系数 <em>Ks</em>， 另外还引入一个容忍度 <em>p</em>。<br><img src="/2024/10/05/games3/5.jpg" alt="场景"><br>由于后一项一定是在[0,1]之间的值，所以容忍度p越大，随着夹角变大，该项下降地就越快，镜面光就越暗，也就是容忍度与镜面光面积大小成反比。</p>
+<h2 id="Ambient-lighting"><a href="#Ambient-lighting" class="headerlink" title="Ambient lighting"></a>Ambient lighting</h2><p>由于是环境光，所以从任何方向观察都应该没有变化，而且还不和光源有关系，换句话说这种光应该是常数项。<br><img src="/2024/10/05/games3/7.jpg" alt="场景"><br><em>Ka</em> 是环境光反射系数，<em>Ia</em>则是环境光强度。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>现在我们将三种光加起来，这就是Blinn-Phong反射模型的效果。不过要注意，这种光照模型是各向同性的，如果固定视角和光源，旋转物体，得到的效果完全一样，因此不适用于各向异性材质。<br><img src="/2024/10/05/games3/8.jpg" alt="场景"></p>
+<h1 id="着色频率"><a href="#着色频率" class="headerlink" title="着色频率"></a>着色频率</h1><h2 id="Flat-Shading-平面着色"><a href="#Flat-Shading-平面着色" class="headerlink" title="Flat Shading 平面着色"></a>Flat Shading 平面着色</h2><p>这种着色方式对每个三角形进行一次着色，每个面计算一个法线向量。<br><img src="/2024/10/05/games3/9.jpg" alt="场景"></p>
+<h2 id="Gouraud-Shading-顶点着色"><a href="#Gouraud-Shading-顶点着色" class="headerlink" title="Gouraud Shading 顶点着色"></a>Gouraud Shading 顶点着色</h2><p>对每个顶点进行一次着色，以插值的方式计算所有点的颜色。<br><img src="/2024/10/05/games3/10.jpg" alt="场景"><br>这样一来每个顶点都需要一个法线，使用每个顶点相邻面的法线和的平均值(例如加权和平均)。<br><img src="/2024/10/05/games3/12.jpg" alt="场景"><br><img src="/2024/10/05/games3/13.jpg" alt="场景"></p>
+<h2 id="Phong-Shading-像素着色"><a href="#Phong-Shading-像素着色" class="headerlink" title="Phong Shading 像素着色"></a>Phong Shading 像素着色</h2><p>这种着色方式并不是前面提到的光照模型，对每个像素计算一个法线，方法就是先计算每个顶点的法线，然后利用重心坐标，求出三角形内部的所有像素的法线。<br><img src="/2024/10/05/games3/11.jpg" alt="场景"></p>
+<h1 id="实时渲染管线"><a href="#实时渲染管线" class="headerlink" title="实时渲染管线"></a>实时渲染管线</h1><p><img src="/2024/10/05/games3/14.jpg" alt="场景"></p>
+<p>现在可以好好总结渲染管线了，首先我们定义一系列顶点，以及这些顶点的连接方式，从而构成一个物体。<br><img src="/2024/10/05/games3/15.jpg" alt="场景"><br>然后对这些顶点流斤进行MVP变换，移动到我们想要的位置。确定以后，按照连接方式连接这些顶点，形成三角形流。<br><img src="/2024/10/05/games3/16.jpg" alt="场景"><br>接着像素在许多三角形上进行采样，判断内部外部，生成片段流。这里的片段流指的是一个采样点覆盖的区域，例如一个像素采样一次就是一个片段，一个像素如果有四个子像素采样就是四个片段。<br><img src="/2024/10/05/games3/17.jpg" alt="场景"><br>进行深度测试，用Z-Buffer判断不同片段的可见性。<br><img src="/2024/10/05/games3/18.jpg" alt="场景"><br>完成后光照模型也在这里应用，依然对可见的片段流处理。通过插值求出片段流的法线向量。<br><img src="/2024/10/05/games3/19.jpg" alt="场景"><br>纹理操作同样对片段进行处理，这部分后面再介绍。</p>
+<p>根据处理对象的不同，各种计算也发生在不同的阶段，例如对顶点进行几何变换就是顶点处理阶段发生的，规定三角形法线自然也要到三角形处理阶段完成，反比后面计算顶点法线，甚至进行插值。当然不同的API有不同的渲染管线定义，大致和这个类似，也不用完全依照这个记忆，重在理解。</p>
+<h1 id="纹理映射"><a href="#纹理映射" class="headerlink" title="纹理映射"></a>纹理映射</h1><p>物体上如果通过手动指定的方式实现各种细节，需要的数据量是非常大的，所以采用纹理进行辅助，让物体上的一个点能够通过查询的方式找到它对应的属性，这个属性可以是颜色，也可以是几何特点，还可以是其他特征。</p>
+<p>而纹理函数通常是二维的函数，定义纹理坐标(u,v)用来查询纹理上的值，纹理坐标又对应实际渲染像素(i,j)，通过某种方式将像素(或者说片段)的坐标映射到纹理坐标，查询需要的特征，就是纹理映射的过程。</p>
+<h2 id="像素放大"><a href="#像素放大" class="headerlink" title="像素放大"></a>像素放大</h2><p>纹理分辨率过小，导致纹理映射的纹理坐标出现非整数值，所以需要将纹理放大。这里有三种放大纹理的方法，Nearst，Bilinear，Bicubic。<br><img src="/2024/10/05/games3/20.jpg" alt="场景"><br>Nearst，根据纹理坐标取最近的整数值，即四舍五入，不过这样导致不同的纹理查询到相同的颜色。</p>
+<p>Bilinear，双线性插值，在u，v方向上先选择一个方向进行线性插值，然后再使用插值结果在另外一个方向进行线性插值，就是双线性插值。<br><img src="/2024/10/05/games3/21.jpg" alt="场景"><br>如图先选择水平u方向插值，得到u0和u1，然后用u1和u0的垂直v方向插值，得到目标点的颜色值。</p>
+<p>Bicubic，和双线性插值类似，不过取16个相邻的纹理颜色而不是4个进行插值。</p>
+<h2 id="像素缩小"><a href="#像素缩小" class="headerlink" title="像素缩小"></a>像素缩小</h2><p>纹理分辨率过大，查询的时候一个像素可能对应多个纹理值，应该缩小纹理。提高采样频率可以解决，例如前面的MSAA，但是太耗费时间。</p>
+<h3 id="MipMap"><a href="#MipMap" class="headerlink" title="MipMap"></a>MipMap</h3><p>采用范围查询代替点查询，具体做法是使用Mipmap，不断对一个纹理进行区域平均(平均一定大小块的颜色值)。<br><img src="/2024/10/05/games3/22.jpg" alt="场景"><br>但是怎么确定查询那个维度等级的MipMap呢？首先我们知道，维度每上升一次，纹理大小就缩小一倍，因此我们要找到这个缩放的比例，就先定义一个距离L，在一个像素查询纹理的同时，查询它相邻两个像素的纹理坐标，通过这三个纹理坐标计算L如下：<br><img src="/2024/10/05/games3/23.jpg" alt="场景"><br>然后直接对L取对数，找到缩小多少倍，就得到维度D了。当然D可能不是整数，需要进一步处理。如果直接四舍五入，得到的纹理显然不连续。</p>
+<h4 id="三线性插值"><a href="#三线性插值" class="headerlink" title="三线性插值"></a>三线性插值</h4><p>对于D不是正数的情况，当然还可以通过插值解决。在D的两个上下界维度的MipMap中，分别做双线性插值，找到两个对应的纹理特征，再用这两个特征在MipMap维度上插值。<br><img src="/2024/10/05/games3/24.jpg" alt="场景"><br>通过这样的方式查新一个像素的纹理，整个图形得到的纹理特征就显然是连续的了。</p>
+<h3 id="各向异性"><a href="#各向异性" class="headerlink" title="各向异性"></a>各向异性</h3><p>现在看看MipMap处理后的结果图形。<br><img src="/2024/10/05/games3/25.jpg" alt="场景"><br>这是直接采样的结果。<br><img src="/2024/10/05/games3/26.jpg" alt="场景"><br>通过上面的MipMap得到的结果，在远处的图形还是变得模糊了，这是因为MipMap处理的仅是正方形，前面进行距离L计算的时候，取像素邻居模拟的是一个正方形形状，但是有时候映射到纹理图上这个像素邻居组成的矩形并不是正方形，而是矩形或其他形状。而且，三线性插值本来也是一种近似处理，所以得到的结果显然没有那么精细。<br><img src="/2024/10/05/games3/27.jpg" alt="场景"></p>
+<p>解决的方法就是使用各向异性过滤，可以设置将MipMap在水平或竖直方向进行压缩，从而解决映射结果为水平矩形或者竖直矩形的问题。但是对于斜的矩形，仍然效果不好，可以使用EWA过滤解决，这里不再讨论。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><h3 id="环境光贴图-Environment-Map"><a href="#环境光贴图-Environment-Map" class="headerlink" title="环境光贴图 Environment Map"></a>环境光贴图 Environment Map</h3><p>用贴图记录各个方向的光照，表示环境光。</p>
+<h2 id="凹凸贴图-Bump-Mapping"><a href="#凹凸贴图-Bump-Mapping" class="headerlink" title="凹凸贴图 Bump Mapping"></a>凹凸贴图 Bump Mapping</h2><p>记录顶点法线的偏移，但是不改变物体原本的几何信息。查询到纹理坐标后，先求该坐标在凹凸曲线上的法线(通过导数)，然后再垂直并取单位值得到法线向量。图中h表示高度函数，C表示扰动程度。<br><img src="/2024/10/05/games3/28.jpg" alt="场景"><br><img src="/2024/10/05/games3/29.jpg" alt="场景"></p>
+<p>三维的情况，先求其中两个方向的切线，然后同样垂直得到结果。<br><img src="/2024/10/05/games3/30.jpg" alt="场景"></p>
+<h3 id="位移贴图-Displacement-mapping"><a href="#位移贴图-Displacement-mapping" class="headerlink" title="位移贴图 Displacement mapping"></a>位移贴图 Displacement mapping</h3><p>使用和凹凸贴图相同的原理，不过会使得顶点实际发生移动。凹凸贴图和位移贴图会在作业中实现。</p>
+<h3 id="程序化纹理-Procedural-Noise-amp-Procedural-textures"><a href="#程序化纹理-Procedural-Noise-amp-Procedural-textures" class="headerlink" title="程序化纹理 Procedural Noise&amp;Procedural textures"></a>程序化纹理 Procedural Noise&amp;Procedural textures</h3><p>定义一种噪声函数作为纹理来进行查询。</p>
+<h3 id="预计算着色-Precomputed-Shading"><a href="#预计算着色-Precomputed-Shading" class="headerlink" title="预计算着色 Precomputed Shading"></a>预计算着色 Precomputed Shading</h3><p>纹理存储环境光遮蔽的信息，着色的时候使用其他着色结果与这个信息作用，得到结果。</p>
+<h3 id="3D-Texture-and-Volume-rendering"><a href="#3D-Texture-and-Volume-rendering" class="headerlink" title="3D Texture and Volume rendering"></a>3D Texture and Volume rendering</h3><p>纹理是三维的，应用在体积渲染中。</p>
+<h1 id="作业3"><a href="#作业3" class="headerlink" title="作业3"></a>作业3</h1><p>作业3的内容比较多，在这次作业中实现了一个完整的渲染框架，包括前面的变换，以及这次的光照纹理，一共实现了五种渲染，使用法线作为颜色的Normal，使用Phong光照模型的Phong，应用了纹理的Texture，使用了凹凸贴图并且以法线作为颜色的Bump，最后应用了位移贴图的Displacement，要编写的就是这些shader，其中第一个shader已经给出。</p>
+<h2 id="投影矩阵"><a href="#投影矩阵" class="headerlink" title="投影矩阵"></a>投影矩阵</h2><p>使用前面编写的函数即可。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float zNear, float zFar)</span><br><span class="line">&#123;</span><br><span class="line">    // TODO: Use the same projection matrix from the previous assignments</span><br><span class="line">    // Students will implement this function</span><br><span class="line"></span><br><span class="line">    Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();</span><br><span class="line"></span><br><span class="line">    Eigen::Matrix4f M_p_o, M_scale, M_translate;</span><br><span class="line"></span><br><span class="line">    //计算视锥</span><br><span class="line">    float top, bottom, left, right, near, far, fovY;</span><br><span class="line"></span><br><span class="line">    fovY = eye_fov / 180 * PI;</span><br><span class="line"></span><br><span class="line">    near = -zNear;</span><br><span class="line">    far = zFar;</span><br><span class="line"></span><br><span class="line">    top = tan(fovY / 2) * zNear;</span><br><span class="line">    bottom = -top;</span><br><span class="line"></span><br><span class="line">    right = top * aspect_ratio;</span><br><span class="line">    left = -right;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    //计算矩阵</span><br><span class="line">    M_scale &lt;&lt; 2 / (right - left), 0, 0, 0,</span><br><span class="line">        0, 2 / (top - bottom), 0, 0,</span><br><span class="line">        0, 0, 2 / (near - far), 0,</span><br><span class="line">        0, 0, 0, 1;</span><br><span class="line"></span><br><span class="line">    M_translate &lt;&lt;</span><br><span class="line">        1, 0, 0, -(right + left) / 2,//==0</span><br><span class="line">        0, 1, 0, -(top + bottom) / 2,//==0</span><br><span class="line">        0, 0, 1, -(near + far) / 2,//!=0</span><br><span class="line">        0, 0, 0, 1;</span><br><span class="line"></span><br><span class="line">    M_p_o &lt;&lt; near, 0, 0, 0,</span><br><span class="line">        0, near, 0, 0,</span><br><span class="line">        0, 0, near + far, -near * far,</span><br><span class="line">        0, 0, 1, 0;</span><br><span class="line"></span><br><span class="line">    projection = M_scale * M_translate * M_p_o * projection;</span><br><span class="line">    return projection;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Normal"><a href="#Normal" class="headerlink" title="Normal"></a>Normal</h2><p>第一个模型由于shader已经给出，现在反而要求是编写片段的各种插值量，修改第二次作业的光栅化函数。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">//Screen space rasterization</span><br><span class="line">void rst::rasterizer::rasterize_triangle(const Triangle&amp; t, const std::array&lt;Eigen::Vector3f, 3&gt;&amp; view_pos) </span><br><span class="line">&#123;</span><br><span class="line">    // TODO: From your HW3, get the triangle rasterization code.</span><br><span class="line">    auto v = t.toVector4();//返回顶点的齐次坐标形式</span><br><span class="line"></span><br><span class="line">    // TODO : Find out the bounding box of current triangle.</span><br><span class="line">    int box_l, box_r, box_b, box_t;</span><br><span class="line">    box_l = static_cast&lt;int&gt; (std::min(v[0].x(), std::min(v[1].x(), v[2].x())));</span><br><span class="line">    box_r = static_cast&lt;int&gt; (std::max(v[0].x(), std::max(v[1].x(), v[2].x())));</span><br><span class="line">    box_b = static_cast&lt;int&gt; (std::min(v[0].y(), std::min(v[1].y(), v[2].y())));</span><br><span class="line">    box_t = static_cast&lt;int&gt; (std::max(v[0].y(), std::max(v[1].y(), v[2].y())));</span><br><span class="line"></span><br><span class="line">    std::vector&lt;Eigen::Vector2f&gt; position&#123;</span><br><span class="line">        &#123;0.25, 0.25&#125;,</span><br><span class="line">        &#123;0.75, 0.25&#125;,</span><br><span class="line">        &#123;0.25, 0.75&#125;,</span><br><span class="line">        &#123;0.75, 0.75&#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    // iterate through the pixel and find if the current pixel is inside the triangle</span><br><span class="line">    for (int i = box_l; i &lt;= box_r; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        for (int j = box_b; j &lt;= box_t; j++)</span><br><span class="line">        &#123;</span><br><span class="line">            int count = 0;</span><br><span class="line">            for (int index = 0; index &lt; 4; index++)</span><br><span class="line">            &#123;</span><br><span class="line">                if (insideTriangle(position[index].x() + i, position[index].y() + j, t.v))</span><br><span class="line">                    count++;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            // If so, use the following code to get the interpolated z value.</span><br><span class="line">            if (count &gt; 0)</span><br><span class="line">            &#123;</span><br><span class="line">                // TODO: Inside your rasterization loop:</span><br><span class="line">                //    * v[i].w() is the vertex view space depth value z.</span><br><span class="line">                //    * Z is interpolated view space depth for the current pixel</span><br><span class="line">                //    * zp is depth between zNear and zFar, used for z-buffer</span><br><span class="line">                float alpha, beta, gamma;</span><br><span class="line">                std::tie(alpha, beta, gamma) = computeBarycentric2D(static_cast&lt;float&gt;(i + 0.5), static_cast&lt;float&gt;(j + 0.5), t.v);</span><br><span class="line">                float Z = 1.0 / (alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());</span><br><span class="line">                float zp = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();</span><br><span class="line">                zp *= Z;</span><br><span class="line"></span><br><span class="line">                if (depth_buf[get_index(i, j)] &gt; -zp)</span><br><span class="line">                &#123;</span><br><span class="line">                    // TODO : set the current pixel (use the set_pixel function) to the color of the triangle (use getColor function) if it should be painted.</span><br><span class="line">                    depth_buf[get_index(i, j)] = -zp;</span><br><span class="line"></span><br><span class="line">                    //插值求颜色，法线，纹理坐标，着色坐标</span><br><span class="line">                    // TODO: Interpolate the attributes:</span><br><span class="line">                    // auto interpolated_color</span><br><span class="line">                    // auto interpolated_normal</span><br><span class="line">                    // auto interpolated_texcoords</span><br><span class="line">                    // auto interpolated_shadingcoords</span><br><span class="line">                    auto interpolated_color = interpolate(alpha, beta, gamma, t.color[0], t.color[1], t.color[2], 1);</span><br><span class="line">                    auto interpolated_normal = interpolate(alpha, beta, gamma, t.normal[0], t.normal[1], t.normal[2], 1).normalized();</span><br><span class="line">                    auto interpolated_texcoords = interpolate(alpha, beta, gamma, t.tex_coords[0], t.tex_coords[1], t.tex_coords[2], 1);</span><br><span class="line">                    auto interpolated_shadingcoords = interpolate(alpha, beta, gamma, view_pos[0], view_pos[1], view_pos[2], 1);</span><br><span class="line">                    // Use: Instead of passing the triangle&#x27;s color directly to the frame buffer, pass the color to the shaders first to get the final color;</span><br><span class="line">                    fragment_shader_payload payload(interpolated_color, interpolated_normal.normalized(), interpolated_texcoords, texture ? &amp;*texture : nullptr);</span><br><span class="line">                    payload.view_pos = interpolated_shadingcoords;</span><br><span class="line">                    auto pixel_color = fragment_shader(payload);</span><br><span class="line"></span><br><span class="line">                    Eigen::Vector2i point;</span><br><span class="line">                    point &lt;&lt; i, j;</span><br><span class="line">                    set_pixel(point, pixel_color * (count / 4.0));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>修改一个是上面几项插值计算，颜色，法线，纹理坐标，着色坐标(着色器要用)，计算出重心坐标以后用函数即可。另外还有一个改动是set_pixel，作业二中传入的point三维坐标改成了二维，因为像素只用XY坐标。最后注释给出Z轴插值坐标计算，与作业二相比改了一下名字。<br>实际上必要的代码都给了，但是需要调整代码，不然写完这个函数以后用Normal着色器很可能会报错，多修改几次。<br><img src="/2024/10/05/games3/normal.png" alt="场景"></p>
+<h2 id="Phong"><a href="#Phong" class="headerlink" title="Phong"></a>Phong</h2><p>现在开始，就可以正式编写shader了。首先看看给出的法线着色器例子，熟悉一下传入的参数是什么。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Eigen::Vector3f normal_fragment_shader(const fragment_shader_payload&amp; payload)</span><br><span class="line">&#123;</span><br><span class="line">    Eigen::Vector3f return_color = (payload.normal.head&lt;3&gt;().normalized() + Eigen::Vector3f(1.0f, 1.0f, 1.0f)) / 2.f;</span><br><span class="line">    Eigen::Vector3f result;</span><br><span class="line">    result &lt;&lt; return_color.x() * 255, return_color.y() * 255, return_color.z() * 255;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>分析代码，payload包含了片段的颜色、法线，纹理坐标、顶点转换到视角坐标系中的坐标信息，这个着色器中将片段的法线坐标归一化后加上0.5，然后放大到255的颜色值，返回就构成了上面的颜色结果，还是比较好看的。</p>
+<p>根据前面介绍的理论，Phong反射光照模型可以用一个公式表示片段颜色，框架中也给了模型中一些值的取值，要做的只是用这些值，在循环中分别计算不同的光照效果，然后相加。注意环境光由于不会改变，所以可以放在循环体外。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload&amp; payload)</span><br><span class="line">&#123;</span><br><span class="line">    Eigen::Vector3f ka = Eigen::Vector3f(0.005, 0.005, 0.005);</span><br><span class="line">    Eigen::Vector3f kd = payload.color;</span><br><span class="line">    Eigen::Vector3f ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937);</span><br><span class="line"></span><br><span class="line">    auto l1 = light&#123;&#123;20, 20, 20&#125;, &#123;500, 500, 500&#125;&#125;;</span><br><span class="line">    auto l2 = light&#123;&#123;-20, 20, 0&#125;, &#123;500, 500, 500&#125;&#125;;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;light&gt; lights = &#123;l1, l2&#125;;</span><br><span class="line">    Eigen::Vector3f amb_light_intensity&#123;10, 10, 10&#125;;</span><br><span class="line">    Eigen::Vector3f eye_pos&#123;0, 0, 10&#125;;</span><br><span class="line"></span><br><span class="line">    float p = 150;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f color = payload.color;</span><br><span class="line">    Eigen::Vector3f point = payload.view_pos;</span><br><span class="line">    Eigen::Vector3f normal = payload.normal;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f result_color = &#123;0, 0, 0&#125;;</span><br><span class="line">    for (auto&amp; light : lights)</span><br><span class="line">    &#123;</span><br><span class="line">        // TODO: For each light source in the code, calculate what the *ambient*, *diffuse*, and *specular* </span><br><span class="line">        // components are. Then, accumulate that result on the *result_color* object.</span><br><span class="line"></span><br><span class="line">        Eigen::Vector3f l = (light.position - point).normalized();</span><br><span class="line">        Eigen::Vector3f v = (eye_pos - point).normalized();</span><br><span class="line">        Eigen::Vector3f h = (l + v).normalized();</span><br><span class="line"></span><br><span class="line">        float r = (light.position - point).dot(light.position - point);</span><br><span class="line">        //diffuse</span><br><span class="line">        Eigen::Vector3f Ld = kd.cwiseProduct(light.intensity / r) * std::max(0.0f, normal.dot(l));</span><br><span class="line">        //specular</span><br><span class="line">        Eigen::Vector3f Ls = ks.cwiseProduct(light.intensity / r) * std::pow(std::max(0.0f, normal.dot(h)), p);</span><br><span class="line">        result_color += Ls + Ld;</span><br><span class="line">    &#125;</span><br><span class="line">    Eigen::Vector3f La = ka.cwiseProduct(amb_light_intensity);</span><br><span class="line">    result_color += La;</span><br><span class="line"></span><br><span class="line">    return result_color * 255.f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>首先规定了三种光的反射系数(反射光和总光能量的比例)，其中漫反射就是直接采用在前面插值计算出的颜色，作为物体表面的颜色。然后规定了两个光源，指定了位置和强度(对应RGB分量强度)，确定了摄像机位置，环境光颜色。然后再次规定了片段坐标point，片段法线normal，结合前面规定的光源位置和摄像机位置，还有物体在视点坐标系中的坐标，就可以用这个循环计算两个光源的效果了。</p>
+<p>循环里面，计算理论部分定义的l，v，h向量判断光照情况，然后就是公式计算，得到结果颜色后仍然是归一化的结果，放大到255的颜色区间。这样，就完成了一个着色器，不过我看到网上有人说，将环境光计算放到循环里会导致画面变暗，应该是result_color加了两次环境光，环境光有比较暗的情况，导致归一化的结果也变暗了。完成后是下面这个样子。<br><img src="/2024/10/05/games3/phong.png" alt="场景"></p>
+<h2 id="Texture"><a href="#Texture" class="headerlink" title="Texture"></a>Texture</h2><p>现在在上面光照模型的基础上，还要加上纹理的应用。原理就是修改光照模型的漫反射颜色，其他完全相同。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">Eigen::Vector3f texture_fragment_shader(const fragment_shader_payload&amp; payload)</span><br><span class="line">&#123;</span><br><span class="line">    Eigen::Vector3f return_color = &#123;0, 0, 0&#125;;</span><br><span class="line">    if (payload.texture)</span><br><span class="line">    &#123;</span><br><span class="line">        // TODO: Get the texture value at the texture coordinates of the current fragment</span><br><span class="line">        return_color = payload.texture-&gt;getColor(payload.tex_coords.x(), payload.tex_coords.y());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    Eigen::Vector3f texture_color;</span><br><span class="line">    texture_color &lt;&lt; return_color.x(), return_color.y(), return_color.z();</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f ka = Eigen::Vector3f(0.005, 0.005, 0.005);</span><br><span class="line">    Eigen::Vector3f kd = texture_color / 255.f;</span><br><span class="line">    Eigen::Vector3f ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937);</span><br><span class="line"></span><br><span class="line">    auto l1 = light&#123;&#123;20, 20, 20&#125;, &#123;500, 500, 500&#125;&#125;;</span><br><span class="line">    auto l2 = light&#123;&#123;-20, 20, 0&#125;, &#123;500, 500, 500&#125;&#125;;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;light&gt; lights = &#123;l1, l2&#125;;</span><br><span class="line">    Eigen::Vector3f amb_light_intensity&#123;10, 10, 10&#125;;</span><br><span class="line">    Eigen::Vector3f eye_pos&#123;0, 0, 10&#125;;</span><br><span class="line"></span><br><span class="line">    float p = 150;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f color = texture_color;</span><br><span class="line">    Eigen::Vector3f point = payload.view_pos;</span><br><span class="line">    Eigen::Vector3f normal = payload.normal;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f result_color = &#123;0, 0, 0&#125;;</span><br><span class="line"></span><br><span class="line">    for (auto&amp; light : lights)</span><br><span class="line">    &#123;</span><br><span class="line">        Eigen::Vector3f l = (light.position - point).normalized();</span><br><span class="line">        Eigen::Vector3f v = (eye_pos - point).normalized();</span><br><span class="line">        Eigen::Vector3f h = (l + v).normalized();</span><br><span class="line"></span><br><span class="line">        float r = (light.position - point).dot(light.position - point);</span><br><span class="line">        //diffuse</span><br><span class="line">        Eigen::Vector3f Ld = kd.cwiseProduct(light.intensity / r) * std::max(0.0f, normal.dot(l));</span><br><span class="line">        //specular</span><br><span class="line">        Eigen::Vector3f Ls = ks.cwiseProduct(light.intensity / r) * std::pow(std::max(0.0f, normal.dot(h)), p);</span><br><span class="line">        result_color += Ls + Ld;</span><br><span class="line">    &#125;</span><br><span class="line">    Eigen::Vector3f La = ka.cwiseProduct(amb_light_intensity);</span><br><span class="line">    result_color += La;</span><br><span class="line"></span><br><span class="line">    return result_color * 255.f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>实际上，纹理坐标和纹理都已经给到片段的payload中了，而且方法也写好，向上面那样调用，会得到一个三维的颜色值，作为漫反射系数，然后进入Phong反射模型计算颜色即可。<br><img src="/2024/10/05/games3/texture.png" alt="场景"></p>
+<h2 id="凹凸贴图"><a href="#凹凸贴图" class="headerlink" title="凹凸贴图"></a>凹凸贴图</h2><p>知道纹理的基本用法，现在考虑一下凹凸贴图的原理，需要计算微分求切线，微分量取纹理宽度或高度的倒数，然后垂直得到法线向量。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">Eigen::Vector3f bump_fragment_shader(const fragment_shader_payload&amp; payload)</span><br><span class="line">&#123;</span><br><span class="line">    </span><br><span class="line">    Eigen::Vector3f ka = Eigen::Vector3f(0.005, 0.005, 0.005);</span><br><span class="line">    Eigen::Vector3f kd = payload.color;</span><br><span class="line">    Eigen::Vector3f ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937);</span><br><span class="line"></span><br><span class="line">    auto l1 = light&#123;&#123;20, 20, 20&#125;, &#123;500, 500, 500&#125;&#125;;</span><br><span class="line">    auto l2 = light&#123;&#123;-20, 20, 0&#125;, &#123;500, 500, 500&#125;&#125;;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;light&gt; lights = &#123;l1, l2&#125;;</span><br><span class="line">    Eigen::Vector3f amb_light_intensity&#123;10, 10, 10&#125;;</span><br><span class="line">    Eigen::Vector3f eye_pos&#123;0, 0, 10&#125;;</span><br><span class="line"></span><br><span class="line">    float p = 150;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f color = payload.color; </span><br><span class="line">    Eigen::Vector3f point = payload.view_pos;</span><br><span class="line">    Eigen::Vector3f normal = payload.normal;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    float kh = 0.2, kn = 0.1;</span><br><span class="line"></span><br><span class="line">    // TODO: Implement bump mapping here</span><br><span class="line">    // Let n = normal = (x, y, z)</span><br><span class="line">    float x = normal.x();</span><br><span class="line">    float y = normal.y();</span><br><span class="line">    float z = normal.z();</span><br><span class="line">    Vector3f t(x * y / sqrt(x * x + z * z), sqrt(x * x + z * z), z * y / sqrt(x * x + z * z));</span><br><span class="line">    Vector3f b = normal.cross(t);</span><br><span class="line">    Eigen::Matrix3f TBN;</span><br><span class="line">    TBN &lt;&lt; t.x(), b.x(), normal.x(),</span><br><span class="line">        t.y(), b.y(), normal.y(),</span><br><span class="line">        t.z(), b.z(), normal.z();</span><br><span class="line">    //TBN矩阵的作用是将局部坐标转化成实际坐标表示</span><br><span class="line"></span><br><span class="line">    float u = payload.tex_coords.x();</span><br><span class="line">    float v = payload.tex_coords.y();</span><br><span class="line">    float w = payload.texture-&gt;width;</span><br><span class="line">    float h = payload.texture-&gt;height;</span><br><span class="line"></span><br><span class="line">    //求u，v微分</span><br><span class="line">    float dU = kh * kn * (payload.texture-&gt;getColor(u + 1 / w, v).norm() - payload.texture-&gt;getColor(u, v).norm());</span><br><span class="line">    float dV = kh * kn * (payload.texture-&gt;getColor(u, v + 1 / h).norm() - payload.texture-&gt;getColor(u, v).norm());</span><br><span class="line"></span><br><span class="line">    Vector3f ln(-dU, -dV, 1);</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    Eigen::Vector3f result_color = (TBN * ln).normalized();</span><br><span class="line"></span><br><span class="line">    return result_color * 255.f;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure><br>注释中写出了大部分伪代码，但是这里还是要说明，凹凸贴图的计算涉及到TBN矩阵和切空间，可以简单理解为把物体的三维坐标和纹理坐标连接起来，课程中只说了后面求局部坐标系中法线的方法，并且让局部坐标系中的法线都为(0,0,1)，这个局部空间实际上就是TBN空间，在u和v方向求切线后得到垂直的扰动法线，当然要将这个纹理空间中的法向量转化到片段所在的空间。所以TBN矩阵就是将局部坐标中的法向量变换到着色时的空间中了。<br><img src="/2024/10/05/games3/Bump.png" alt="场景"><br>具体的计算可以找这部分知识推导，理解可以就这样。</p>
+<h2 id="位移贴图"><a href="#位移贴图" class="headerlink" title="位移贴图"></a>位移贴图</h2><p>在实现了凹凸贴图的基础上，对顶点做实际的移动。所以要添加的代码只有一行。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">Eigen::Vector3f displacement_fragment_shader(const fragment_shader_payload&amp; payload)</span><br><span class="line">&#123;</span><br><span class="line">    </span><br><span class="line">    Eigen::Vector3f ka = Eigen::Vector3f(0.005, 0.005, 0.005);</span><br><span class="line">    Eigen::Vector3f kd = payload.color;</span><br><span class="line">    Eigen::Vector3f ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937);</span><br><span class="line"></span><br><span class="line">    auto l1 = light&#123;&#123;20, 20, 20&#125;, &#123;500, 500, 500&#125;&#125;;</span><br><span class="line">    auto l2 = light&#123;&#123;-20, 20, 0&#125;, &#123;500, 500, 500&#125;&#125;;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;light&gt; lights = &#123;l1, l2&#125;;</span><br><span class="line">    Eigen::Vector3f amb_light_intensity&#123;10, 10, 10&#125;;</span><br><span class="line">    Eigen::Vector3f eye_pos&#123;0, 0, 10&#125;;</span><br><span class="line"></span><br><span class="line">    float p = 150;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f color = payload.color; </span><br><span class="line">    Eigen::Vector3f point = payload.view_pos;</span><br><span class="line">    Eigen::Vector3f normal = payload.normal;</span><br><span class="line"></span><br><span class="line">    float kh = 0.2, kn = 0.1;</span><br><span class="line">    </span><br><span class="line">    // TODO: Implement displacement mapping here</span><br><span class="line">    float x = normal.x();</span><br><span class="line">    float y = normal.y();</span><br><span class="line">    float z = normal.z();</span><br><span class="line">    Vector3f t(x * y / sqrt(x * x + z * z), sqrt(x * x + z * z), z * y / sqrt(x * x + z * z));</span><br><span class="line">    Vector3f b = normal.cross(t);</span><br><span class="line">    Eigen::Matrix3f TBN;</span><br><span class="line">    TBN &lt;&lt; t.x(), b.x(), normal.x(),</span><br><span class="line">        t.y(), b.y(), normal.y(),</span><br><span class="line">        t.z(), b.z(), normal.z();</span><br><span class="line">    //TBN矩阵的作用是将局部坐标转化成实际坐标表示</span><br><span class="line"></span><br><span class="line">    float u = payload.tex_coords.x();</span><br><span class="line">    float v = payload.tex_coords.y();</span><br><span class="line">    float w = payload.texture-&gt;width;</span><br><span class="line">    float h = payload.texture-&gt;height;</span><br><span class="line"></span><br><span class="line">    //求u，v微分，微分量取纹理宽、高的倒数</span><br><span class="line">    float dU = kh * kn * (payload.texture-&gt;getColor(u + 1 / w, v).norm() - payload.texture-&gt;getColor(u, v).norm());</span><br><span class="line">    float dV = kh * kn * (payload.texture-&gt;getColor(u, v + 1 / h).norm() - payload.texture-&gt;getColor(u, v).norm());</span><br><span class="line"></span><br><span class="line">    Vector3f ln(-dU, -dV, 1);</span><br><span class="line"></span><br><span class="line">    //仅仅添加了下面这一行函数</span><br><span class="line">    point = point + kn * normal * payload.texture-&gt;getColor(u, v).norm();</span><br><span class="line"></span><br><span class="line">    normal = (TBN * ln).normalized();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f result_color = &#123;0, 0, 0&#125;;</span><br><span class="line"></span><br><span class="line">    for (auto&amp; light : lights)</span><br><span class="line">    &#123;</span><br><span class="line">        // TODO: For each light source in the code, calculate what the *ambient*, *diffuse*, and *specular* </span><br><span class="line">        // components are. Then, accumulate that result on the *result_color* object.</span><br><span class="line"></span><br><span class="line">        Eigen::Vector3f l = (light.position - point).normalized();</span><br><span class="line">        Eigen::Vector3f v = (eye_pos - point).normalized();</span><br><span class="line">        Eigen::Vector3f h = (l + v).normalized();</span><br><span class="line"></span><br><span class="line">        float r = (light.position - point).dot(light.position - point);</span><br><span class="line">        //diffuse</span><br><span class="line">        Eigen::Vector3f Ld = kd.cwiseProduct(light.intensity / r) * std::max(0.0f, normal.dot(l));</span><br><span class="line">        //specular</span><br><span class="line">        Eigen::Vector3f Ls = ks.cwiseProduct(light.intensity / r) * std::pow(std::max(0.0f, normal.dot(h)), p);</span><br><span class="line">        result_color += Ls + Ld;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    Eigen::Vector3f La = ka.cwiseProduct(amb_light_intensity);</span><br><span class="line">    result_color += La;</span><br><span class="line"></span><br><span class="line">    return result_color * 255.f;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>得到了下面的结果：<br><img src="/2024/10/05/games3/displacement.png" alt="场景"></p>
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><p>到这里作业就全部完成了，提高项这次就不做了，有机会再说。关于代码还要提到一个点，计算result_color的时候，先声明其为一个全0的三维向量，后面赋值只能一次一次累加，而不能直接赋值，例如result_color = Ls + Ld，只能是result_color += Ls + Ld，否则得到的最后这个位移贴图结果就是比较灰暗的，这就是因为有两个光源，直接赋值显然就错了，只计算了一个光的光照结果。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/gmaes101/" rel="tag"># gmaes101</a>
+              <a href="/tags/Computer-Graphics/" rel="tag"># Computer Graphics</a>
+              <a href="/tags/Rsterization/" rel="tag"># Rsterization</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/27/TextMeshPro/" rel="prev" title="TextMeshPro">
+                  <i class="fa fa-angle-left"></i> TextMeshPro
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/10/05/hello-world/" rel="next" title="你好！">
+                  你好！ <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

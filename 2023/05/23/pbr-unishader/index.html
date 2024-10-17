@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文将使用Unity Shader实现直接光照(无纹理)的Cook-Torrance模型，该模型是一种常见的PBR渲染，但要注意这里实现的模型是只有直接光照的，这意味着纹理贴图、环境光等内容完全不关心，只了解PBR的光照部分是怎么实现的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity Shader实现Cook-Torrance模型的光照部分">
+<meta property="og:url" content="https://ankiima.github.io/2023/05/23/pbr-unishader/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="本文将使用Unity Shader实现直接光照(无纹理)的Cook-Torrance模型，该模型是一种常见的PBR渲染，但要注意这里实现的模型是只有直接光照的，这意味着纹理贴图、环境光等内容完全不关心，只了解PBR的光照部分是怎么实现的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/23/pbr-unishader/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/23/pbr-unishader/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/23/pbr-unishader/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/23/pbr-unishader/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/23/pbr-unishader/5.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/23/pbr-unishader/6.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/23/pbr-unishader/7.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/05/23/pbr-unishader/8.png">
+<meta property="article:published_time" content="2023-05-23T12:38:45.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.367Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Shader">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/05/23/pbr-unishader/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/05/23/pbr-unishader/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/05/23/pbr-unishader/","path":"2023/05/23/pbr-unishader/","title":"Unity Shader实现Cook-Torrance模型的光照部分"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unity Shader实现Cook-Torrance模型的光照部分 | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">3.</span> <span class="nav-text">结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E9%98%85%E8%AF%BB"><span class="nav-number">4.</span> <span class="nav-text">推荐阅读</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/05/23/pbr-unishader/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unity Shader实现Cook-Torrance模型的光照部分 | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity Shader实现Cook-Torrance模型的光照部分
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-05-23 20:38:45" itemprop="dateCreated datePublished" datetime="2023-05-23T20:38:45+08:00">2023-05-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Engine/" itemprop="url" rel="index"><span itemprop="name">Engine</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>本文将使用Unity Shader实现直接光照(无纹理)的Cook-Torrance模型，该模型是一种常见的PBR渲染，但要注意这里实现的模型是只有直接光照的，这意味着纹理贴图、环境光等内容完全不关心，只了解PBR的光照部分是怎么实现的。</p>
+<span id="more"></span>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>说到这个模型就不得不提到PBR了，PBR就是Physics Based Rendering，基于物理的渲染。虽然它也是上世纪的光照模型，不过从Phong的基础光照到Cook-Torrance代表的PBR光照是巨大的进步，Unity中Standard Shader就是一个完整的PBR实现。</p>
+<p>不过要清楚，PBR不仅仅是光照，完整的PBR包括Image Based Lighting，它才是Global Lighting的主要功臣。仅仅是PBR的话，其实我们实现的效果比原来的基础光照没有好特别多，因为没有环境贴图支持IBL。不过也不必担心，IBL的实现比PBR光照要简单多了，实际上IBL也是在PBR光照的基础上采样立方体贴图，所以实现了PBR就可以很轻松地完成IBL。</p>
+<p>那么下面我们再梳理一些Cook-Torrance和PBR的关系，PBR是基于物理的渲染，其中有一个非常著名的渲染公式，定义了一个被称为BRDF的函数界定光线照到物体上后，有多少光将会被反射出去。而Cook-Torrance则是在这个BRDF上进行了细致的刻画，通过物理模拟出这个比例函数，于是我们通过解出渲染方程就能得到光照情况。所以下面我们先开始介绍这个著名的渲染方程。</p>
+<p>所有的PBR都是基于微平面理论的，必须满足能量守恒，具有物理的BRDF函数。所谓微平面就是将模型表面看成很多微元，也就是我们处理的片元，这可以用来估算平面粗糙对镜面光的影响，我们使用入射方向和观察方向的半程向量来作为量化。</p>
+<p><img src="/2023/05/23/pbr-unishader/1.png" alt></p>
+<p>而能量守恒则体现在入射和反射光线的比例，由于折射的存在，反射光线的能量一定会小于入射光线，可以将漫反射看作折射光进入物体后又发散出来的表现。但是对于金属材质，折射光将全部被吸收，因此只会显示镜面光而没有漫反射。因此我们建立一个三种光之间的关系，光线入射后，在物体表面的光只有反射形成的ks部分，折射光则是入射光减去反射光剩下的部分，也就是1-ks。</p>
+<p>最后就是BRDF函数了，这里需要了解辐射度量学的基本概念，不再赘述，简单来说我们将一条光线能量量化为Radiance，入射光线为Radiance对方向的积分Irradiance，出射光线为Radiance对片元的积分Radiant Intensity，借此我们可以用公式表达光线的反射过程，这就是渲染方程。</p>
+<p><img src="/2023/05/23/pbr-unishader/2.png" alt></p>
+<p>其中Lo表示反射光线，wo表示反射的方向，p是顶点，Le表示自发光，Li表示wi方向过来的入射光线，fr则是BRDF函数，它表示反射光线的比例；最后一项是法线和入射光线的夹角余弦值。后面积分的意义是对正半球上的所有立体角积分，也就是统计所有入射的光线，得该点p上所有到wo方向的反射光线。</p>
+<p>一般情况下，该积分没有解析解，所以不得不采用黎曼和的方式多次采样求平均，不过非常幸运，我们使用Unity Shader在可编程管线中操作这个积分是非常方便的，因为根本不用积分！目前我们使用的是平行光，且只有一个物体，那么片元接受的半球积分上就只有光线方向不为0，对这一个方向计算即可。就算使用了多个方向的光源，也不必担心，通过设置正确的LightMode也能轻松解决，Unity将会对多个光源进行相同的Pass。总之，完全不必担心如何积分的问题，我们可以简单地将wi看作入射光的方向，wo则是观察的方向，按照公式计算片元的颜色并返回即可。从这一点看来，cook-Torrance模型确实和之前的基础光照没有多少不同，只不过该模型进一步解释了漫反射和镜面光背后的原理，以及用物理公式而不是经验来模拟它们，所以不管怎么说，此时光照更加真实了。</p>
+<p>最后，我们来看看cook-Torrance如何定义BRDF函数的，下面是该模型的渲染方程：</p>
+<p><img src="/2023/05/23/pbr-unishader/3.png" alt></p>
+<p>对比上面的一般方程，这里暂不考虑自发光，重点看其中的BRDF函数，前一项为漫反射的比例，c就是漫反射颜色，如果分配后将该值和后面的部分相乘，会发现它其实就是前面基础光照的兰伯特公式，只是多除以了圆周率，因为BRDF积分结果可以看作乘上了pi，我们需要抵消该项。但是我们的具体实现不用积分，所以也并不需要在具体实现中除以pi。kd是漫反射的比例，ks是镜面光比例，它们的和应当为1。</p>
+<p>后一项是计算镜面光比例的，D、F、G分别是法线分布函数、菲涅尔方程和几何函数。其中法线分布函数估算法线方向和半程向量一致的微平面的数量，几何函数描述了微平面几何特征，某些光线可能被微平面上的不规则平面遮挡，该函数给出这种遮挡的概率。最后菲涅尔项是描述物理现象的，我们在观察物体表面时，和表面法线的夹角越大，那么反射光线就越强；夹角越小，那么反射光线就越弱。</p>
+<p>前两种函数几乎都有不同的实现公式，这里我们选择Trowbridge-Reitz GGX法线分布，Schlick-GGX作为几何函数，它是GGX与Schlick-Beckmann近似的结合体。菲涅尔项一般采用Fresnel-Schlick进行近似计算。</p>
+<p><img src="/2023/05/23/pbr-unishader/4.png" alt></p>
+<p>法线分布D如上，其中α表示粗糙程度。</p>
+<p><img src="/2023/05/23/pbr-unishader/5.png" alt></p>
+<p>几何函数G如上，其中k也是和粗糙度有关的参数，由于我们这里只有直接光照，所以我们计算k为(α+1)^2/8。注意，如果存在环境贴图，这里的计算需要变化。</p>
+<p><img src="/2023/05/23/pbr-unishader/6.png" alt></p>
+<p>最后是菲涅尔项，其中F0是平面的基础反射率，不同材质具有不同的值。最后，我们按照之前Cook-Torrance的公式计算，就是完整的渲染流程了，可以看到实现方式并没有多少不同，我们只是修改了一些公式而已。</p>
+<p>不过通常来说，PBR会用到四张不同的纹理，一张规定模型颜色，一张规定高模法线，一张规定金属部分，一张规定粗糙程度，有时还有专门的立方体贴图来保存环境信息，这就是目前常见的渲染过程，但是由于这里是光照部分，所以我们暂时不适用任何贴图，将采用直接光照的方式进行计算。</p>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><p>经过前面的讲解，我们可以尝试对该模型进行计算了，先整理下我们需要的参数，由于是光照部分所以暂时不使用纹理，我们仅使用方向光作为光源。计算法线分布函数时，需要一个粗糙度Roughness，法线和半程向量的内积nh；计算几何函数，除前面外需要法线和观察方向的内积nv，法线和光源方向的内积nl；最后菲涅尔项需要半程向量和观察方向的内积vh，以及基础反射率Fresnel。对于反射方程，还需要光源方向、强度，然后还有一个漫反射的比例系数ks。总结下就是需要有三个Properties属性，Roughness，ks，Fresnel，再加一个漫反射颜色Color。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Properties &#123;        </span><br><span class="line">        _Color(&quot;Color&quot;, Color) = (1,1,1,1)         </span><br><span class="line">        fresnel (&quot;Fresnel&quot;, Range(0,1)) = 0.5</span><br><span class="line">        roughness (&quot;Roughness&quot;, Range(0,1)) = 0.5</span><br><span class="line">        ks(&quot;Ks&quot;,Range(0,1))=0.5</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>然后依然设置渲染模式为前向光照，在Pass中声明所需要的变量，也就是上面的属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Tags &#123; &quot;LightMode&quot;=&quot;ForwardBase&quot; &#125;</span><br><span class="line"></span><br><span class="line">        Pass&#123;</span><br><span class="line">        CGPROGRAM</span><br><span class="line"></span><br><span class="line">        #pragma vertex vert</span><br><span class="line">        #pragma fragment frag</span><br><span class="line">        #include &quot;Lighting.cginc&quot; </span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        float4 _Color;</span><br><span class="line">        float fresnel;</span><br><span class="line">        float roughness;</span><br><span class="line">        float ks;</span><br></pre></td></tr></table></figure>
+<p>下面再分析着色器的任务，这里肯定选择逐像素渲染了，所以顶点着色器的任务是计算世界空间下的法线和顶点坐标，以及必须的裁剪空间坐标变换。所以我们的顶点着色器和基础光照中使用的完全一致。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struct a2f&#123;</span><br><span class="line">            float4 vertex : POSITION;</span><br><span class="line">            float3 normal : NORMAL;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        struct v2f&#123;</span><br><span class="line">            float4 pos:SV_POSITION;</span><br><span class="line">            float4 worldPos:TEXCOORD0;</span><br><span class="line">            float3 worldNormal:TEXCOORD1;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        v2f vert(a2f v)&#123;</span><br><span class="line">            v2f o;</span><br><span class="line">            o.pos=UnityObjectToClipPos(v.vertex);</span><br><span class="line">            o.worldPos=mul(unity_ObjectToWorld,v.vertex);</span><br><span class="line">            o.worldNormal=normalize(mul(v.normal,(float3x3)unity_WorldToObject));</span><br><span class="line">            return o;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>获得信息之后，我们需要在片元着色器中依次获得世界空间下顶点位置，法线，光照方向，观察方向，半程向量，并事先获得nh，vh，nl，nv四个点积方便我们计算BRDF。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">float4 frag(v2f i) : SV_Target</span><br><span class="line">        &#123;</span><br><span class="line">            float4 worldPos=i.worldPos;</span><br><span class="line">            float3 worldNormal=normalize(i.worldNormal);            </span><br><span class="line">            float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line">            float3 viewDir=normalize(_WorldSpaceCameraPos-worldPos).xyz;            </span><br><span class="line">            float3 halfDir=normalize(viewDir+lightDir);</span><br><span class="line"></span><br><span class="line">            float vhDot=saturate( dot(viewDir,halfDir));</span><br><span class="line">            float nhDot=saturate(dot(worldNormal,halfDir));</span><br><span class="line">            float nlDot=saturate(dot(worldNormal,lightDir));</span><br><span class="line">            float nvDot=saturate(dot(worldNormal,viewDir));</span><br><span class="line">            </span><br><span class="line">            //Diffuse</span><br><span class="line">            float3 Idiff=(_Color*_LightColor0*nlDot).xyz;</span><br><span class="line"></span><br><span class="line">            //Specular</span><br><span class="line">            float3 Ispec; </span><br><span class="line">            //F</span><br><span class="line">            float F =pow((1.0-vhDot),5.0);</span><br><span class="line">            F *= (1.0-fresnel);</span><br><span class="line">            F += fresnel;</span><br><span class="line">            //D</span><br><span class="line">            float D = roughness * roughness / pow((nhDot*nhDot)*(roughness*roughness-1)+1,2);</span><br><span class="line">            //G</span><br><span class="line">            float G_k = pow(roughness+1,2)/8;</span><br><span class="line">            float G = nvDot / (nvDot*(1-G_k) + G_k);</span><br><span class="line"></span><br><span class="line">            float Rs=saturate((F*D*G)/(nvDot*nlDot));</span><br><span class="line">            Ispec=Rs*_LightColor0*nlDot;</span><br><span class="line"></span><br><span class="line">            float3 result=(1-ks)*Idiff+ks*Ispec;</span><br><span class="line">             </span><br><span class="line">            return float4(result,1);</span><br><span class="line">        &#125;</span><br><span class="line">         </span><br><span class="line">        ENDCG</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    FallBack &quot;Diffuse&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意要用saturate函数截断到[0,1]之间。之后正式计算反射方程，分别按照公式计算代表漫反射的折射和代表镜面光的反射。完整的代码在本文最后。</p>
+<h1 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h1><p>由于材质、环境光的缺失，真正的PBR显然会得到比这要好得多的结果，但是我们可以在另一个略微复杂的模型上看看它们之间的区别，Blinn-Phong模型是难以调节诸多视觉效果的，而Cook-Torrance作为时下流行的实时光照，要显得灵活许多，能适应不同材质、模型的粗糙度，调节镜面光比例，以及针对金属着色的菲涅尔项，因此下面我们试着调整材质面板的参数，得到一个具有金属质感的模型。</p>
+<p><img src="/2023/05/23/pbr-unishader/7.png" alt></p>
+<p>左边是我们的Blinn-Phong模型，右边是Cook-Torrance模型，而且要说明的是，上图中我们并没有改变模型的颜色，之所有右边的渲染会显得这么黑是因为我们假定它是一个金属，而金属的折射不会重新散开到模型表面，所以漫反射比例为0；菲涅尔项的基础反射率也被我们调整到0.5，这基本是铁对应的基础反射率，因此可以大概知道生活中铁为什么也比较黑；我们还调整了粗糙度，假定这个金属工艺品具有平滑的表面，所以设定地很小，就得到了上图中的渲染质感。</p>
+<p>想要得到其它金属的效果也是可以的，因为金属颜色的不同就体现在菲涅尔项，它们有不同的基础反射率，并且这个反射率应当用RGB的形式表达，否则只能得到黑白灰的线性结果，也就是铁、银这种金属。像金，铜就必须用RGB形式的基础反射率才能得到较好的效果。</p>
+<p>当然，在使用我们前面介绍的四组纹理和环境光(基础光照中的Ambient)之后，将得到更加靠近目前渲染的结果，使用Unity的标准着色器就可以看到它的效果，下面是资源商店中的金属球材质，我们看看它的效果。</p>
+<p><img src="/2023/05/23/pbr-unishader/8.png" alt></p>
+<p>显然我们实现的Cook-Torrance是一个很简陋的物理光照模型，实现完整的PBR流程还需要伽马矫正，纹理，IBL等相当多的内容，需要进一步学习。在光照模型的发展中，首先是Phong光照模型代表的基础光照，仅仅是一种经验模型，只考虑了局部光照，不具备物理特征；发展到PBR以后考虑了物理实际，并且使全局光照得以发展，得到了更真实的物理光照效果。</p>
+<h1 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h1><p>这里整理下学习资料。</p>
+<p>作为PBR入门来说LearnOpenGL中文站给出的<a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/07%20PBR/01%20Theory/">PBR教程</a>还是比较容易接受的，缺点是缺少公式推导；这篇<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/21376124">知乎</a>讲解了BRDF的由来，推导了Cook-Torrance模型的公式；《Real-Time Rendering 4th》中也有PBR部分教程，有人说是绝世武功，有大量文章索引指导阅读，公式原理都有适合深入学习；GDC，SIGGRAPH等会议也有不错的演讲和文章。</p>
+<p>而毛星云大神的博客中还有<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/53086060">PBR白皮书系列</a>博客，总结了上面书中的PBR部分和其它论文、会议提到的技术，可惜已经无法再见到更新了…</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+              <a href="/tags/Shader/" rel="tag"># Shader</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/05/20/uni-shader3/" rel="prev" title="Unity和Shader入门（三）">
+                  <i class="fa fa-angle-left"></i> Unity和Shader入门（三）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/05/23/uni-shader4/" rel="next" title="Unity和Shader入门（四）">
+                  Unity和Shader入门（四） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

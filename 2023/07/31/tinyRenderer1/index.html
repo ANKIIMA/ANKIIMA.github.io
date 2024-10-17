@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ankiima.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这次课程我们来想办法绘制三角形，也就是著名的光栅化，介绍两种方法实现，扫描线法和重心坐标法。Games101中使用的方法和这里介绍的不同，后面再具体说明。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="五百行C++理解OpenGL机制(二)">
+<meta property="og:url" content="https://ankiima.github.io/2023/07/31/tinyRenderer1/index.html">
+<meta property="og:site_name" content="ANKIIMA">
+<meta property="og:description" content="这次课程我们来想办法绘制三角形，也就是著名的光栅化，介绍两种方法实现，扫描线法和重心坐标法。Games101中使用的方法和这里介绍的不同，后面再具体说明。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ankiima.github.io/2023/07/31/tinyRenderer1/1.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/07/31/tinyRenderer1/2.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/07/31/tinyRenderer1/3.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/07/31/tinyRenderer1/4.png">
+<meta property="og:image" content="https://ankiima.github.io/2023/07/31/tinyRenderer1/6.png">
+<meta property="article:published_time" content="2023-07-31T09:36:23.000Z">
+<meta property="article:modified_time" content="2024-10-05T08:48:41.374Z">
+<meta property="article:author" content="ANKIIMA">
+<meta property="article:tag" content="CG">
+<meta property="article:tag" content="OpenGL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ankiima.github.io/2023/07/31/tinyRenderer1/1.png">
+
+
+<link rel="canonical" href="https://ankiima.github.io/2023/07/31/tinyRenderer1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ankiima.github.io/2023/07/31/tinyRenderer1/","path":"2023/07/31/tinyRenderer1/","title":"五百行C++理解OpenGL机制(二)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>五百行C++理解OpenGL机制(二) | ANKIIMA</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ANKIIMA</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lesson2-%E4%B8%89%E8%A7%92%E5%BD%A2"><span class="nav-number">1.</span> <span class="nav-text">Lesson2 三角形</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%AB%E6%8F%8F%E7%BA%BF%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">扫描线法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%BF%83%E5%9D%90%E6%A0%87%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">重心坐标法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%BA%BF%E6%A1%86"><span class="nav-number">1.3.</span> <span class="nav-text">绘制模型的线框</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ANKIIMA"
+      src="/images/apple-touch-icon.png">
+  <p class="site-author-name" itemprop="name">ANKIIMA</p>
+  <div class="site-description" itemprop="description">记录生活的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ANKIIMA" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ANKIIMA" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:anki1667791793@gmail.com" title="E-Mail → mailto:anki1667791793@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ankiima.github.io/2023/07/31/tinyRenderer1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/apple-touch-icon.png">
+      <meta itemprop="name" content="ANKIIMA">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ANKIIMA">
+      <meta itemprop="description" content="记录生活的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="五百行C++理解OpenGL机制(二) | ANKIIMA">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          五百行C++理解OpenGL机制(二)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-07-31 17:36:23" itemprop="dateCreated datePublished" datetime="2023-07-31T17:36:23+08:00">2023-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/" itemprop="url" rel="index"><span itemprop="name">Computer Graphics</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/" itemprop="url" rel="index"><span itemprop="name">Graphics API</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Computer-Graphics/Graphics-API/OpenGL/" itemprop="url" rel="index"><span itemprop="name">OpenGL</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这次课程我们来想办法绘制三角形，也就是著名的光栅化，介绍两种方法实现，扫描线法和重心坐标法。Games101中使用的方法和这里介绍的不同，后面再具体说明。</p>
+<span id="more"></span>
+<h1 id="Lesson2-三角形"><a href="#Lesson2-三角形" class="headerlink" title="Lesson2 三角形"></a>Lesson2 三角形</h1><p>作为最基本的图形学片元，现在学会绘制三角形可以说就已经学会大半图形学基础内容了。因为所有的模型几乎都是采用三角形作为一个面，哪怕是正方体看起来有六个四边形作为面，实际上四边形也可以拆分成两个三角形，这就是为什么三角形如此重要。</p>
+<p>我们先学习如何用扫描线绘制三角形，再看看现在普遍的做法。</p>
+<h2 id="扫描线法"><a href="#扫描线法" class="headerlink" title="扫描线法"></a>扫描线法</h2><p>顾名思义，我们按行绘制三角形像素，因此每次都要确定三角形的边界在哪里。通过观察不难发现，无论三角形怎么摆放，你始终可以将三角形根据过中间顶点的水平线将三角形分成上下两个部分，除非三角形的某条边保持水平，但即便这样我们依然可以采用该方法。</p>
+<p>首先回想我们如何绘制直线的，按照行或列的像素进行迭代，并选择较长的一边为基准，现在我们可以通过绘制三角形的边界来找到每一行对应的边界。</p>
+<p>注意，此时我们不需要选择较长的一方作为基准了，因为我们后面会完全填充整个三角形，之前画线可能出现的holes也不会是问题。</p>
+<p><img src="/2023/07/31/tinyRenderer1/1.png" alt></p>
+<p>具体来说，不论输入顺序如何，将y按升序排列，我们按照y值迭代每行像素，根据此时y的大小分别计算从最低点到中间点、最高点两条边的进度alpha和beta，然后计算该行上两条边的x在什么位置，然后从左绘制到右边，就完成了一行三角形的绘制。</p>
+<p>当绘制完下半部分，或者下半部分不存在(底边平行的情况)，就要更改计算边界的方式，因为此时要开始绘制另一条边，而最低点到最高点的边还在继续绘制，不用更改，下面是代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Triangle::old_DrawTriangle</span><span class="params">(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage&amp; image, TGAColor color)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (t0.y == t1.y &amp;&amp; t0.y == t2.y) <span class="keyword">return</span>; <span class="comment">// I dont care about degenerate triangles </span></span><br><span class="line">	<span class="keyword">if</span> (t0.y &gt; t1.y) std::<span class="built_in">swap</span>(t0, t1);</span><br><span class="line">	<span class="keyword">if</span> (t0.y &gt; t2.y) std::<span class="built_in">swap</span>(t0, t2);</span><br><span class="line">	<span class="keyword">if</span> (t1.y &gt; t2.y) std::<span class="built_in">swap</span>(t1, t2);</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> height = t2.y - t0.y;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; height; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">bool</span> second_half = i &gt;= t1.y - t0.y;</span><br><span class="line">		<span class="type">int</span> currentHeight = second_half ? t2.y - t1.y : t1.y - t0.y;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//alpha:t0-t2</span></span><br><span class="line">		<span class="comment">//beta:second_half时，i应减去第一段高度并除以第二段的高度</span></span><br><span class="line">		<span class="type">float</span> alpha = (<span class="type">float</span>)i / height;</span><br><span class="line">		<span class="type">float</span> beta = (<span class="type">float</span>)(i - (second_half ? t1.y - t0.y : <span class="number">0</span>)) / currentHeight;</span><br><span class="line">		Vec2i A = t0 + (t2 - t0) * alpha;</span><br><span class="line">		Vec2i B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (A.x &gt; B.x)</span><br><span class="line">		&#123;</span><br><span class="line">			std::<span class="built_in">swap</span>(A, B);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = A.x; j &lt;= B.x; j++)</span><br><span class="line">		&#123;</span><br><span class="line">			image.<span class="built_in">set</span>(j, t0.y + i, color);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>绘制的三角形如下：</p>
+<p><img src="/2023/07/31/tinyRenderer1/2.png" alt></p>
+<h2 id="重心坐标法"><a href="#重心坐标法" class="headerlink" title="重心坐标法"></a>重心坐标法</h2><p>然后我们稍微介绍一下重心坐标，对于平面上一点P，必定有三个数$w_1,w_2,w_3$满足$w_1+w_2+w_3=1$，且$P = w_1<em>A+w_2</em>B+w_3*C$，三维向量$(w_1,w_2,w_3)$就是在该三角形上点P的重心坐标。</p>
+<p>如果A的质量是$w_1$，B的质量是$w_2$，C的质量是$w_3$，那么在P点提起线来三角形就能平衡住。</p>
+<p>重心坐标有很多用处，可以用来计算三角形中各点的各种插值，软光栅化，以及光线追踪，还有这里判断像素点是否在三角形内部。</p>
+<p>为什么要判断？该方法的做法是，将三角形的长方形包围盒求出来，我们能快速地找到长方形的左下角和右上角，然后遍历其中每个像素，判断像素是否在三角形中，如果是则光栅化，否则跳过。</p>
+<p>给定点P，我们先想办法求出P的重心坐标。根据前面定义我们知道，$w_1=1-w_2-w_3$，又$\vec{AB}=B-A$，可以得到公式$P=A+w_2<em>\vec{AB}+w_3</em>\vec{AC}$，P移项到右边：$w_2<em>\vec{AB}+w_3</em>\vec{AC}+\vec{PA}=0$，它们全是二维向量，也就是说现在有向量$(w_2,w_3,1)$同时和向量$(\vec{AB_x},\vec{AC_x},\vec{PA_x})$，$(\vec{AB_y},\vec{AC_y},\vec{PA_y})$的点积为零，也就是和这两个向量同时垂直。</p>
+<p>所以我们计算后面两个向量的叉乘得到它们的法向量，用z轴的值归一化以后就得到$(w_2,w_3,1)$，那么重心坐标就求出来了。</p>
+<p>通过重心坐标的定义可以知道，如果P点在三角形内部，那么$(w_1,w_2,w_3)$应当全部大于0，有一个值等于0说明三角形退化了，小于0说明此时重心在三角形外部。</p>
+<p>所以我们通过判断重心坐标的正负就判断了P点的位置。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Vec3f <span class="title">Triangle::barycentric</span><span class="params">(Vec2i* pts, Vec2i p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> ABx = (pts[<span class="number">1</span>].x - pts[<span class="number">0</span>].x);</span><br><span class="line">	<span class="type">int</span> ABy = (pts[<span class="number">1</span>].y - pts[<span class="number">0</span>].y);</span><br><span class="line">	<span class="type">int</span> ACx = (pts[<span class="number">2</span>].x - pts[<span class="number">0</span>].x);</span><br><span class="line">	<span class="type">int</span> ACy = (pts[<span class="number">2</span>].y - pts[<span class="number">0</span>].y);</span><br><span class="line">	<span class="type">int</span> PAx = (pts[<span class="number">0</span>].x - p.x);</span><br><span class="line">	<span class="type">int</span> PAy = (pts[<span class="number">0</span>].y - p.y);</span><br><span class="line"></span><br><span class="line">	Vec3f u = <span class="built_in">Vec3f</span>(ABx, ACx, PAx) ^ <span class="built_in">Vec3f</span>(ABy, ACy, PAy);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//z小于1即z=0，此时三角形退化，AB AC在一条直线上</span></span><br><span class="line">	<span class="keyword">if</span> (std::<span class="built_in">abs</span>(u.z) &lt; <span class="number">1</span>) <span class="keyword">return</span> <span class="built_in">Vec3f</span>(<span class="number">-1</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">Vec3f</span>(<span class="number">1.f</span> - (u.x + u.y) / u.z, u.x / u.z, u.y / u.z);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在Games101中，做法是采用三个叉积来判断，当然不如这里有效率，但是比较直观，当点在三角形内部，三个顶点和它的连线向量以及三条边向量分别的叉积都大于0，否则不在三角形内部，具体可以查看Games101博客中第二篇。</p>
+<p>那么判断三角形内部就有两种方法了，重心坐标法是最快的。</p>
+<p>回到三角形的光栅化，你已经学会了最关键的步骤，下面的代码就不是难事了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">![<span class="number">3</span>](tinyRenderer1/<span class="number">3.</span>png)<span class="function"><span class="type">void</span> <span class="title">Triangle::new_DrawTriangle</span><span class="params">(Vec2i* pts, TGAImage&amp; image, TGAColor color)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="function">Vec2i <span class="title">bboxmin</span><span class="params">(image.get_width() - <span class="number">1</span>, image.get_height() - <span class="number">1</span>)</span></span>;</span><br><span class="line">	<span class="function">Vec2i <span class="title">bboxmax</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">	<span class="function">Vec2i <span class="title">clamp</span><span class="params">(image.get_width() - <span class="number">1</span>, image.get_height() - <span class="number">1</span>)</span></span>;</span><br><span class="line">	<span class="comment">//找到bounding box的大小</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		bboxmin.x = std::<span class="built_in">max</span>(<span class="number">0</span>, std::<span class="built_in">min</span>(bboxmin.x, pts[i].x));</span><br><span class="line">		bboxmin.y = std::<span class="built_in">max</span>(<span class="number">0</span>, std::<span class="built_in">min</span>(bboxmin.y, pts[i].y));</span><br><span class="line"></span><br><span class="line">		bboxmax.x = std::<span class="built_in">min</span>(clamp.x, std::<span class="built_in">max</span>(bboxmax.x, pts[i].x));</span><br><span class="line">		bboxmax.y = std::<span class="built_in">min</span>(clamp.y, std::<span class="built_in">max</span>(bboxmax.y, pts[i].y));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//逐个判断bbox中的像素是否在三角形中</span></span><br><span class="line">	Vec2i p;</span><br><span class="line">	<span class="keyword">for</span> (p.x = bboxmin.x; p.x &lt;= bboxmax.x; p.x++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> (p.y = bboxmin.y; p.y &lt;= bboxmax.y; p.y++)</span><br><span class="line">		&#123;</span><br><span class="line">			Vec3f bc_screen = <span class="built_in">baricentric</span>(pts, p);</span><br><span class="line">			<span class="keyword">if</span> (bc_screen.x &lt; <span class="number">0</span> || bc_screen.y &lt; <span class="number">0</span> || bc_screen.z &lt; <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">			image.<span class="built_in">set</span>(p.x, p.y, color);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它得到的效果和刚才我们使用旧方法的效果几乎一致，可以忽略这点略微的不同。</p>
+<p><img src="/2023/07/31/tinyRenderer1/3.png" alt></p>
+<h2 id="绘制模型的线框"><a href="#绘制模型的线框" class="headerlink" title="绘制模型的线框"></a>绘制模型的线框</h2><p>下面我们让它变得更有意思一些，作者给出了自己的脸部模型，下面我们将要绘制出脸部的模型面。首先用之前介绍的工具类完成模型顶点和面的提取，由于模型是三维的，这里我们渲染正面就不需要z值了(在这里z轴以屏幕为原点向里)，直接忽略并保存xy。xy转换到屏幕坐标也只需要改变它们的映射空间，从[-1,1]修改到[0,width-1]和[0,height-1]，即加一乘以像素宽度/高度并除以2。</p>
+<p>让每个三角形的颜色保持随机，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">for (int i=0; i&lt;model-&gt;nfaces(); i++) &#123; </span><br><span class="line">    std::vector&lt;int&gt; face = model-&gt;face(i); </span><br><span class="line">    Vec2i screen_coords[3]; </span><br><span class="line">    for (int j=0; j&lt;3; j++) &#123; </span><br><span class="line">        Vec3f world_coords = model-&gt;vert(face[j]); </span><br><span class="line">        screen_coords[j] = Vec2i((world_coords.x+1.)*width/2., (world_coords.y+1.)*height/2.); </span><br><span class="line">    &#125; </span><br><span class="line">    triangle(screen_coords[0], screen_coords[1], screen_coords[2], image, TGAColor(rand()%255, rand()%255, rand()%255, 255)); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你需要稍微修改一下以让它适应你自己的代码，得到下面的结果：</p>
+<p><img src="/2023/07/31/tinyRenderer1/4.png" alt></p>
+<p>它是杂乱无章的，因为没有使用深度测试来消除一些不可见面，渲染完全由顺序主导，下一节我们再解决这个问题。现在我们稍微引入一点光照知识，学过Games101或了解过基础光照的朋友理解起来就很轻松了，这里让光照方向设置为$(0,0,-1)$，也就是垂直屏幕向内，一个面接受的光照强度和该面向外的法向量和光线方向的夹角成反比，也就是点积越大光照越弱。</p>
+<p>一个三角形的法向量可以用叉积来计算，这里按照读取出来的顺序计算AC，AB的叉积就是向外的法向量，用它和光照点乘作为光照强度，乘以颜色值。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Vec3f <span class="title">light_dir</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>, <span class="number">-1</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>** argv)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="number">2</span> == argc) &#123;</span><br><span class="line">		model = <span class="keyword">new</span> <span class="built_in">Model</span>(argv[<span class="number">1</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		model = <span class="keyword">new</span> <span class="built_in">Model</span>(<span class="string">&quot;obj/african_head.obj&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function">TGAImage <span class="title">image</span><span class="params">(width, height, TGAImage::RGB)</span></span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; model-&gt;<span class="built_in">nfaces</span>(); i++) &#123;</span><br><span class="line">		<span class="comment">//存储三个顶点编号</span></span><br><span class="line">		std::vector&lt;<span class="type">int</span>&gt; face = model-&gt;<span class="built_in">face</span>(i);</span><br><span class="line">		Vec2i screen_coords[<span class="number">3</span>];</span><br><span class="line">		Vec3f world_coords[<span class="number">3</span>];</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++) &#123;</span><br><span class="line">			<span class="comment">//根据编号返回顶点坐标</span></span><br><span class="line">			Vec3f v = model-&gt;<span class="built_in">vert</span>(face[j]);</span><br><span class="line">			<span class="comment">//转换为二维坐标</span></span><br><span class="line">			screen_coords[j] = <span class="built_in">Vec2i</span>((v.x + <span class="number">1.</span>) * width / <span class="number">2.</span>, (v.y + <span class="number">1.</span>) * height / <span class="number">2.</span>);</span><br><span class="line">			world_coords[j] = v;</span><br><span class="line">		&#125;</span><br><span class="line">		Vec3f normal = (world_coords[<span class="number">2</span>] - world_coords[<span class="number">0</span>]) ^ (world_coords[<span class="number">1</span>] - world_coords[<span class="number">0</span>]);</span><br><span class="line">		normal.<span class="built_in">normalize</span>();</span><br><span class="line"></span><br><span class="line">		<span class="type">float</span> intensity = normal * light_dir;</span><br><span class="line">		<span class="keyword">if</span> (intensity &gt; <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			Triangle::<span class="built_in">new_DrawTriangle</span>(screen_coords, image, <span class="built_in">TGAColor</span>(intensity * <span class="number">255</span>, intensity * <span class="number">255</span>, intensity * <span class="number">255</span>, <span class="number">255</span>));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	image.<span class="built_in">flip_vertically</span>(); <span class="comment">// i want to have the origin at the left bottom corner of the image</span></span><br><span class="line">	image.<span class="built_in">write_tga_file</span>(<span class="string">&quot;output.tga&quot;</span>);</span><br><span class="line">	<span class="keyword">delete</span> model;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样记得修改代码以适应自己的部分。得到效果如下：</p>
+<p><img src="/2023/07/31/tinyRenderer1/6.png" alt></p>
+<p>注意这里我们没有绘制出模型背面的面，因为在上面的代码中，当光照方向和法线方向的点积为负，也就是光线方向和法线方向的夹角超过180度后，我们简单地抛弃了它们，这就是一种简单的背面剔除。同样因为没有深度测试有地方渲染不正确，而且因为没有插值，和前面一样是Flat着色方式，下一次我们将修复这两个问题。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+              <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/07/31/CGCollection/" rel="prev" title="图形学知识合集">
+                  <i class="fa fa-angle-left"></i> 图形学知识合集
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/08/01/tinyRenderer2/" rel="next" title="五百行C++理解OpenGL机制(三)">
+                  五百行C++理解OpenGL机制(三) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-solid fa-paper-plane"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ANKIIMA</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
